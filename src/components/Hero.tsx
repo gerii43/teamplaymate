@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen bg-secondary text-white relative overflow-hidden">
+    <section className="min-h-screen bg-secondary text-white relative overflow-hidden pb-24">
       <nav className="absolute top-0 left-0 right-0 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">TraiHero</div>
@@ -39,7 +39,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+            className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl mb-24"
           >
             <img 
               src="/lovable-uploads/bfe9a75b-3b2e-4dc8-8920-c751277ff233.png" 
