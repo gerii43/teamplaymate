@@ -5,7 +5,7 @@ export const Hero = () => {
     <section className="min-h-screen bg-secondary text-white relative overflow-hidden">
       <nav className="absolute top-0 left-0 right-0 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">TeamPlaymate</div>
+          <div className="text-2xl font-bold">TraiHero</div>
           <div className="flex gap-8">
             <a href="/" className="hover:text-primary transition-colors">Home</a>
             <a href="/pricing" className="hover:text-primary transition-colors">Pricing</a>
