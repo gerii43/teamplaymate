@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen bg-secondary text-white relative overflow-hidden pb-24">
+    <section className="min-h-screen relative overflow-hidden pb-24 bg-[#f3f3f3] bg-[radial-gradient(#999_1px,transparent_1px)] [background-size:20px_20px]">
       <nav className="absolute top-0 left-0 right-0 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">TraiHero</div>
+          <div className="text-2xl font-bold text-secondary">TraiHero</div>
           <div className="flex gap-8">
-            <a href="/" className="hover:text-primary transition-colors">Home</a>
-            <a href="/pricing" className="hover:text-primary transition-colors">Pricing</a>
-            <a href="/faq" className="hover:text-primary transition-colors">FAQ</a>
+            <a href="/" className="hover:text-primary transition-colors text-secondary">Home</a>
+            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Pricing</a>
+            <a href="/faq" className="hover:text-primary transition-colors text-secondary">FAQ</a>
           </div>
         </div>
       </nav>
@@ -21,10 +21,10 @@ export const Hero = () => {
           transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 max-w-2xl mx-auto text-secondary">
             Optimize Your Team's Performance
           </h1>
-          <p className="text-lg md:text-xl mb-12 text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl mb-12 text-gray-600 max-w-3xl mx-auto">
             Advanced analytics and management tools for modern football coaches
           </p>
           <motion.button
