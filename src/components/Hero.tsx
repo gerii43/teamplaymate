@@ -24,7 +24,7 @@ export const Hero = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-6 max-w-2xl mx-auto">
             Optimize Your Team's Performance
           </h1>
-          <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl mb-12 text-gray-300 max-w-3xl mx-auto">
             Advanced analytics and management tools for modern football coaches
           </p>
           <motion.button
