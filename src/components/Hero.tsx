@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen relative overflow-hidden pb-24 bg-[#f3f3f3] bg-[radial-gradient(#ddd_1px,transparent_1px)] [background-size:32px_32px]">
+    <section className="min-h-screen relative overflow-hidden pb-24 bg-[#e8edf7] bg-[radial-gradient(#ddd_1px,transparent_1px)] [background-size:32px_32px]">
       <nav className="absolute top-0 left-0 right-0 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold text-secondary">TraiHero</div>
