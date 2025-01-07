@@ -23,10 +23,23 @@ export const Hero = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:bg-primary/90 transition-colors"
+            className="bg-primary text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:bg-primary/90 transition-colors mb-12"
           >
             Get Started
           </motion.button>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+          >
+            <img 
+              src="/lovable-uploads/bfe9a75b-3b2e-4dc8-8920-c751277ff233.png" 
+              alt="Coach Dashboard Interface" 
+              className="w-full h-auto"
+            />
+          </motion.div>
         </motion.div>
       </div>
     </section>
