@@ -42,7 +42,7 @@ export const Hero = () => {
             className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl mb-24"
           >
             <img 
-              src="/lovable-uploads/bfe9a75b-3b2e-4dc8-8920-c751277ff233.png" 
+              src="/lovable-uploads/064f9665-45f2-4262-8160-e29cfca0e9e7.png" 
               alt="Coach Dashboard Interface" 
               className="w-full h-auto"
             />
