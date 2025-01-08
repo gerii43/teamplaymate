@@ -15,90 +15,96 @@ const Pricing = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Starter Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300">
-            <h3 className="text-xl font-semibold text-secondary mb-2">Starter</h3>
-            <div className="mb-6">
-              <span className="text-3xl font-bold">€9.99</span>
-              <span className="text-gray-600">/month</span>
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300 flex flex-col">
+            <div className="flex-grow">
+              <h3 className="text-xl font-semibold text-secondary mb-2">Starter</h3>
+              <div className="mb-6">
+                <span className="text-3xl font-bold">€9.99</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Basic team management</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Simple performance tracking</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Up to 15 players</span>
+                </li>
+              </ul>
             </div>
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Basic team management</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Simple performance tracking</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Up to 15 players</span>
-              </li>
-            </ul>
-            <Button className="w-full">Get Started</Button>
+            <Button className="w-full mt-auto">Get Started</Button>
           </div>
 
           {/* Semi-Pro Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-primary relative transform hover:scale-105 transition-all duration-300">
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-primary relative transform hover:scale-105 transition-all duration-300 flex flex-col">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
               <span className="bg-primary text-white px-4 py-1 rounded-full text-sm">Popular</span>
             </div>
-            <h3 className="text-xl font-semibold text-secondary mb-2">Semi-Pro</h3>
-            <div className="mb-6">
-              <span className="text-3xl font-bold">€25.99</span>
-              <span className="text-gray-600">/month</span>
+            <div className="flex-grow">
+              <h3 className="text-xl font-semibold text-secondary mb-2">Semi-Pro</h3>
+              <div className="mb-6">
+                <span className="text-3xl font-bold">€25.99</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Advanced team management</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Detailed analytics</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Up to 30 players</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Training schedules</span>
+                </li>
+              </ul>
             </div>
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Advanced team management</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Detailed analytics</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Up to 30 players</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Training schedules</span>
-              </li>
-            </ul>
-            <Button className="w-full">Get Started</Button>
+            <Button className="w-full mt-auto">Get Started</Button>
           </div>
 
           {/* Pro Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300">
-            <h3 className="text-xl font-semibold text-secondary mb-2">Pro</h3>
-            <div className="mb-6">
-              <span className="text-3xl font-bold">€50.00</span>
-              <span className="text-gray-600">/month</span>
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300 flex flex-col">
+            <div className="flex-grow">
+              <h3 className="text-xl font-semibold text-secondary mb-2">Pro</h3>
+              <div className="mb-6">
+                <span className="text-3xl font-bold">€50.00</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Complete team management</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Advanced analytics & reporting</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Unlimited players</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Priority support</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="text-primary" size={20} />
+                  <span className="text-gray-600">Custom features</span>
+                </li>
+              </ul>
             </div>
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Complete team management</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Advanced analytics & reporting</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Unlimited players</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Priority support</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="text-primary" size={20} />
-                <span className="text-gray-600">Custom features</span>
-              </li>
-            </ul>
-            <Button className="w-full">Get Started</Button>
+            <Button className="w-full mt-auto">Get Started</Button>
           </div>
         </div>
       </div>
