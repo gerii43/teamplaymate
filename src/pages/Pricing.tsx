@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Award, Star, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 
@@ -109,26 +109,35 @@ const Pricing = () => {
         </div>
 
         {/* Detailed Plan Explanations */}
-        <div className="max-w-3xl mx-auto mt-24 space-y-8">
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn">
-            <h3 className="text-xl font-semibold text-secondary mb-4">Perfect for Small Teams</h3>
-            <p className="text-gray-600">
-              The Starter plan is ideal for small teams or clubs just beginning their journey with professional management tools. Get access to essential features that help organize your team and track basic performance metrics. Perfect for youth teams or amateur clubs looking to step up their game.
-            </p>
+        <div className="max-w-5xl mx-auto mt-24 space-y-8">
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn flex justify-between items-start">
+            <div>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Perfect for Small Teams</h3>
+              <p className="text-gray-600 max-w-2xl">
+                The Starter plan is ideal for small teams or clubs just beginning their journey with professional management tools. Get access to essential features that help organize your team and track basic performance metrics. Perfect for youth teams or amateur clubs looking to step up their game.
+              </p>
+            </div>
+            <Award className="text-primary flex-shrink-0 ml-6" size={48} />
           </div>
           
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:200ms]">
-            <h3 className="text-xl font-semibold text-secondary mb-4">Growing Teams & Clubs</h3>
-            <p className="text-gray-600">
-              Semi-Pro offers the perfect balance of features and value. Access advanced analytics, detailed performance tracking, and comprehensive training tools. Ideal for established teams looking to enhance their performance and management capabilities with professional-grade tools.
-            </p>
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:200ms] flex justify-between items-start">
+            <div>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Growing Teams & Clubs</h3>
+              <p className="text-gray-600 max-w-2xl">
+                Semi-Pro offers the perfect balance of features and value. Access advanced analytics, detailed performance tracking, and comprehensive training tools. Ideal for established teams looking to enhance their performance and management capabilities with professional-grade tools.
+              </p>
+            </div>
+            <Star className="text-primary flex-shrink-0 ml-6" size={48} />
           </div>
           
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:400ms]">
-            <h3 className="text-xl font-semibold text-secondary mb-4">Professional Organizations</h3>
-            <p className="text-gray-600">
-              The Pro plan delivers everything a professional organization needs. Unlimited player capacity, custom feature development, and priority support ensure you have all the tools necessary to manage multiple teams or professional clubs. Perfect for organizations serious about maximizing performance.
-            </p>
+          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:400ms] flex justify-between items-start">
+            <div>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Professional Organizations</h3>
+              <p className="text-gray-600 max-w-2xl">
+                The Pro plan delivers everything a professional organization needs. Unlimited player capacity, custom feature development, and priority support ensure you have all the tools necessary to manage multiple teams or professional clubs. Perfect for organizations serious about maximizing performance.
+              </p>
+            </div>
+            <Crown className="text-primary flex-shrink-0 ml-6" size={48} />
           </div>
         </div>
       </div>
