@@ -46,7 +46,7 @@ export const Hero = () => {
           duration: 0.8,
           delay: 0.2
         }} className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl mb-24">
-            <img alt="Coach Dashboard Interface" className="w-full h-auto" src="/lovable-uploads/fe1d9a0b-b324-4e0b-be16-9188fe979702.jpg" />
+            <img alt="Coach Dashboard Interface" className="w-full h-auto" src="/lovable-uploads/c998942f-3b15-4ea0-84d7-6c81ecf56aaa.jpg" />
           </motion.div>
         </motion.div>
       </div>
