@@ -1,5 +1,6 @@
+
 import { motion } from "framer-motion";
-import { BarChart3, Users2, Brain, Gauge, Stadium, LineChart, Clock } from "lucide-react";
+import { BarChart3, Users2, Brain, Gauge, LineChart, Clock, Award } from "lucide-react";
 
 const stats = [{
   value: "50+",
@@ -14,7 +15,7 @@ const stats = [{
   value: "24/7",
   label: "Support"
 }, {
-  icon: <Stadium className="w-8 h-8 text-primary mb-2" />,
+  icon: <Award className="w-8 h-8 text-primary mb-2" />,
   value: "",
   label: "Hundreds of data for every match"
 }, {
