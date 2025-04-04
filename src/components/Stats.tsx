@@ -3,27 +3,15 @@ import { motion } from "framer-motion";
 import { BarChart3, Users2, Brain, Gauge, LineChart, Clock, Award } from "lucide-react";
 
 const stats = [{
-  value: "50+",
-  label: "Professional Teams"
-}, {
-  value: "10K+",
-  label: "Active Users"
-}, {
-  value: "95%",
-  label: "Success Rate"
-}, {
-  value: "24/7",
-  label: "Support"
-}, {
-  icon: <Award className="w-8 h-8 text-primary mb-2" />,
+  icon: <Award className="w-12 h-12 text-primary mb-3" />,
   value: "",
   label: "Hundreds of data for every match"
 }, {
-  icon: <LineChart className="w-8 h-8 text-primary mb-2" />,
+  icon: <LineChart className="w-12 h-12 text-primary mb-3" />,
   value: "",
   label: "100% control over your performance"
 }, {
-  icon: <Clock className="w-8 h-8 text-primary mb-2" />,
+  icon: <Clock className="w-12 h-12 text-primary mb-3" />,
   value: "",
   label: "In seconds, you'll have answers that used to take hours"
 }];
@@ -50,7 +38,7 @@ export const Stats = () => {
   return <>
       <section className="py-20 bg-secondary">
         <div className="container px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {stats.map((stat, index) => <motion.div key={index} initial={{
             opacity: 0,
             scale: 0.9
@@ -64,8 +52,7 @@ export const Stats = () => {
             once: true
           }} className="text-center">
                 {stat.icon}
-                {stat.value && <h3 className="text-3xl font-bold text-primary mb-1">{stat.value}</h3>}
-                <p className="text-gray-600 font-medium">{stat.label}</p>
+                <p className="text-gray-100 font-medium text-xl">{stat.label}</p>
               </motion.div>)}
           </div>
         </div>
