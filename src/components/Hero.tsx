@@ -1,54 +1,55 @@
+
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+
 export const Hero = () => {
-  return <section className="min-h-screen relative overflow-hidden pb-24 bg-[#f0f4fa] bg-[radial-gradient(#ddd_1px,transparent_1px)] [background-size:32px_32px]">
-      <nav className="absolute top-0 left-0 right-0 p-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-secondary">TraiHero</div>
-          <div className="flex gap-8">
-            <a href="/" className="hover:text-primary transition-colors text-secondary">Home</a>
-            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Pricing</a>
-            <a href="/faq" className="hover:text-primary transition-colors text-secondary">FAQ</a>
-          </div>
-        </div>
-      </nav>
-      
-      <div className="max-w-7xl mx-auto px-6 pt-32">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.8
-      }} className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 max-w-2xl mx-auto text-secondary">
-            Optimize Your Team's Performance
+  return (
+    <section className="min-h-screen relative overflow-hidden pb-24 bg-gradient-to-b from-gray-50 to-white">
+      <div className="container mx-auto px-4 pt-32">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary">
+            Optimiza el rendimiento de tu equipo
           </h1>
           <p className="text-lg md:text-xl mb-12 text-gray-600 max-w-3xl mx-auto">
-            Advanced analytics and management tools for modern football coaches
+            Software profesional para entrenadores de fútbol 11 y futsal. 
+            Gestiona entrenamientos, analiza rendimiento y toma decisiones basadas en datos.
           </p>
-          <motion.button whileHover={{
-          scale: 1.05
-        }} whileTap={{
-          scale: 0.95
-        }} className="bg-primary text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:bg-primary/90 transition-colors mb-12">
-            Get Started
-          </motion.button>
           
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.8,
-          delay: 0.2
-        }} className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl mb-24">
-            <img alt="Coach Dashboard Interface" className="w-full h-auto" src="/lovable-uploads/c998942f-3b15-4ea0-84d7-6c81ecf56aaa.jpg" />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Button 
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-lg px-8"
+            >
+              Solicitar Demo
+            </Button>
+            <Button 
+              variant="outline"
+              size="lg"
+              className="text-lg px-8"
+            >
+              Ver características
+            </Button>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+          >
+            <img 
+              src="/lovable-uploads/83a254b6-6c19-49a4-82df-401e9f474394.png"
+              alt="Statsor Dashboard"
+              className="w-full h-auto"
+            />
           </motion.div>
         </motion.div>
       </div>
-    </section>;
+    </section>
+  );
 };
