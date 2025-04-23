@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { DashboardPreview } from "./DashboardPreview";
 
 export const Hero = () => {
   return (
@@ -40,13 +41,9 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl"
+            className="relative"
           >
-            <img 
-              src="/lovable-uploads/83a254b6-6c19-49a4-82df-401e9f474394.png"
-              alt="Statsor Dashboard"
-              className="w-full h-auto"
-            />
+            <DashboardPreview />
           </motion.div>
         </motion.div>
       </div>
