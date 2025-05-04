@@ -1,11 +1,8 @@
-
 import { motion } from "framer-motion";
 import { DashboardPreview } from "./DashboardPreview";
 import { Button } from "@/components/ui/button";
-
 export const Hero = () => {
-  return (
-    <section className="relative overflow-hidden pb-24 pt-10 bg-white">
+  return <section className="relative overflow-hidden pb-24 pt-10 bg-white">
       <nav className="p-6 border-b border-gray-100">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold text-secondary">Statsor</div>
@@ -19,35 +16,39 @@ export const Hero = () => {
       </nav>
       
       <div className="max-w-7xl mx-auto px-6 pt-16 md:pt-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">
-            Optimiza el rendimiento de tu equipo
-          </h1>
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.8
+      }} className="text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">Optimiza el rendimiento
+ de tu equipo
+        </h1>
           <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
             Software integral para entrenadores de fútbol que revoluciona la gestión de equipos, estadísticas y entrenamientos
           </p>
           
-          <Button 
-            className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors mb-12"
-          >
+          <Button className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors mb-12">
             Solicitar Demo
           </Button>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl mt-8"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.8,
+          delay: 0.2
+        }} className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl mt-8">
             <DashboardPreview />
           </motion.div>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>;
 };
