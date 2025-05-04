@@ -1,78 +1,75 @@
-import { motion } from "framer-motion";
-import { BarChart3, Users2, Brain, Gauge } from "lucide-react";
-const stats = [{
-  value: "50+",
-  label: "Professional Teams"
-}, {
-  value: "10K+",
-  label: "Active Users"
-}, {
-  value: "95%",
-  label: "Success Rate"
-}, {
-  value: "24/7",
-  label: "Support"
-}];
-const features = [{
-  icon: <BarChart3 className="w-8 h-8 text-primary" />,
-  title: "Performance Analytics",
-  description: "Track team and player statistics with detailed metrics and visual reports"
-}, {
-  icon: <Users2 className="w-8 h-8 text-primary" />,
-  title: "Team Management",
-  description: "Organize squads, manage training schedules, and coordinate team activities efficiently"
-}, {
-  icon: <Brain className="w-8 h-8 text-primary" />,
-  title: "Tactical Analysis",
-  description: "Create and analyze game strategies with advanced visualization tools"
-}, {
-  icon: <Gauge className="w-8 h-8 text-primary" />,
-  title: "Progress Tracking",
-  description: "Monitor individual and team development with comprehensive progress indicators"
-}];
-export const Stats = () => {
-  return <>
-      <section className="py-20 bg-secondary">
-        <div className="container px-4">
-          
-        </div>
-      </section>
 
-      <section className="py-24 bg-white">
-        <div className="container px-4">
-          <motion.h2 initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5
-        }} viewport={{
-          once: true
-        }} className="text-3xl md:text-4xl font-bold text-center text-secondary mb-16">
-            Big Data is Not Just for Big Teams
-          </motion.h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => <motion.div key={index} initial={{
-            opacity: 0,
-            y: 20
-          }} whileInView={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: index * 0.1
-          }} viewport={{
-            once: true
-          }} className="bg-gray-50 p-6 rounded-lg hover:shadow-lg transition-shadow">
+import { motion } from "framer-motion";
+import { Ticket, BarChart3, Calendar } from "lucide-react";
+import { Card } from "@/components/ui/card";
+
+const additionalFeatures = [
+  {
+    icon: <Ticket className="w-10 h-10 text-blue-500" />,
+    title: "Gestión de lesiones",
+    description: "Realiza un seguimiento detallado de lesiones, tiempos de recuperación y recomendaciones médicas para cada jugador.",
+    checkItems: [
+      "Historial médico completo",
+      "Alertas de sobrecargas",
+      "Planes de recuperación"
+    ]
+  },
+  {
+    icon: <BarChart3 className="w-10 h-10 text-green-500" />,
+    title: "Análisis de rivales",
+    description: "Crea perfiles de equipos oponentes, analiza sus fortalezas y debilidades, y desarrolla estrategias específicas.",
+    checkItems: [
+      "Scouting completo",
+      "Estadísticas de jugadores clave",
+      "Patrones de juego y tácticas"
+    ]
+  },
+  {
+    icon: <Calendar className="w-10 h-10 text-red-500" />,
+    title: "Planificación de temporada",
+    description: "Define objetivos a corto y largo plazo, crea calendarios de entrenamiento y realiza seguimiento de la evolución.",
+    checkItems: [
+      "Periodización completa",
+      "Gestión de cargas de trabajo",
+      "Evaluación de progresos"
+    ]
+  }
+];
+
+export const Stats = () => {
+  return (
+    <section className="py-16 bg-gray-50">
+      <div className="container px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {additionalFeatures.map((feature, index) => (
+            <Card key={index} className="p-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-secondary mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </motion.div>)}
-          </div>
+                <h3 className="text-xl font-semibold mb-2 text-secondary">{feature.title}</h3>
+                <p className="text-gray-600 mb-4">{feature.description}</p>
+                
+                <ul className="space-y-2">
+                  {feature.checkItems.map((item, itemIndex) => (
+                    <li key={itemIndex} className="flex items-center">
+                      <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mr-2">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </div>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </Card>
+          ))}
         </div>
-      </section>
-    </>;
+      </div>
+    </section>
+  );
 };

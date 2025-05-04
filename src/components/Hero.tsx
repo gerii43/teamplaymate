@@ -1,54 +1,53 @@
+
 import { motion } from "framer-motion";
+import { DashboardPreview } from "./DashboardPreview";
+import { Button } from "@/components/ui/button";
+
 export const Hero = () => {
-  return <section className="min-h-screen relative overflow-hidden pb-24 bg-[#f0f4fa] bg-[radial-gradient(#ddd_1px,transparent_1px)] [background-size:32px_32px]">
-      <nav className="absolute top-0 left-0 right-0 p-6">
+  return (
+    <section className="relative overflow-hidden pb-24 pt-10 bg-white">
+      <nav className="p-6 border-b border-gray-100">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-secondary">TraiHero</div>
-          <div className="flex gap-8">
-            <a href="/" className="hover:text-primary transition-colors text-secondary">Home</a>
-            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Pricing</a>
-            <a href="/faq" className="hover:text-primary transition-colors text-secondary">FAQ</a>
+          <div className="text-2xl font-bold text-secondary">Statsor</div>
+          <div className="hidden md:flex gap-8">
+            <a href="/" className="hover:text-primary transition-colors text-secondary">Inicio</a>
+            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Precios</a>
+            <a href="/demo" className="hover:text-primary transition-colors text-secondary">Demo</a>
+            <a href="/contacto" className="hover:text-primary transition-colors text-secondary">Contacto</a>
           </div>
         </div>
       </nav>
       
-      <div className="max-w-7xl mx-auto px-6 pt-32">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.8
-      }} className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 max-w-2xl mx-auto text-secondary">
-            Optimize Your Team's Performance
+      <div className="max-w-7xl mx-auto px-6 pt-16 md:pt-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">
+            Optimiza el rendimiento de tu equipo
           </h1>
-          <p className="text-lg md:text-xl mb-12 text-gray-600 max-w-3xl mx-auto">
-            Advanced analytics and management tools for modern football coaches
+          <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
+            Software integral para entrenadores de fútbol que revoluciona la gestión de equipos, estadísticas y entrenamientos
           </p>
-          <motion.button whileHover={{
-          scale: 1.05
-        }} whileTap={{
-          scale: 0.95
-        }} className="bg-primary text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:bg-primary/90 transition-colors mb-12">
-            Get Started
-          </motion.button>
           
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.8,
-          delay: 0.2
-        }} className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl mb-24">
-            <img alt="Coach Dashboard Interface" className="w-full h-auto" src="/lovable-uploads/c998942f-3b15-4ea0-84d7-6c81ecf56aaa.jpg" />
+          <Button 
+            className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors mb-12"
+          >
+            Solicitar Demo
+          </Button>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl mt-8"
+          >
+            <DashboardPreview />
           </motion.div>
         </motion.div>
       </div>
-    </section>;
+    </section>
+  );
 };

@@ -1,26 +1,27 @@
+
 import { motion } from "framer-motion";
-import { Activity, Users, Calendar, TrendingUp } from "lucide-react";
+import { ClipboardList, Users2, BarChart2, FileText } from "lucide-react";
 
 const features = [
   {
-    icon: Activity,
-    title: "Data-Driven Success",
-    description: "Transform your coaching decisions with real-time analytics and performance insights that give you the competitive edge.",
+    icon: <ClipboardList className="w-10 h-10 text-blue-100 p-2 bg-blue-500 rounded-lg" />,
+    title: "Carga de entrenamientos",
+    description: "Planifica y programa tus sesiones con plantillas personalizables. Organiza ejercicios y gestiona cargas de trabajo."
   },
   {
-    icon: Users,
-    title: "Streamlined Management",
-    description: "Save hours of administrative work with our intuitive team management tools, focusing more time on what matters - coaching.",
+    icon: <Users2 className="w-10 h-10 text-green-100 p-2 bg-green-500 rounded-lg" />,
+    title: "Control de asistencia",
+    description: "Seguimiento automático de la participación de jugadores. Identifica patrones y mantén récords de presencia en entrenamientos."
   },
   {
-    icon: Calendar,
-    title: "Strategic Excellence",
-    description: "Elevate your game preparation with advanced tactical planning tools and detailed match analysis capabilities.",
+    icon: <BarChart2 className="w-10 h-10 text-yellow-100 p-2 bg-yellow-500 rounded-lg" />,
+    title: "Estadísticas por jugador",
+    description: "Análisis detallado del rendimiento individual. Métricas específicas para cada posición y evolución a lo largo del tiempo."
   },
   {
-    icon: TrendingUp,
-    title: "Proven Results",
-    description: "Join hundreds of successful teams who have improved their win rate by 40% using our comprehensive tracking system.",
+    icon: <FileText className="w-10 h-10 text-red-100 p-2 bg-red-500 rounded-lg" />,
+    title: "Informes automáticos",
+    description: "Genera reportes completos sobre el equipo y jugadores. Comparte documentos profesionales con directivos o padres."
   },
 ];
 
@@ -29,10 +30,9 @@ export const Features = () => {
     <section className="py-24 bg-white">
       <div className="container px-4">
         <div className="text-center mb-16">
-          <span className="text-primary font-medium">Why Choose Us</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2">Transform Your Team's Performance</h2>
+          <h2 className="text-4xl font-bold mt-2">Funciones</h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Experience the power of professional-grade analytics and management tools, designed to elevate your team's success at any level.
+            Herramientas diseñadas específicamente para entrenadores que buscan mejorar el rendimiento de sus equipos
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -43,9 +43,9 @@ export const Features = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="p-8 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+              className="p-6 rounded-xl bg-white border border-gray-200 hover:shadow-md transition-all"
             >
-              <feature.icon className="w-12 h-12 text-primary mb-6" />
+              <div className="mb-4">{feature.icon}</div>
               <h3 className="text-xl font-semibold mb-3 text-secondary">{feature.title}</h3>
               <p className="text-gray-600 leading-relaxed">{feature.description}</p>
             </motion.div>
