@@ -14,101 +14,135 @@ export const MoreFeatures = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold mb-4">Comparativa</h2>
+          <h2 className="text-4xl font-bold mb-4">Plan de precios</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Encuentra el plan perfecto para tu equipo, independientemente del formato de juego
+            Descubre cómo Statsor se adapta perfectamente a tus necesidades, ya sea en fútbol 11 o futsal
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <motion.div 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="bg-blue-600 text-white p-8 rounded-xl shadow-lg border-2 border-blue-400"
+            className="bg-blue-600 text-white p-6 rounded-xl shadow-lg border-4 border-blue-400"
           >
-            <div className="flex items-center justify-center h-16 w-16 bg-blue-500 rounded-full mb-4 mx-auto border-2 border-blue-300">
-              <span className="text-2xl font-bold">1</span>
-            </div>
-            <h3 className="text-2xl font-bold mb-2 text-center">Fútbol 11</h3>
-            <p className="text-center mb-2">Perfecta para equipos competitivos</p>
-            <div className="text-center mb-6">
-              <span className="text-3xl font-bold">€25</span>
-              <span className="text-lg">/mes</span>
-            </div>
+            <h3 className="text-2xl font-bold mb-4 text-center">Fútbol 11</h3>
+            <p className="text-center mb-6">Perfecta para equipos competitivos</p>
             
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-4">
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis táctico avanzado con patrones de juego</span>
+                <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Análisis táctico avanzado con patrones de juego y transiciones</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Seguimiento de distancias y zonas de acción</span>
+                <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Seguimiento de distancias y zonas de acción por posición</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
+                <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
                 <span>Gestión completa de plantillas y rotaciones</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis de formaciones personalizadas</span>
+                <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Análisis de formaciones y estrategias personalizadas</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Estadísticas específicas para porteros</span>
+                <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Estadísticas específicas para porteros y defensas</span>
               </li>
             </ul>
-            
-            <Button className="w-full bg-white text-blue-600 hover:bg-blue-100 font-semibold">
-              Empezar ahora
-            </Button>
+
+            <div className="text-center mt-6">
+              <Button className="w-full bg-white text-blue-600 hover:bg-blue-100 font-semibold">
+                Empezar ahora
+              </Button>
+            </div>
           </motion.div>
           
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="bg-green-600 text-white p-8 rounded-xl shadow-lg border-2 border-green-400"
+            className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border-4 border-gray-700 transform scale-105"
           >
-            <div className="flex items-center justify-center h-16 w-16 bg-green-500 rounded-full mb-4 mx-auto border-2 border-green-300">
-              <span className="text-2xl font-bold">2</span>
-            </div>
-            <h3 className="text-2xl font-bold mb-2 text-center">Futsal</h3>
-            <p className="text-center mb-2">Optimizado para acción rápida</p>
-            <div className="text-center mb-6">
-              <span className="text-3xl font-bold">€20</span>
+            <h3 className="text-2xl font-bold mb-4 text-center">Plan Premium</h3>
+            <p className="text-center mb-6 text-gray-300">Todas las características</p>
+            <div className="text-center mb-4">
+              <span className="text-3xl font-bold">€35</span>
               <span className="text-lg">/mes</span>
             </div>
             
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-4">
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Seguimiento de sistemas 4-0, 3-1 y rotaciones</span>
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Planificación de entrenamientos con ejercicios</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Control de tiempos de juego y descanso</span>
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Control de asistencia y compromiso del equipo</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis de jugadas a balón parado</span>
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Estadísticas individuales y evolutivas por jugador</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Métricas de intensidad y rendimiento</span>
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Generación de informes y reportes automáticos</span>
               </li>
               <li className="flex items-start">
-                <Check className="w-5 h-5 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Estadísticas de portero-jugador y superioridad</span>
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Calendario de partidos y entrenamientos</span>
               </li>
             </ul>
             
-            <Button className="w-full bg-white text-green-600 hover:bg-green-100 font-semibold">
-              Empezar ahora
-            </Button>
+            <div className="text-center mt-6">
+              <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold">
+                Comprar ahora
+              </Button>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="bg-green-600 text-white p-6 rounded-xl shadow-lg border-4 border-green-400"
+          >
+            <h3 className="text-2xl font-bold mb-4 text-center">Futsal</h3>
+            <p className="text-center mb-6">Optimizado para acción rápida</p>
+            
+            <ul className="space-y-4">
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Seguimiento de sistemas 4-0, 3-1 y rotaciones dinámicas</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Control de tiempos de juego y descanso por jugador</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Análisis específico de jugadas a balón parado</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Métricas de intensidad y rendimiento en pista</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Estadísticas de portero-jugador y superioridad</span>
+              </li>
+            </ul>
+
+            <div className="text-center mt-6">
+              <Button className="w-full bg-white text-green-600 hover:bg-green-100 font-semibold">
+                Empezar ahora
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
