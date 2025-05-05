@@ -13,7 +13,7 @@ export const MoreFeatures = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold mb-4">Comparativa</h2>
+          <h2 className="text-4xl font-bold mb-4">Plan de precios</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Descubre cómo Statsor se adapta perfectamente a tus necesidades, ya sea en fútbol 11 o futsal
           </p>
