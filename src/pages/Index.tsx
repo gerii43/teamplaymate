@@ -15,8 +15,8 @@ const Index = () => {
     <main className="min-h-screen bg-white">
       <Hero />
       <KeyBenefits />
-      <Features />
       <FormatTypes />
+      <Features />
       <Stats />
       <CTASection />
       <MoreFeatures />

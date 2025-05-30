@@ -49,7 +49,7 @@ export const FormatTypes = () => {
 
             <div className="border-l-4 border-green-600 pl-6">
               <blockquote className="text-lg text-gray-800 mb-2">
-                "Cuanto más ricos sean los datos, mejores serán los análisis. La información algorítmica en la industria del fútbol es abundante."
+                "Cuanto más ricos sean los datos, mejores serán los análisis."
               </blockquote>
               <cite className="text-gray-600 font-semibold">— Eric Bradlow (Wharton)</cite>
             </div>
@@ -64,7 +64,7 @@ export const FormatTypes = () => {
           >
             <div className="relative">
               <img
-                src="/lovable-uploads/c998942f-3b15-4ea0-84d7-6c81ecf56aaa.jpg"
+                src="/lovable-uploads/6a672ddb-8141-4463-9adb-bf28c37c7c39.png"
                 alt="Entrenador analizando datos en tablet"
                 className="rounded-xl shadow-lg w-full max-w-md h-auto object-cover"
               />
