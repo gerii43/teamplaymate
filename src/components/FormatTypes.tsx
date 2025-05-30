@@ -39,7 +39,7 @@ export const FormatTypes = () => {
             
 
             <div className="border-l-4 border-green-600 pl-6">
-              <blockquote className="text-lg text-gray-800 mb-2">
+              <blockquote className="text-lg text-gray-900 mb-2 rounded-none">
                 "Vivimos en un mundo donde los datos son muy importantes, y el siguiente paso será usar la inteligencia artificial para anticipar la toma de decisiones y el potencial de los jugadores. Los datos nos permiten analizar cada aspecto del juego y mejorar el rendimiento en todos los niveles."
               </blockquote>
               <cite className="text-gray-600 font-semibold">— Arsène Wenger</cite>
