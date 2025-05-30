@@ -59,7 +59,7 @@ export const FormatTypes = () => {
           once: true
         }} className="flex justify-center">
             <div className="relative">
-              <img src="/lovable-uploads/6883dc87-5955-4605-90a9-9c0b57c30709.png" alt="Estadio y análisis de fútbol con inteligencia artificial" className="rounded-xl shadow-lg w-full max-w-md h-auto object-cover" />
+              <img src="/lovable-uploads/6883dc87-5955-4605-90a9-9c0b57c30709.png" alt="Estadio y análisis de fútbol con inteligencia artificial" className="-lg w-full max-w-md h-auto object-cover" />
               
             </div>
           </motion.div>
