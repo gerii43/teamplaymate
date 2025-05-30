@@ -13,10 +13,8 @@ export const FormatTypes = () => {
       }} viewport={{
         once: true
       }} className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">El futuro del fútbol es ahora</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Descubre cómo la tecnología y los datos están transformando el deporte rey
-          </p>
+          <h2 className="text-4xl font-bold mb-4 text-center">El futuro del fútbol es AHORA</h2>
+          
         </motion.div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
