@@ -18,7 +18,7 @@ const features = [{
   description: "Genera reportes completos sobre el equipo y jugadores. Comparte documentos profesionales con directivos o padres."
 }];
 export const Features = () => {
-  return <section className="py-24 bg-white">
+  return <section className="py-24 bg-gray-50">
       <div className="container px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mt-2">Funciones</h2>
