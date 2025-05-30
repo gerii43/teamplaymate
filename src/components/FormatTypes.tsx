@@ -64,8 +64,8 @@ export const FormatTypes = () => {
           >
             <div className="relative">
               <img
-                src="/lovable-uploads/6a672ddb-8141-4463-9adb-bf28c37c7c39.png"
-                alt="Entrenador analizando datos en tablet"
+                src="/lovable-uploads/fa8f63d7-8020-4ac1-bd1c-b812666f392b.png"
+                alt="Campo de fútbol con estadísticas y análisis de datos"
                 className="rounded-xl shadow-lg w-full max-w-md h-auto object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
