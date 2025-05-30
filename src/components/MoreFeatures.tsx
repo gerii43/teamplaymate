@@ -28,35 +28,35 @@ export const MoreFeatures = () => {
             viewport={{ once: true }}
             className="bg-blue-600 text-white p-6 rounded-xl shadow-lg border-4 border-blue-400"
           >
-            <h3 className="text-2xl font-bold mb-4 text-center">Fútbol 11</h3>
-            <p className="text-center mb-6">Perfecta para equipos competitivos</p>
+            <h3 className="text-2xl font-bold mb-4 text-center">Statsor Starter</h3>
+            <p className="text-center mb-6">Prueba gratuita de 7 días</p>
             
             <ul className="space-y-4">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis táctico avanzado con patrones de juego y transiciones</span>
+                <span>Registro táctico de partidos (acciones + jugadores)</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Seguimiento de distancias y zonas de acción por posición</span>
+                <span>Edición y corrección de jugadas en tiempo real</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Gestión completa de plantillas y rotaciones</span>
+                <span>Visualización básica de estadísticas por partido</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis de formaciones y estrategias personalizadas</span>
+                <span>Hasta 1 equipo / 2 partidos activos</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Estadísticas específicas para porteros y defensas</span>
+                <span>Exportación PDF limitada</span>
               </li>
             </ul>
 
             <div className="text-center mt-6">
               <Button className="w-full bg-white text-blue-600 hover:bg-blue-100 font-semibold">
-                Empezar ahora
+                Empieza gratis
               </Button>
             </div>
           </motion.div>
@@ -68,39 +68,47 @@ export const MoreFeatures = () => {
             viewport={{ once: true }}
             className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border-4 border-gray-700 transform scale-105"
           >
-            <h3 className="text-2xl font-bold mb-4 text-center">Plan Premium</h3>
-            <p className="text-center mb-6 text-gray-300">Todas las características</p>
-            <div className="text-center mb-4">
-              <span className="text-3xl font-bold">€35</span>
-              <span className="text-lg">/mes</span>
-            </div>
+            <h3 className="text-2xl font-bold mb-4 text-center">Statsor Pro</h3>
+            <p className="text-center mb-6 text-gray-300">€29,99/mes</p>
             
             <ul className="space-y-4">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Planificación de entrenamientos con ejercicios</span>
+                <span>Todo lo del plan Starter</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Control de asistencia y compromiso del equipo</span>
+                <span>Estadísticas individuales y evolución por jugador</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Estadísticas individuales y evolutivas por jugador</span>
-              </li>
-              <li className="flex items-start">
-                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Generación de informes y reportes automáticos</span>
+                <span>Informes automáticos por partido / temporada</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
                 <span>Calendario de partidos y entrenamientos</span>
               </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Control de asistencia y minutos jugados</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Sin límite de equipos ni partidos</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Modo offline completo y sincronización</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Acceso desde web y tablet</span>
+              </li>
             </ul>
             
             <div className="text-center mt-6">
               <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold">
-                Comprar ahora
+                Suscríbete ahora
               </Button>
             </div>
           </motion.div>
@@ -112,35 +120,47 @@ export const MoreFeatures = () => {
             viewport={{ once: true }}
             className="bg-green-600 text-white p-6 rounded-xl shadow-lg border-4 border-green-400"
           >
-            <h3 className="text-2xl font-bold mb-4 text-center">Futsal</h3>
-            <p className="text-center mb-6">Optimizado para acción rápida</p>
+            <h3 className="text-2xl font-bold mb-4 text-center">Statsor Club</h3>
+            <p className="text-center mb-6">Precio a medida</p>
             
             <ul className="space-y-4">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Seguimiento de sistemas 4-0, 3-1 y rotaciones dinámicas</span>
+                <span>Todo lo del plan Pro</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Control de tiempos de juego y descanso por jugador</span>
+                <span>Multiusuario y roles (entrenador, analista, coordinador)</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Análisis específico de jugadas a balón parado</span>
+                <span>Soporte prioritario y asistencia técnica personalizada</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Métricas de intensidad y rendimiento en pista</span>
+                <span>Formación inicial al staff (remoto o presencial)</span>
               </li>
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
-                <span>Estadísticas de portero-jugador y superioridad</span>
+                <span>Informes agregados por categoría o club</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Integración con otras plataformas (vídeo, GPS...)</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Posibilidad de incluir tablet preconfigurada</span>
+              </li>
+              <li className="flex items-start">
+                <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
+                <span>Facturación adaptada a clubes o escuelas</span>
               </li>
             </ul>
 
             <div className="text-center mt-6">
               <Button className="w-full bg-white text-green-600 hover:bg-green-100 font-semibold">
-                Empezar ahora
+                Solicita propuesta
               </Button>
             </div>
           </motion.div>
