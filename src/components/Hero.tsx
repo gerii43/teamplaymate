@@ -26,17 +26,14 @@ export const Hero = () => {
         duration: 0.8
       }} className="text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">Digitaliza y analiza el rendimiento de tu equipo de futbol en tiempo real</h1>
-          <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
-            Desde tu tablet, sin necesidad de Wi-Fi. Statsor revoluciona la gestión táctica y estadística para entrenadores que buscan optimizar cada jugada y entrenamientos de sus equipos.
-          </p>
+          <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">Sin necesidad de Wi-Fi. Statsor revoluciona la gestión táctica y el análisis estadístico, dando a los entrenadores el control total para optimizar cada jugada y entrenamiento.
+        </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors">
               Solicita tu demo
             </Button>
-            <Button variant="outline" className="px-8 py-6 rounded-lg font-medium text-lg border-2 hover:bg-gray-50 transition-colors">
-              Ver en acción
-            </Button>
+            
           </div>
           
           <motion.div initial={{
