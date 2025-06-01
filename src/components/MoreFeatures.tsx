@@ -20,18 +20,18 @@ export const MoreFeatures = () => {
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="bg-blue-600 text-white p-6 rounded-xl shadow-lg border-4 border-blue-400"
+            className="bg-blue-600 text-white p-6 rounded-xl shadow-lg border-4 border-blue-400 flex flex-col h-full"
           >
             <h3 className="text-2xl font-bold mb-4 text-center">Statsor Starter</h3>
             <p className="text-center mb-6">Prueba gratuita de 7 días</p>
             
-            <ul className="space-y-4">
+            <ul className="space-y-4 flex-grow">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-blue-300 mt-0.5 mr-2 flex-shrink-0" />
                 <span>Registro táctico de partidos (acciones + jugadores)</span>
@@ -66,12 +66,12 @@ export const MoreFeatures = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border-4 border-gray-700 transform scale-105"
+            className="bg-gray-900 text-white p-6 rounded-xl shadow-lg border-4 border-gray-700 transform scale-105 flex flex-col h-full"
           >
             <h3 className="text-2xl font-bold mb-4 text-center">Statsor Pro</h3>
             <p className="text-center mb-6 text-gray-300">€29,99/mes</p>
             
-            <ul className="space-y-4">
+            <ul className="space-y-4 flex-grow">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
                 <span>Todo lo del plan Starter</span>
@@ -118,12 +118,12 @@ export const MoreFeatures = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
-            className="bg-green-600 text-white p-6 rounded-xl shadow-lg border-4 border-green-400"
+            className="bg-green-600 text-white p-6 rounded-xl shadow-lg border-4 border-green-400 flex flex-col h-full"
           >
             <h3 className="text-2xl font-bold mb-4 text-center">Statsor Club</h3>
             <p className="text-center mb-6">Precio a medida</p>
             
-            <ul className="space-y-4">
+            <ul className="space-y-4 flex-grow">
               <li className="flex items-start">
                 <Check className="w-5 h-5 text-green-300 mt-0.5 mr-2 flex-shrink-0" />
                 <span>Todo lo del plan Pro</span>
