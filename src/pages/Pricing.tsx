@@ -8,104 +8,143 @@ const Pricing = () => {
     <div className="min-h-screen bg-[#f0f4fa]">
       <div className="container mx-auto px-4 py-24">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-secondary mb-4">Simple, transparent pricing</h1>
+          <h1 className="text-4xl font-bold text-secondary mb-4">Plan de precios</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect plan for your team's needs. All plans include core features to help you manage and improve your team's performance.
+            Descubre cómo Statsor se adapta perfectamente a tus necesidades, ya sea en fútbol 11 o futsal
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Starter Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300 flex flex-col">
+          {/* Statsor Starter */}
+          <div className="bg-blue-600 text-white p-8 rounded-lg shadow-lg border-4 border-blue-400 hover:border-primary transition-all duration-300 flex flex-col">
             <div className="flex-grow">
-              <h3 className="text-xl font-semibold text-secondary mb-2">Starter</h3>
+              <h3 className="text-2xl font-semibold text-white mb-2">Statsor Starter</h3>
               <div className="mb-6">
-                <span className="text-3xl font-bold">€9.99</span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-center">Prueba gratuita de 7 días</span>
               </div>
               <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Basic team management</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-blue-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Registro táctico de partidos (acciones + jugadores)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Simple performance tracking</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-blue-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Edición y corrección de jugadas en tiempo real</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Up to 15 players</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-blue-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Visualización básica de estadísticas por partido</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-blue-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Hasta 1 equipo / 2 partidos activos</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-blue-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Exportación PDF limitada</span>
                 </li>
               </ul>
             </div>
-            <Button className="w-full mt-auto">Get Started</Button>
+            <Button className="w-full mt-auto bg-white text-blue-600 hover:bg-blue-100 font-semibold">
+              Empieza gratis
+            </Button>
           </div>
 
-          {/* Semi-Pro Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-primary relative transform hover:scale-105 transition-all duration-300 flex flex-col">
+          {/* Statsor Pro */}
+          <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg border-4 border-gray-700 relative transform hover:scale-105 transition-all duration-300 flex flex-col">
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
               <span className="bg-primary text-white px-4 py-1 rounded-full text-sm">Popular</span>
             </div>
             <div className="flex-grow">
-              <h3 className="text-xl font-semibold text-secondary mb-2">Semi-Pro</h3>
+              <h3 className="text-2xl font-semibold text-white mb-2">Statsor Pro</h3>
               <div className="mb-6">
-                <span className="text-3xl font-bold">€25.99</span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-gray-300">€29,99/mes</span>
               </div>
               <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Advanced team management</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Todo lo del plan Starter</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Detailed analytics</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Estadísticas individuales y evolución por jugador</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Up to 30 players</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Informes automáticos por partido / temporada</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Training schedules</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Calendario de partidos y entrenamientos</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Control de asistencia y minutos jugados</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Sin límite de equipos ni partidos</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Modo offline completo y sincronización</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-500 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Acceso desde web y tablet</span>
                 </li>
               </ul>
             </div>
-            <Button className="w-full mt-auto">Get Started</Button>
+            <Button className="w-full mt-auto bg-green-500 hover:bg-green-600 text-white font-semibold">
+              Suscríbete ahora
+            </Button>
           </div>
 
-          {/* Pro Plan */}
-          <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 hover:border-primary transition-all duration-300 flex flex-col">
+          {/* Statsor Club */}
+          <div className="bg-green-600 text-white p-8 rounded-lg shadow-lg border-4 border-green-400 hover:border-primary transition-all duration-300 flex flex-col">
             <div className="flex-grow">
-              <h3 className="text-xl font-semibold text-secondary mb-2">Pro</h3>
+              <h3 className="text-2xl font-semibold text-white mb-2">Statsor Club</h3>
               <div className="mb-6">
-                <span className="text-3xl font-bold">€50.00</span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-white">Precio a medida</span>
               </div>
               <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Complete team management</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Todo lo del plan Pro</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Advanced analytics & reporting</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Multiusuario y roles (entrenador, analista, coordinador)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Unlimited players</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Soporte prioritario y asistencia técnica personalizada</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Priority support</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Formación inicial al staff (remoto o presencial)</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-primary" size={20} />
-                  <span className="text-gray-600">Custom features</span>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Informes agregados por categoría o club</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Integración con otras plataformas (vídeo, GPS...)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Posibilidad de incluir tablet preconfigurada</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="text-green-300 mt-0.5 flex-shrink-0" size={20} />
+                  <span className="text-white">Facturación adaptada a clubes o escuelas</span>
                 </li>
               </ul>
             </div>
-            <Button className="w-full mt-auto">Get Started</Button>
+            <Button className="w-full mt-auto bg-white text-green-600 hover:bg-green-100 font-semibold">
+              Solicita propuesta
+            </Button>
           </div>
         </div>
 
@@ -113,9 +152,9 @@ const Pricing = () => {
         <div className="max-w-5xl mx-auto mt-24 space-y-8">
           <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn flex justify-between items-start">
             <div>
-              <h3 className="text-xl font-semibold text-secondary mb-4">Perfect for Small Teams</h3>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Perfecto para equipos pequeños</h3>
               <p className="text-gray-600 max-w-2xl text-justify">
-                The Starter plan is ideal for small teams or clubs just beginning their journey with professional management tools. Get access to essential features that help organize your team and track basic performance metrics. Perfect for youth teams or amateur clubs looking to step up their game.
+                El plan Starter es ideal para equipos pequeños o clubes que comienzan su camino con herramientas de gestión profesional. Accede a funciones esenciales que ayudan a organizar tu equipo y realizar un seguimiento básico del rendimiento.
               </p>
             </div>
             <Award className="text-primary flex-shrink-0 ml-6" size={48} />
@@ -123,9 +162,9 @@ const Pricing = () => {
           
           <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:200ms] flex justify-between items-start">
             <div>
-              <h3 className="text-xl font-semibold text-secondary mb-4">Growing Teams & Clubs</h3>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Equipos y clubes en crecimiento</h3>
               <p className="text-gray-600 max-w-2xl text-justify">
-                Semi-Pro offers the perfect balance of features and value. Access advanced analytics, detailed performance tracking, and comprehensive training tools. Ideal for established teams looking to enhance their performance and management capabilities with professional-grade tools.
+                Statsor Pro ofrece el equilibrio perfecto entre funciones y valor. Accede a análisis avanzados, seguimiento detallado del rendimiento y herramientas de entrenamiento completas. Ideal para equipos establecidos que buscan mejorar su rendimiento.
               </p>
             </div>
             <Star className="text-primary flex-shrink-0 ml-6" size={48} />
@@ -133,9 +172,9 @@ const Pricing = () => {
           
           <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 animate-fadeIn [animation-delay:400ms] flex justify-between items-start">
             <div>
-              <h3 className="text-xl font-semibold text-secondary mb-4">Professional Organizations</h3>
+              <h3 className="text-xl font-semibold text-secondary mb-4">Organizaciones profesionales</h3>
               <p className="text-gray-600 max-w-2xl text-justify">
-                The Pro plan delivers everything a professional organization needs. Unlimited player capacity, custom feature development, and priority support ensure you have all the tools necessary to manage multiple teams or professional clubs. Perfect for organizations serious about maximizing performance.
+                El plan Club ofrece todo lo que una organización profesional necesita. Capacidad ilimitada de jugadores, desarrollo de funciones personalizadas y soporte prioritario aseguran que tengas todas las herramientas necesarias para gestionar múltiples equipos o clubes profesionales.
               </p>
             </div>
             <Crown className="text-primary flex-shrink-0 ml-6" size={48} />
