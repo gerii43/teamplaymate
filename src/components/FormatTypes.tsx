@@ -39,11 +39,73 @@ export const FormatTypes = () => {
             className="flex justify-center"
           >
             <div className="relative">
-              <img
-                alt="Ilustración 3D isométrica de campo de fútbol con estadísticas"
-                className="rounded-lg w-full max-w-lg h-auto object-cover"
-                src="/lovable-uploads/968eec7a-234f-44bd-9929-65cd28784d0b.png"
-              />
+              <svg
+                width="400"
+                height="400"
+                viewBox="0 0 400 400"
+                className="w-full max-w-lg h-auto"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Campo de fútbol base */}
+                <rect x="50" y="150" width="300" height="200" fill="#22c55e" stroke="#16a34a" strokeWidth="3" rx="15"/>
+                
+                {/* Líneas del campo */}
+                <line x1="200" y1="150" x2="200" y2="350" stroke="#ffffff" strokeWidth="2"/>
+                <circle cx="200" cy="250" r="30" fill="none" stroke="#ffffff" strokeWidth="2"/>
+                <rect x="50" y="200" width="40" height="100" fill="none" stroke="#ffffff" strokeWidth="2"/>
+                <rect x="310" y="200" width="40" height="100" fill="none" stroke="#ffffff" strokeWidth="2"/>
+                
+                {/* Datos estadísticos flotantes en 3D */}
+                <g transform="translate(100,100) scale(0.8)">
+                  <rect x="0" y="0" width="80" height="50" fill="#3b82f6" rx="8" opacity="0.9" transform="skew(-5,0)"/>
+                  <text x="40" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">95%</text>
+                  <text x="40" y="35" textAnchor="middle" fill="white" fontSize="10">Precisión</text>
+                </g>
+                
+                <g transform="translate(280,80) scale(0.8)">
+                  <rect x="0" y="0" width="80" height="50" fill="#f59e0b" rx="8" opacity="0.9" transform="skew(5,0)"/>
+                  <text x="40" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">45</text>
+                  <text x="40" y="35" textAnchor="middle" fill="white" fontSize="10">Pases/min</text>
+                </g>
+                
+                <g transform="translate(120,350) scale(0.8)">
+                  <rect x="0" y="0" width="80" height="50" fill="#ef4444" rx="8" opacity="0.9" transform="skew(-3,0)"/>
+                  <text x="40" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">12</text>
+                  <text x="40" y="35" textAnchor="middle" fill="white" fontSize="10">Disparos</text>
+                </g>
+                
+                <g transform="translate(250,370) scale(0.8)">
+                  <rect x="0" y="0" width="80" height="50" fill="#8b5cf6" rx="8" opacity="0.9" transform="skew(3,0)"/>
+                  <text x="40" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">78%</text>
+                  <text x="40" y="35" textAnchor="middle" fill="white" fontSize="10">Posesión</text>
+                </g>
+                
+                {/* Gráfico de barras 3D */}
+                <g transform="translate(30,30)">
+                  <rect x="0" y="20" width="15" height="40" fill="#10b981" transform="skew(-10,0)"/>
+                  <rect x="20" y="10" width="15" height="50" fill="#06d6a0" transform="skew(-10,0)"/>
+                  <rect x="40" y="25" width="15" height="35" fill="#059669" transform="skew(-10,0)"/>
+                  <rect x="60" y="5" width="15" height="55" fill="#34d399" transform="skew(-10,0)"/>
+                </g>
+                
+                {/* Pelota de fútbol */}
+                <circle cx="200" cy="250" r="8" fill="#ffffff" stroke="#000000" strokeWidth="1"/>
+                <path d="M 195 245 L 200 240 L 205 245 L 203 252 L 197 252 Z" fill="#000000"/>
+                
+                {/* Líneas de conexión de datos */}
+                <line x1="140" y1="125" x2="180" y2="180" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5,5" opacity="0.7"/>
+                <line x1="320" y1="105" x2="280" y2="160" stroke="#f59e0b" strokeWidth="2" strokeDasharray="5,5" opacity="0.7"/>
+                <line x1="160" y1="375" x2="200" y2="320" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" opacity="0.7"/>
+                <line x1="290" y1="395" x2="250" y2="340" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="5,5" opacity="0.7"/>
+                
+                {/* Efectos de profundidad */}
+                <defs>
+                  <linearGradient id="fieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#22c55e"/>
+                    <stop offset="100%" stopColor="#16a34a"/>
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
           </motion.div>
         </div>
