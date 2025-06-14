@@ -62,10 +62,10 @@ export const TestimonialsCarousel = () => {
     api.scrollNext();
   }, [api]);
 
-  const handleUserInteraction = useCallback(() => {
+  const handleCardClick = useCallback(() => {
     setIsAutoPlaying(false);
-    // Resume autoplay after 10 seconds of no interaction
-    setTimeout(() => setIsAutoPlaying(true), 10000);
+    // Resume autoplay after 3 seconds of no interaction
+    setTimeout(() => setIsAutoPlaying(true), 3000);
   }, []);
 
   // Auto-scroll functionality
@@ -74,7 +74,7 @@ export const TestimonialsCarousel = () => {
 
     const interval = setInterval(() => {
       scrollNext();
-    }, 2000); // 2 seconds
+    }, 3500); // 3.5 seconds
 
     return () => clearInterval(interval);
   }, [api, isAutoPlaying, scrollNext]);
@@ -103,8 +103,6 @@ export const TestimonialsCarousel = () => {
               loop: true,
             }}
             className="w-full"
-            onMouseEnter={handleUserInteraction}
-            onTouchStart={handleUserInteraction}
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {testimonials.map((testimonial, index) => (
@@ -114,7 +112,8 @@ export const TestimonialsCarousel = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow h-full"
+                    className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow h-full cursor-pointer"
+                    onClick={handleCardClick}
                   >
                     <div className="flex items-center mb-4">
                       <div className={`w-14 h-14 rounded-full ${testimonial.color} flex items-center justify-center text-white text-xl font-bold`}>
@@ -144,8 +143,8 @@ export const TestimonialsCarousel = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious onClick={handleUserInteraction} />
-            <CarouselNext onClick={handleUserInteraction} />
+            <CarouselPrevious />
+            <CarouselNext />
           </Carousel>
         </div>
       </div>
