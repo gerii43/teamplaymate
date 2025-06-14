@@ -2,12 +2,12 @@
 import { Hero } from "@/components/Hero";
 import { KeyBenefits } from "@/components/KeyBenefits";
 import { Features } from "@/components/Features";
+import { ModalitySection } from "@/components/ModalitySection";
+import { NewPricingSection } from "@/components/NewPricingSection";
 import { Stats } from "@/components/Stats";
-import { FormatTypes } from "@/components/FormatTypes";
-import { MoreFeatures } from "@/components/MoreFeatures";
 import { CTASection } from "@/components/CTASection";
 import { Testimonials } from "@/components/Testimonials";
-import { ContactForm } from "@/components/ContactForm";
+import { PersonalizedDemoForm } from "@/components/PersonalizedDemoForm";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -15,13 +15,13 @@ const Index = () => {
     <main className="min-h-screen bg-white">
       <Hero />
       <KeyBenefits />
-      <FormatTypes />
-      <Features />
       <Stats />
+      <Features />
+      <ModalitySection />
+      <NewPricingSection />
       <CTASection />
-      <MoreFeatures />
       <Testimonials />
-      <ContactForm />
+      <PersonalizedDemoForm />
       <Footer />
     </main>
   );
