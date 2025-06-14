@@ -1,11 +1,13 @@
 
 import { motion } from "framer-motion";
+import { useEffect, useCallback, useState } from "react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselApi,
 } from "@/components/ui/carousel";
 
 const testimonials = [
@@ -52,6 +54,31 @@ const testimonials = [
 ];
 
 export const TestimonialsCarousel = () => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  const scrollNext = useCallback(() => {
+    if (!api) return;
+    api.scrollNext();
+  }, [api]);
+
+  const handleUserInteraction = useCallback(() => {
+    setIsAutoPlaying(false);
+    // Resume autoplay after 10 seconds of no interaction
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  }, []);
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!api || !isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      scrollNext();
+    }, 4500); // 4.5 seconds
+
+    return () => clearInterval(interval);
+  }, [api, isAutoPlaying, scrollNext]);
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container px-4 mx-auto">
@@ -70,11 +97,14 @@ export const TestimonialsCarousel = () => {
         
         <div className="max-w-6xl mx-auto">
           <Carousel
+            setApi={setApi}
             opts={{
               align: "start",
               loop: true,
             }}
             className="w-full"
+            onMouseEnter={handleUserInteraction}
+            onTouchStart={handleUserInteraction}
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {testimonials.map((testimonial, index) => (
@@ -114,8 +144,8 @@ export const TestimonialsCarousel = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious onClick={handleUserInteraction} />
+            <CarouselNext onClick={handleUserInteraction} />
           </Carousel>
         </div>
       </div>
