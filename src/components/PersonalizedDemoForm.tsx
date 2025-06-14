@@ -1,20 +1,21 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check } from "lucide-react";
-
 export const PersonalizedDemoForm = () => {
-  return (
-    <section className="py-16 bg-white">
+  return <section className="py-16 bg-gray-50">
       <div className="container px-4 mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} viewport={{
+        once: true
+      }} className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-gray-900">Solicita tu demo personalizada</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Descubre cómo Statsor puede transformar la gestión de tu equipo. Completa el formulario y te contactaremos para agendar una demostración.
@@ -23,55 +24,44 @@ export const PersonalizedDemoForm = () => {
         
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            x: -20
+          }} whileInView={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.1
+          }} viewport={{
+            once: true
+          }} className="space-y-6">
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
                   Nombre completo *
                 </label>
-                <Input 
-                  id="fullName" 
-                  placeholder="Tu nombre completo" 
-                  className="w-full h-12"
-                />
+                <Input id="fullName" placeholder="Tu nombre completo" className="w-full h-12" />
               </div>
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email *
                 </label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="tu@email.com" 
-                  className="w-full h-12"
-                />
+                <Input id="email" type="email" placeholder="tu@email.com" className="w-full h-12" />
               </div>
               
               <div>
                 <label htmlFor="club" className="block text-sm font-medium text-gray-700 mb-2">
                   Club o equipo *
                 </label>
-                <Input 
-                  id="club" 
-                  placeholder="Nombre de tu club o equipo" 
-                  className="w-full h-12"
-                />
+                <Input id="club" placeholder="Nombre de tu club o equipo" className="w-full h-12" />
               </div>
               
               <div>
                 <label htmlFor="modality" className="block text-sm font-medium text-gray-700 mb-2">
                   Modalidad *
                 </label>
-                <select 
-                  id="modality" 
-                  className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                >
+                <select id="modality" className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
                   <option value="" disabled selected>Selecciona la modalidad</option>
                   <option value="futbol11">Fútbol 11</option>
                   <option value="futbol7">Fútbol 7</option>
@@ -84,13 +74,18 @@ export const PersonalizedDemoForm = () => {
               </Button>
             </motion.div>
             
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            x: 20
+          }} whileInView={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.2
+          }} viewport={{
+            once: true
+          }} className="space-y-8">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Lo que incluye tu demo</h3>
                 
@@ -142,6 +137,5 @@ export const PersonalizedDemoForm = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
