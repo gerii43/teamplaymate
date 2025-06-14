@@ -74,7 +74,7 @@ export const TestimonialsCarousel = () => {
 
     const interval = setInterval(() => {
       scrollNext();
-    }, 4500); // 4.5 seconds
+    }, 2000); // 2 seconds
 
     return () => clearInterval(interval);
   }, [api, isAutoPlaying, scrollNext]);
