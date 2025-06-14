@@ -40,8 +40,8 @@ export const FormatTypes = () => {
           >
             <div className="relative">
               <img
-                src="/lovable-uploads/c68627bc-2552-4a0a-9fdd-a48e70b1f777.png"
-                alt="Representación 3D de análisis de datos y estadísticas en fútbol"
+                src="/lovable-uploads/5f530940-8a5d-44cd-ba70-69be63d1e2d4.png"
+                alt="Análisis de datos de fútbol en dispositivo móvil con estadísticas y gráficos en 3D"
                 className="w-full max-w-lg h-auto"
               />
             </div>
