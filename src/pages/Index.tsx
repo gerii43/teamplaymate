@@ -2,11 +2,11 @@
 import { Hero } from "@/components/Hero";
 import { KeyBenefits } from "@/components/KeyBenefits";
 import { Features } from "@/components/Features";
+import { FormatTypes } from "@/components/FormatTypes";
 import { ModalitySection } from "@/components/ModalitySection";
 import { NewPricingSection } from "@/components/NewPricingSection";
-import { Stats } from "@/components/Stats";
 import { CTASection } from "@/components/CTASection";
-import { Testimonials } from "@/components/Testimonials";
+import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { PersonalizedDemoForm } from "@/components/PersonalizedDemoForm";
 import { Footer } from "@/components/Footer";
 
@@ -15,12 +15,12 @@ const Index = () => {
     <main className="min-h-screen bg-white">
       <Hero />
       <KeyBenefits />
-      <Stats />
+      <FormatTypes />
       <Features />
       <ModalitySection />
       <NewPricingSection />
       <CTASection />
-      <Testimonials />
+      <TestimonialsCarousel />
       <PersonalizedDemoForm />
       <Footer />
     </main>
