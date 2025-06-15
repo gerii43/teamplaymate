@@ -56,7 +56,7 @@ export const NewPricingSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full"
+            className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out cursor-pointer"
           >
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">STARTER</h3>
@@ -84,7 +84,7 @@ export const NewPricingSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="bg-white p-8 rounded-2xl shadow-xl border-4 border-primary transform scale-105 flex flex-col h-full relative"
+            className="bg-white p-8 rounded-2xl shadow-xl border-4 border-primary transform scale-105 flex flex-col h-full relative hover:shadow-2xl hover:scale-[1.07] transition-all duration-300 ease-out cursor-pointer"
           >
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">PRO</h3>
@@ -119,7 +119,7 @@ export const NewPricingSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
-            className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full"
+            className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out cursor-pointer"
           >
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">CLUB</h3>
