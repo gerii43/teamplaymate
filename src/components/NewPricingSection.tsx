@@ -1,4 +1,5 @@
 
+
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -85,7 +86,7 @@ export const NewPricingSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="bg-white p-8 rounded-2xl shadow-xl border-4 border-primary transform scale-105 flex flex-col h-full relative hover:shadow-2xl hover:scale-[1.07] transition-all duration-300 ease-out cursor-pointer"
+            className="bg-green-50 p-8 rounded-2xl shadow-xl border-4 border-green-500 transform scale-105 flex flex-col h-full relative hover:shadow-2xl hover:scale-[1.07] transition-all duration-300 ease-out cursor-pointer"
           >
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">PRO</h3>
@@ -110,7 +111,7 @@ export const NewPricingSection = () => {
               <li className="text-gray-700">Soporte estándar</li>
             </ul>
             
-            <Button className="w-full bg-primary hover:bg-primary/90 text-white">
+            <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
               Empezar ahora
             </Button>
           </motion.div>
@@ -148,3 +149,4 @@ export const NewPricingSection = () => {
     </section>
   );
 };
+
