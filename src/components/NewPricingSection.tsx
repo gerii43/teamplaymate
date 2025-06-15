@@ -18,10 +18,9 @@ export const NewPricingSection = () => {
         once: true
       }} className="text-center mb-12">
           <div className="text-white rounded-3xl p-12 mb-12 max-w-4xl mx-auto bg-blue-500">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Choose Your Plan</h2>
-            <p className="text-xl text-white/90">
-              Unlock premium features to boost productivity and streamline your workflow. Choose the plan that suits you best!
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Escoje tu plan</h2>
+            <p className="text-xl text-center text-white">Desbloquee funciones premium para aumentar la productividad y agilizar su flujo de trabajo. Elige el plan que más te convenga.
+          </p>
           </div>
           
           <div className="flex items-center justify-center mb-8">
