@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,7 @@ export const NewPricingSection = () => {
           
           <div className="flex items-center justify-center mb-8">
             <span className={`mr-4 text-lg ${!isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-              Monthly billing
+              Mensual Billing
             </span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
@@ -41,11 +40,13 @@ export const NewPricingSection = () => {
               />
             </button>
             <span className={`ml-4 text-lg ${isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-              Annual billing
+              Anual Billing
             </span>
-            <span className="ml-2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-medium">
-              Save up to 20%!
-            </span>
+            {isAnnual && (
+              <span className="ml-2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-medium">
+                Ahorras hasta 60€!
+              </span>
+            )}
           </div>
         </motion.div>
         
@@ -67,7 +68,7 @@ export const NewPricingSection = () => {
             
             <ul className="space-y-3 flex-grow mb-8">
               <li className="text-gray-700">Prueba gratuita de 7 días</li>
-              <li className="text-gray-700">Limitado a 1 equipo</li>
+              <li className="text-gray-700">1 equipo</li>
               <li className="text-gray-700">Máx. 20 acciones por partido</li>
               <li className="text-gray-700">Sin acceso al chat IA</li>
               <li className="text-gray-700">Soporte básico por email</li>
@@ -88,18 +89,23 @@ export const NewPricingSection = () => {
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">PRO</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">
-                €29,99
+                {isAnnual ? '€299' : '€29,99'}
               </div>
-              <p className="text-gray-500">por mes</p>
+              <p className="text-gray-500">{isAnnual ? 'por año' : 'por mes'}</p>
+              {isAnnual && (
+                <p className="text-sm text-green-600 font-medium mt-1">Ahorras 60€</p>
+              )}
             </div>
             
             <ul className="space-y-3 flex-grow mb-8">
-              <li className="text-gray-700">Incluye 1 equipo</li>
-              <li className="text-gray-700">Equipos adicionales: +15€/mes</li>
+              <li className="text-gray-700">1 equipo incluido</li>
+              <li className="text-gray-700">
+                Equipos adicionales: {isAnnual ? '+150€/año' : '+15€/mes'}
+              </li>
               <li className="text-gray-700">Hasta 2 usuarios por equipo</li>
               <li className="text-gray-700">Registro sin Wi-Fi</li>
               <li className="text-gray-700">Estadísticas en tiempo real</li>
-              <li className="text-gray-700">IA asistente para análisis táctico</li>
+              <li className="text-gray-700">Acceso al asistente IA táctico</li>
               <li className="text-gray-700">Soporte estándar</li>
             </ul>
             
@@ -118,17 +124,16 @@ export const NewPricingSection = () => {
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">CLUB</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">
-                €250
+                Desde €250
               </div>
               <p className="text-gray-500">por mes</p>
+              <p className="text-xs text-gray-400 mt-1">Facturación personalizada</p>
             </div>
             
             <ul className="space-y-3 flex-grow mb-8">
               <li className="text-gray-700">A partir de 6 equipos</li>
-              <li className="text-gray-700">Precio personalizado</li>
-              <li className="text-gray-700">Multiusuario y control por roles</li>
-              <li className="text-gray-700">Panel centralizado de equipos</li>
-              <li className="text-gray-700">Informes comparativos avanzados</li>
+              <li className="text-gray-700">Multiusuario y control de roles</li>
+              <li className="text-gray-700">Informes comparativos y panel global</li>
               <li className="text-gray-700">Onboarding personalizado</li>
               <li className="text-gray-700">Soporte prioritario</li>
             </ul>
