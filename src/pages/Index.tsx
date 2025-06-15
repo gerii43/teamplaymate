@@ -2,6 +2,7 @@
 import { Hero } from "@/components/Hero";
 import { KeyBenefits } from "@/components/KeyBenefits";
 import { Features } from "@/components/Features";
+import { FunctionalitiesCarousel } from "@/components/FunctionalitiesCarousel";
 import { FormatTypes } from "@/components/FormatTypes";
 import { ModalitySection } from "@/components/ModalitySection";
 import { NewPricingSection } from "@/components/NewPricingSection";
@@ -17,6 +18,7 @@ const Index = () => {
       <KeyBenefits />
       <FormatTypes />
       <Features />
+      <FunctionalitiesCarousel />
       <ModalitySection />
       <NewPricingSection />
       <CTASection />
