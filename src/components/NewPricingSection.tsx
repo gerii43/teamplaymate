@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,7 @@ export const NewPricingSection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
             className="p-8 rounded-2xl shadow-xl border-4 transform scale-105 flex flex-col h-full relative hover:shadow-2xl hover:scale-[1.07] transition-all duration-300 ease-out cursor-pointer"
-            style={{ backgroundColor: '#EAF8F1', borderColor: '#1DB954' }}
+            style={{ backgroundColor: '#D1FAE5', borderColor: '#10B981' }}
           >
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2 text-gray-900">PRO</h3>
