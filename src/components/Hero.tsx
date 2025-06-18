@@ -1,11 +1,19 @@
+
 import { motion } from "framer-motion";
 import { DashboardPreview } from "./DashboardPreview";
 import { Button } from "@/components/ui/button";
+
 export const Hero = () => {
   return <section className="relative overflow-hidden pb-24 pt-10 bg-white">
       <nav className="p-6 border-b border-gray-100">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-secondary">Statsor</div>
+          <div className="flex items-center">
+            <img 
+              src="/lovable-uploads/01b5bf86-f2e7-42cd-9465-4d0bb347d2ea.png" 
+              alt="Statsor" 
+              className="h-8 w-auto"
+            />
+          </div>
           <div className="hidden md:flex gap-8">
             <a href="/" className="hover:text-primary transition-colors text-secondary">Inicio</a>
             <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Precios</a>
