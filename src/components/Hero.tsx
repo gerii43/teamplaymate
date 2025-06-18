@@ -11,7 +11,7 @@ export const Hero = () => {
             <img 
               src="/lovable-uploads/01b5bf86-f2e7-42cd-9465-4d0bb347d2ea.png" 
               alt="Statsor" 
-              className="h-8 w-auto"
+              className="h-12 w-auto"
             />
           </div>
           <div className="hidden md:flex gap-8">
