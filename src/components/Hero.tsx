@@ -1,5 +1,6 @@
+
 import { motion } from "framer-motion";
-import { DashboardPreview } from "./DashboardPreview";
+import { InteractiveDemo } from "./InteractiveDemo";
 import { Button } from "@/components/ui/button";
 
 export const Hero = () => {
@@ -53,7 +54,7 @@ export const Hero = () => {
           duration: 0.8,
           delay: 0.2
         }} className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl mt-8">
-            <DashboardPreview />
+            <InteractiveDemo />
           </motion.div>
         </motion.div>
       </div>
