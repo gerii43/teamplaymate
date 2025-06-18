@@ -1,11 +1,10 @@
-
 import { motion } from "framer-motion";
 import { DashboardPreview } from "./DashboardPreview";
 import { Button } from "@/components/ui/button";
 
 export const Hero = () => {
   return <section className="relative overflow-hidden pb-24 pt-10 bg-white">
-      <nav className="p-6 border-b border-gray-100">
+      <nav className="p-3 border-b border-gray-100">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <img 
