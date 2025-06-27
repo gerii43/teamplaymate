@@ -1,8 +1,10 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const CTASection = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="py-16 bg-gradient-to-r from-green-50 to-blue-50">
       <div className="container px-4 mx-auto text-center">
@@ -13,13 +15,13 @@ export const CTASection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-4xl font-bold mb-6 text-gray-900">
-            ¿Listo para revolucionar tu análisis de fútbol?
+            {t('cta.title')}
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Únete a miles de entrenadores y analistas que ya están usando nuestra plataforma
+            {t('cta.subtitle')}
           </p>
           <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg">
-            Comenzar ahora
+            {t('cta.button')}
           </Button>
         </motion.div>
       </div>

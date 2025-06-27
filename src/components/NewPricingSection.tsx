@@ -2,8 +2,12 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const NewPricingSection = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const { t } = useLanguage();
+
   return <section className="py-16 bg-gray-50">
       <div className="container px-4 mx-auto">
         <motion.div initial={{
@@ -18,23 +22,23 @@ export const NewPricingSection = () => {
         once: true
       }} className="text-center mb-12">
           <div className="text-white rounded-3xl p-12 mb-12 max-w-4xl mx-auto bg-blue-500">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Escoje tu plan</h2>
-            <p className="text-xl text-center text-white">Desbloquee funciones premium para aumentar la productividad y agilizar su flujo de trabajo. Elige el plan que más te convenga.
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">{t('pricing.title')}</h2>
+            <p className="text-xl text-center text-white">{t('pricing.subtitle')}
           </p>
           </div>
           
           <div className="flex items-center justify-center mb-8">
             <span className={`mr-4 text-lg ${!isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-              Mensual Billing
+              {t('pricing.monthly')}
             </span>
             <button onClick={() => setIsAnnual(!isAnnual)} className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${isAnnual ? 'bg-primary' : 'bg-gray-300'}`}>
               <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isAnnual ? 'translate-x-7' : 'translate-x-1'}`} />
             </button>
             <span className={`ml-4 text-lg ${isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-              Anual Billing
+              {t('pricing.annual')}
             </span>
             {isAnnual && <span className="ml-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                Ahorras hasta 60€!
+                {t('pricing.save')}
               </span>}
           </div>
         </motion.div>
@@ -53,11 +57,11 @@ export const NewPricingSection = () => {
           once: true
         }} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out cursor-pointer">
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold mb-2 text-gray-900">STARTER</h3>
+              <h3 className="text-2xl font-bold mb-2 text-gray-900">{t('pricing.starter.title')}</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">
-                €0
+                {t('pricing.starter.price')}
               </div>
-              <p className="text-gray-500">por mes</p>
+              <p className="text-gray-500">{t('pricing.starter.period')}</p>
             </div>
             
             <ul className="space-y-3 flex-grow mb-8">
@@ -89,11 +93,11 @@ export const NewPricingSection = () => {
           borderColor: '#22C55E'
         }}>
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold mb-2 text-gray-900">PRO</h3>
+              <h3 className="text-2xl font-bold mb-2 text-gray-900">{t('pricing.pro.title')}</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">
                 {isAnnual ? '€299' : '€29,99'}
               </div>
-              <p className="text-gray-500">{isAnnual ? 'por año' : 'por mes'}</p>
+              <p className="text-gray-500">{isAnnual ? 'por año' : t('pricing.pro.period')}</p>
               {isAnnual && <p className="text-sm text-green-600 font-medium mt-1">Ahorras 60€</p>}
             </div>
             
@@ -127,11 +131,11 @@ export const NewPricingSection = () => {
           once: true
         }} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out cursor-pointer">
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold mb-2 text-gray-900">CLUB</h3>
+              <h3 className="text-2xl font-bold mb-2 text-gray-900">{t('pricing.club.title')}</h3>
               <div className="text-5xl font-bold text-gray-900 mb-2">
-                Desde €250
+                {t('pricing.club.price')}
               </div>
-              <p className="text-gray-500">por mes</p>
+              <p className="text-gray-500">{t('pricing.club.period')}</p>
               <p className="text-xs text-gray-400 mt-1">Facturación personalizada</p>
             </div>
             

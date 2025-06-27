@@ -1,9 +1,12 @@
-
 import { motion } from "framer-motion";
 import { InteractiveDemo } from "./InteractiveDemo";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Hero = () => {
+  const { t } = useLanguage();
+
   return <section className="relative overflow-hidden pb-24 pt-10 bg-white">
       <nav className="p-3 border-b border-gray-100">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -14,11 +17,15 @@ export const Hero = () => {
               className="h-16 w-auto"
             />
           </div>
-          <div className="hidden md:flex gap-8">
-            <a href="/" className="hover:text-primary transition-colors text-secondary">Inicio</a>
-            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">Precios</a>
-            <a href="#demo" className="hover:text-primary transition-colors text-secondary">Demo</a>
-            <a href="#contacto" className="hover:text-primary transition-colors text-secondary">Contacto</a>
+          <div className="hidden md:flex gap-8 items-center">
+            <a href="/" className="hover:text-primary transition-colors text-secondary">{t('nav.home')}</a>
+            <a href="/pricing" className="hover:text-primary transition-colors text-secondary">{t('nav.pricing')}</a>
+            <a href="#demo" className="hover:text-primary transition-colors text-secondary">{t('nav.demo')}</a>
+            <a href="#contacto" className="hover:text-primary transition-colors text-secondary">{t('nav.contact')}</a>
+            <LanguageSwitcher />
+          </div>
+          <div className="md:hidden">
+            <LanguageSwitcher />
           </div>
         </div>
       </nav>
@@ -33,13 +40,13 @@ export const Hero = () => {
       }} transition={{
         duration: 0.8
       }} className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">Digitaliza y analiza el rendimiento de tu equipo de futbol en tiempo real</h1>
-          <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">Sin necesidad de Wi-Fi. Statsor revoluciona la gestión táctica y el análisis estadístico, dando a los entrenadores el control total para optimizar cada jugada y entrenamiento.
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">{t('hero.title')}</h1>
+          <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">{t('hero.subtitle')}
         </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors">
-              Solicita tu demo
+              {t('hero.cta')}
             </Button>
             
           </div>

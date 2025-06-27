@@ -1,31 +1,33 @@
-
 import { motion } from "framer-motion";
 import { Tablet, Wifi, BarChart3, FileSpreadsheet } from "lucide-react";
-
-const benefits = [
-  {
-    icon: <Tablet className="w-12 h-12 text-blue-600" />,
-    title: "Registro táctil intuitivo",
-    description: "Registra jugadas, faltas y estadísticas directamente desde tu tablet durante el partido"
-  },
-  {
-    icon: <BarChart3 className="w-12 h-12 text-green-600" />,
-    title: "Análisis individual instantáneo",
-    description: "Métricas detalladas por jugador en tiempo real para optimizar rotaciones y estrategias"
-  },
-  {
-    icon: <Wifi className="w-12 h-12 text-purple-600" />,
-    title: "Funciona sin Wi-Fi",
-    description: "Registra y analiza datos offline, sincroniza cuando tengas conexión disponible"
-  },
-  {
-    icon: <FileSpreadsheet className="w-12 h-12 text-orange-600" />,
-    title: "Informes automáticos",
-    description: "Genera reportes profesionales para compartir con jugadores, padres y directivos"
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const KeyBenefits = () => {
+  const { t } = useLanguage();
+
+  const benefits = [
+    {
+      icon: <Tablet className="w-12 h-12 text-blue-600" />,
+      title: t('benefits.tactile.title'),
+      description: t('benefits.tactile.description')
+    },
+    {
+      icon: <BarChart3 className="w-12 h-12 text-green-600" />,
+      title: t('benefits.analysis.title'),
+      description: t('benefits.analysis.description')
+    },
+    {
+      icon: <Wifi className="w-12 h-12 text-purple-600" />,
+      title: t('benefits.offline.title'),
+      description: t('benefits.offline.description')
+    },
+    {
+      icon: <FileSpreadsheet className="w-12 h-12 text-orange-600" />,
+      title: t('benefits.reports.title'),
+      description: t('benefits.reports.description')
+    }
+  ];
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container px-4 mx-auto">
@@ -36,9 +38,9 @@ export const KeyBenefits = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold mb-4">¿Por qué elegir Statsor?</h2>
+          <h2 className="text-4xl font-bold mb-4">{t('benefits.title')}</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            La herramienta que los entrenadores necesitan para llevar su equipo al siguiente nivel
+            {t('benefits.subtitle')}
           </p>
         </motion.div>
         

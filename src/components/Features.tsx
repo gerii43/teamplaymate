@@ -1,28 +1,33 @@
 import { motion } from "framer-motion";
 import { ClipboardList, Users2, BarChart2, FileText } from "lucide-react";
-const features = [{
-  icon: <ClipboardList className="w-10 h-10 text-blue-100 p-2 bg-blue-500 rounded-lg" />,
-  title: "Carga de entrenamientos",
-  description: "Planifica y programa tus sesiones con plantillas personalizables. Organiza ejercicios y gestiona cargas de trabajo."
-}, {
-  icon: <Users2 className="w-10 h-10 text-green-100 p-2 bg-green-500 rounded-lg" />,
-  title: "Control de asistencia",
-  description: "Seguimiento automático de la participación de jugadores. Identifica patrones y mantén récords de presencia en entrenamientos."
-}, {
-  icon: <BarChart2 className="w-10 h-10 text-yellow-100 p-2 bg-yellow-500 rounded-lg" />,
-  title: "Estadísticas por jugador",
-  description: "Análisis detallado del rendimiento individual. Métricas específicas para cada posición y evolución a lo largo del tiempo."
-}, {
-  icon: <FileText className="w-10 h-10 text-red-100 p-2 bg-red-500 rounded-lg" />,
-  title: "Informes automáticos",
-  description: "Genera reportes completos sobre el equipo y jugadores. Comparte documentos profesionales con directivos o padres."
-}];
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const Features = () => {
+  const { t } = useLanguage();
+
+  const features = [{
+    icon: <ClipboardList className="w-10 h-10 text-blue-100 p-2 bg-blue-500 rounded-lg" />,
+    title: t('features.training.title'),
+    description: t('features.training.description')
+  }, {
+    icon: <Users2 className="w-10 h-10 text-green-100 p-2 bg-green-500 rounded-lg" />,
+    title: t('features.attendance.title'),
+    description: t('features.attendance.description')
+  }, {
+    icon: <BarChart2 className="w-10 h-10 text-yellow-100 p-2 bg-yellow-500 rounded-lg" />,
+    title: t('features.stats.title'),
+    description: t('features.stats.description')
+  }, {
+    icon: <FileText className="w-10 h-10 text-red-100 p-2 bg-red-500 rounded-lg" />,
+    title: t('features.reports.title'),
+    description: t('features.reports.description')
+  }];
+
   return <section className="py-24 bg-gray-50">
       <div className="container px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mt-2">Funciones</h2>
-          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">Herramientas diseñadas específicamente para entrenadores que buscan mejorar el rendimiento de tu equipo</p>
+          <h2 className="text-4xl font-bold mt-2">{t('features.title')}</h2>
+          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">{t('features.subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => <motion.div key={index} initial={{
