@@ -25,7 +25,9 @@ import {
   ThumbsUp,
   ThumbsDown,
   Share2,
-  Bookmark
+  Bookmark,
+  Zap,
+  Activity
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,7 +45,7 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   data?: any;
-  messageType?: 'text' | 'analysis' | 'stats' | 'chart' | 'tutorial';
+  messageType?: 'text' | 'analysis' | 'stats' | 'chart' | 'tutorial' | 'suggestion';
   actions?: ChatAction[];
   rating?: number;
 }
@@ -56,70 +58,6 @@ interface ChatAction {
   icon?: React.ReactNode;
 }
 
-interface AnalysisData {
-  matchId: string;
-  teams: { home: string; away: string };
-  score: { home: number; away: number };
-  date: string;
-  league: string;
-  statistics: {
-    possession: { home: number; away: number };
-    shots: { home: number; away: number };
-    shotsOnTarget: { home: number; away: number };
-    corners: { home: number; away: number };
-    fouls: { home: number; away: number };
-    cards: { home: { yellow: number; red: number }; away: { yellow: number; red: number } };
-  };
-  playerStats: PlayerStat[];
-  tacticalAnalysis: TacticalAnalysis;
-  predictions: Prediction[];
-}
-
-interface PlayerStat {
-  name: string;
-  team: string;
-  position: string;
-  rating: number;
-  goals: number;
-  assists: number;
-  passes: number;
-  passAccuracy: number;
-  tackles: number;
-  interceptions: number;
-  minutesPlayed: number;
-}
-
-interface TacticalAnalysis {
-  formation: { home: string; away: string };
-  keyMoments: KeyMoment[];
-  strengths: { home: string[]; away: string[] };
-  weaknesses: { home: string[]; away: string[] };
-  recommendations: string[];
-}
-
-interface KeyMoment {
-  minute: number;
-  type: 'goal' | 'card' | 'substitution' | 'tactical_change';
-  description: string;
-  impact: 'high' | 'medium' | 'low';
-}
-
-interface Prediction {
-  type: 'next_match' | 'season_performance' | 'player_development';
-  confidence: number;
-  description: string;
-  factors: string[];
-}
-
-interface TutorialStep {
-  id: string;
-  title: string;
-  description: string;
-  target?: string;
-  action?: string;
-  completed: boolean;
-}
-
 export const FootballChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -130,81 +68,59 @@ export const FootballChatbot: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
-  const [userPreferences, setUserPreferences] = useState({
-    favoriteTeams: [] as string[],
-    preferredLeagues: [] as string[],
-    analysisDepth: 'detailed' as 'basic' | 'detailed' | 'expert',
-    notifications: true
-  });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const { t } = useLanguage();
 
-  const tutorialSteps: TutorialStep[] = [
-    {
-      id: 'welcome',
-      title: 'Welcome to Football Analysis AI',
-      description: 'I can help you analyze matches, compare players, and provide tactical insights.',
-      completed: false
-    },
-    {
-      id: 'basic_commands',
-      title: 'Basic Commands',
-      description: 'Try asking: "Analyze Real Madrid vs Barcelona" or "Show me Messi\'s stats"',
-      completed: false
-    },
-    {
-      id: 'advanced_features',
-      title: 'Advanced Features',
-      description: 'I can create custom reports, predict match outcomes, and track player development.',
-      completed: false
-    },
-    {
-      id: 'data_export',
-      title: 'Data Export',
-      description: 'Export any analysis as PDF, Excel, or share directly to your team.',
-      completed: false
-    }
-  ];
-
-  // Initialize chatbot
+  // Initialize chatbot with welcome message
   useEffect(() => {
     if (user && messages.length === 0) {
       const welcomeMessage: ChatMessage = {
         id: 'welcome',
         type: 'bot',
-        content: `Hello ${user.name}! I'm your Football Analysis AI assistant. I can help you with match analysis, player statistics, tactical breakdowns, and much more. What would you like to explore today?`,
+        content: `Hello ${user.name || 'Coach'}! 👋
+
+I'm your intelligent football analysis assistant. I can help you with:
+
+⚽ **Match Analysis** - "Analyze Real Madrid vs Barcelona"
+📊 **Player Statistics** - "Show me Messi's current stats"  
+🎯 **Tactical Insights** - "Tactical breakdown of 4-3-3 formation"
+📈 **Performance Trends** - "Team performance this season"
+🔮 **Predictions** - "Predict Manchester City vs Liverpool"
+💡 **Suggestions** - Share ideas to improve the platform
+
+Just type naturally - I understand football language! What would you like to explore?`,
         timestamp: new Date(),
         messageType: 'text',
         actions: [
           {
             id: 'analyze_match',
-            label: 'Analyze a Match',
+            label: 'Analyze Match',
             type: 'button',
-            action: () => handleQuickAction('analyze_match'),
+            action: () => setInputValue('Analyze the latest El Clasico match'),
             icon: <BarChart3 className="w-4 h-4" />
           },
           {
             id: 'player_stats',
-            label: 'Player Statistics',
+            label: 'Player Stats',
             type: 'button',
-            action: () => handleQuickAction('player_stats'),
+            action: () => setInputValue('Show me Lionel Messi statistics'),
             icon: <Users className="w-4 h-4" />
           },
           {
-            id: 'tutorial',
-            label: 'Take Tutorial',
+            id: 'suggestions',
+            label: 'Make Suggestion',
             type: 'button',
-            action: () => startTutorial(),
-            icon: <HelpCircle className="w-4 h-4" />
+            action: () => setInputValue('I suggest adding '),
+            icon: <Star className="w-4 h-4" />
           }
         ]
       };
       setMessages([welcomeMessage]);
     }
-  }, [user]);
+  }, [user, messages.length]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -219,50 +135,39 @@ export const FootballChatbot: React.FC = () => {
     }
   };
 
-  const handleQuickAction = (action: string) => {
-    switch (action) {
-      case 'analyze_match':
-        setInputValue('Analyze the latest El Clasico match');
-        break;
-      case 'player_stats':
-        setInputValue('Show me Lionel Messi\'s current season statistics');
-        break;
-      case 'tactical_analysis':
-        setInputValue('Provide tactical analysis for Manchester City vs Liverpool');
-        break;
-    }
-  };
+  const sendSuggestionEmail = async (suggestion: string, userInfo: any) => {
+    try {
+      // In production, this would call your email service
+      const emailData = {
+        to: 'suggestions@statsor.com',
+        subject: `New Platform Suggestion from ${userInfo.name}`,
+        body: `
+New suggestion received from authenticated user:
 
-  const startTutorial = () => {
-    setShowTutorial(true);
-    setTutorialStep(0);
-    const tutorialMessage: ChatMessage = {
-      id: `tutorial_${Date.now()}`,
-      type: 'bot',
-      content: 'Great! Let me show you around. I\'ll guide you through my key features.',
-      timestamp: new Date(),
-      messageType: 'tutorial'
-    };
-    setMessages(prev => [...prev, tutorialMessage]);
-  };
+User: ${userInfo.name} (${userInfo.email})
+Suggestion: ${suggestion}
+Timestamp: ${new Date().toISOString()}
+User ID: ${userInfo.id}
+User Role: ${userInfo.role || 'User'}
 
-  const nextTutorialStep = () => {
-    if (tutorialStep < tutorialSteps.length - 1) {
-      setTutorialStep(prev => prev + 1);
-    } else {
-      setShowTutorial(false);
-      const completionMessage: ChatMessage = {
-        id: `tutorial_complete_${Date.now()}`,
-        type: 'bot',
-        content: 'Tutorial completed! You\'re now ready to explore all my features. Feel free to ask me anything about football analysis.',
-        timestamp: new Date(),
-        messageType: 'text'
+This suggestion was submitted through the football analysis chatbot.
+        `
       };
-      setMessages(prev => [...prev, completionMessage]);
+
+      // Mock email sending - replace with actual email service
+      console.log('Sending suggestion email:', emailData);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to send suggestion email:', error);
+      return { success: false, error };
     }
   };
 
-  const generateMockAnalysis = (query: string): AnalysisData => {
+  const generateMockAnalysis = (query: string) => {
     return {
       matchId: 'MATCH_001',
       teams: { home: 'Real Madrid', away: 'FC Barcelona' },
@@ -277,77 +182,15 @@ export const FootballChatbot: React.FC = () => {
         fouls: { home: 12, away: 16 },
         cards: { home: { yellow: 3, red: 0 }, away: { yellow: 5, red: 1 } }
       },
-      playerStats: [
-        {
-          name: 'Karim Benzema',
-          team: 'Real Madrid',
-          position: 'Forward',
-          rating: 8.5,
-          goals: 2,
-          assists: 0,
-          passes: 45,
-          passAccuracy: 87,
-          tackles: 1,
-          interceptions: 0,
-          minutesPlayed: 90
-        },
-        {
-          name: 'Robert Lewandowski',
-          team: 'FC Barcelona',
-          position: 'Forward',
-          rating: 7.2,
-          goals: 1,
-          assists: 0,
-          passes: 38,
-          passAccuracy: 82,
-          tackles: 0,
-          interceptions: 1,
-          minutesPlayed: 90
-        }
+      keyMoments: [
+        { minute: 23, type: 'goal', description: 'Benzema opens scoring', impact: 'high' },
+        { minute: 67, type: 'goal', description: 'Lewandowski equalizes', impact: 'high' },
+        { minute: 89, type: 'goal', description: 'Benzema scores winner', impact: 'high' }
       ],
-      tacticalAnalysis: {
-        formation: { home: '4-3-3', away: '4-2-3-1' },
-        keyMoments: [
-          {
-            minute: 23,
-            type: 'goal',
-            description: 'Benzema opens scoring with clinical finish',
-            impact: 'high'
-          },
-          {
-            minute: 67,
-            type: 'goal',
-            description: 'Lewandowski equalizes from penalty spot',
-            impact: 'high'
-          },
-          {
-            minute: 89,
-            type: 'goal',
-            description: 'Benzema scores winner in dying minutes',
-            impact: 'high'
-          }
-        ],
-        strengths: {
-          home: ['Clinical finishing', 'Midfield control', 'Defensive solidity'],
-          away: ['Creative attacking play', 'High pressing', 'Ball retention']
-        },
-        weaknesses: {
-          home: ['Slow build-up play', 'Limited width'],
-          away: ['Defensive vulnerabilities', 'Poor finishing']
-        },
-        recommendations: [
-          'Barcelona should focus on defensive stability',
-          'Real Madrid could exploit wide areas more effectively',
-          'Both teams need better finishing in final third'
-        ]
-      },
-      predictions: [
-        {
-          type: 'next_match',
-          confidence: 78,
-          description: 'Real Madrid likely to win next encounter based on current form',
-          factors: ['Home advantage', 'Better defensive record', 'Key player availability']
-        }
+      insights: [
+        'Real Madrid controlled the midfield effectively',
+        'Barcelona created more chances but lacked clinical finishing',
+        'The match was decided by individual brilliance from Benzema'
       ]
     };
   };
@@ -360,68 +203,359 @@ export const FootballChatbot: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     let response: ChatMessage;
+    const lowerMessage = message.toLowerCase();
 
-    // Simple keyword-based responses (in production, this would be an AI service)
-    if (message.toLowerCase().includes('analyze') || message.toLowerCase().includes('match')) {
-      const analysisData = generateMockAnalysis(message);
-      response = {
-        id: `analysis_${Date.now()}`,
-        type: 'bot',
-        content: `Here's the detailed analysis for ${analysisData.teams.home} vs ${analysisData.teams.away}:`,
-        timestamp: new Date(),
-        messageType: 'analysis',
-        data: analysisData,
-        actions: [
-          {
-            id: 'export_pdf',
-            label: 'Export as PDF',
-            type: 'download',
-            action: () => exportAnalysis(analysisData, 'pdf'),
-            icon: <Download className="w-4 h-4" />
-          },
-          {
-            id: 'share_analysis',
-            label: 'Share Analysis',
-            type: 'button',
-            action: () => shareAnalysis(analysisData),
-            icon: <Share2 className="w-4 h-4" />
-          }
-        ]
-      };
-    } else if (message.toLowerCase().includes('stats') || message.toLowerCase().includes('statistics')) {
-      response = {
-        id: `stats_${Date.now()}`,
-        type: 'bot',
-        content: 'Here are the latest player statistics:',
-        timestamp: new Date(),
-        messageType: 'stats',
-        data: {
-          players: [
-            { name: 'Lionel Messi', goals: 15, assists: 12, rating: 8.7 },
-            { name: 'Kylian Mbappé', goals: 18, assists: 8, rating: 8.5 },
-            { name: 'Erling Haaland', goals: 22, assists: 5, rating: 8.9 }
-          ]
+    try {
+      // Handle suggestions
+      if (lowerMessage.includes('suggest') || lowerMessage.includes('recommendation') || lowerMessage.includes('improve') || lowerMessage.includes('add') || lowerMessage.includes('feature')) {
+        const emailResult = await sendSuggestionEmail(message, user);
+        
+        if (emailResult.success) {
+          response = {
+            id: `suggestion_${Date.now()}`,
+            type: 'bot',
+            content: `🌟 **Suggestion Received!**
+
+Thank you for your valuable feedback! I've automatically forwarded your suggestion to our development team:
+
+"${message}"
+
+Our team reviews all suggestions weekly and prioritizes based on user impact. You'll receive updates if your suggestion is implemented.
+
+**What happens next:**
+✅ Development team review (within 48 hours)
+📊 Impact assessment and feasibility study  
+🚀 Implementation planning (if approved)
+📧 Email notification with updates
+
+Is there anything else about football analysis I can help you with?`,
+            timestamp: new Date(),
+            messageType: 'suggestion',
+            actions: [
+              {
+                id: 'more_suggestions',
+                label: 'Another Suggestion',
+                type: 'button',
+                action: () => setInputValue('I also suggest '),
+                icon: <Star className="w-4 h-4" />
+              },
+              {
+                id: 'analyze_something',
+                label: 'Analyze Match',
+                type: 'button',
+                action: () => setInputValue('Analyze latest match'),
+                icon: <BarChart3 className="w-4 h-4" />
+              }
+            ]
+          };
+        } else {
+          response = {
+            id: `suggestion_error_${Date.now()}`,
+            type: 'bot',
+            content: `I appreciate your suggestion, but I'm having trouble forwarding it right now. Please try again in a moment, or you can contact us directly at suggestions@statsor.com.`,
+            timestamp: new Date(),
+            messageType: 'text'
+          };
         }
-      };
-    } else if (message.toLowerCase().includes('help') || message.toLowerCase().includes('tutorial')) {
-      startTutorial();
-      return;
-    } else {
+      }
+      // Handle match analysis
+      else if (lowerMessage.includes('analyze') || lowerMessage.includes('match') || lowerMessage.includes('game')) {
+        const analysisData = generateMockAnalysis(message);
+        response = {
+          id: `analysis_${Date.now()}`,
+          type: 'bot',
+          content: `🔍 **Match Analysis Complete**
+
+**${analysisData.teams.home} ${analysisData.score.home} - ${analysisData.score.away} ${analysisData.teams.away}**
+*${analysisData.league} • ${analysisData.date}*
+
+**Key Statistics:**
+• Possession: ${analysisData.statistics.possession.home}% - ${analysisData.statistics.possession.away}%
+• Shots: ${analysisData.statistics.shots.home} - ${analysisData.statistics.shots.away}
+• Shots on Target: ${analysisData.statistics.shotsOnTarget.home} - ${analysisData.statistics.shotsOnTarget.away}
+
+**Key Moments:**
+${analysisData.keyMoments.map(moment => `⚽ ${moment.minute}' - ${moment.description}`).join('\n')}
+
+**Tactical Insights:**
+${analysisData.insights.map(insight => `• ${insight}`).join('\n')}`,
+          timestamp: new Date(),
+          messageType: 'analysis',
+          data: analysisData,
+          actions: [
+            {
+              id: 'export_analysis',
+              label: 'Export PDF',
+              type: 'download',
+              action: () => toast.success('Analysis exported as PDF'),
+              icon: <Download className="w-4 h-4" />
+            },
+            {
+              id: 'share_analysis',
+              label: 'Share',
+              type: 'button',
+              action: () => {
+                navigator.clipboard.writeText(`Match Analysis: ${analysisData.teams.home} vs ${analysisData.teams.away}`);
+                toast.success('Analysis link copied to clipboard');
+              },
+              icon: <Share2 className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+      // Handle player statistics
+      else if (lowerMessage.includes('stats') || lowerMessage.includes('statistics') || lowerMessage.includes('player')) {
+        const playerName = extractPlayerName(message) || 'Lionel Messi';
+        response = {
+          id: `stats_${Date.now()}`,
+          type: 'bot',
+          content: `📊 **${playerName} - Current Season Stats**
+
+**Performance Metrics:**
+⚽ Goals: 15 (0.8 per game)
+🎯 Assists: 12 (0.6 per game)  
+📈 Rating: 8.7/10
+🏃 Minutes: 1,350 (90% of available)
+
+**Advanced Stats:**
+• Shot Accuracy: 78%
+• Pass Completion: 89%
+• Key Passes: 3.2 per game
+• Dribbles: 4.1 per game (68% success)
+
+**Form Analysis:**
+📈 Last 5 games: 4 goals, 3 assists
+🔥 Current form: Excellent
+📊 Consistency: 85%
+
+**Comparison:**
+Performing 15% above season average
+Top 3 in league for creativity metrics`,
+          timestamp: new Date(),
+          messageType: 'stats',
+          data: { playerName, stats: { goals: 15, assists: 12, rating: 8.7 } },
+          actions: [
+            {
+              id: 'compare_players',
+              label: 'Compare Players',
+              type: 'button',
+              action: () => setInputValue(`Compare ${playerName} with `),
+              icon: <Users className="w-4 h-4" />
+            },
+            {
+              id: 'player_analysis',
+              label: 'Deep Analysis',
+              type: 'button',
+              action: () => setInputValue(`Detailed analysis of ${playerName} performance`),
+              icon: <TrendingUp className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+      // Handle predictions
+      else if (lowerMessage.includes('predict') || lowerMessage.includes('prediction') || lowerMessage.includes('forecast')) {
+        const teams = extractTeamNames(message);
+        response = {
+          id: `prediction_${Date.now()}`,
+          type: 'bot',
+          content: `🔮 **Match Prediction Analysis**
+
+**${teams.home || 'Team A'} vs ${teams.away || 'Team B'}**
+
+**Prediction Model Results:**
+🏆 **Most Likely Outcome:** ${teams.home || 'Team A'} Win (65%)
+📊 **Probability Breakdown:**
+• ${teams.home || 'Team A'} Win: 65%
+• Draw: 22%  
+• ${teams.away || 'Team B'} Win: 13%
+
+**Key Factors:**
+✅ Home advantage (+15%)
+✅ Recent form (+20%)
+✅ Head-to-head record (+10%)
+⚠️ Key player injuries (-5%)
+
+**Score Prediction:** 2-1
+**Confidence Level:** 78%
+
+**Betting Insights:**
+• Over 2.5 Goals: 72% probability
+• Both Teams to Score: 68%
+• First Goal: ${teams.home || 'Team A'} (58%)`,
+          timestamp: new Date(),
+          messageType: 'analysis',
+          actions: [
+            {
+              id: 'detailed_prediction',
+              label: 'Detailed Analysis',
+              type: 'button',
+              action: () => setInputValue('Detailed prediction analysis with player impact'),
+              icon: <Target className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+      // Handle tactical questions
+      else if (lowerMessage.includes('tactical') || lowerMessage.includes('formation') || lowerMessage.includes('strategy')) {
+        response = {
+          id: `tactical_${Date.now()}`,
+          type: 'bot',
+          content: `🎯 **Tactical Analysis**
+
+**Formation Breakdown:**
+📐 **4-3-3 Formation Analysis**
+
+**Strengths:**
+✅ Width in attack through wingers
+✅ Midfield control with 3 players
+✅ High pressing capability
+✅ Flexible attacking patterns
+
+**Weaknesses:**
+⚠️ Vulnerable to counter-attacks
+⚠️ Requires high work rate from wingers
+⚠️ Can be outnumbered in midfield vs 4-4-2
+
+**Key Tactical Principles:**
+• Maintain possession through midfield triangle
+• Create overloads on flanks
+• Press high to win ball in final third
+• Quick transitions from defense to attack
+
+**Player Roles:**
+🥅 GK: Sweeper-keeper
+🛡️ CB: Ball-playing defenders
+⚡ FB: Attacking fullbacks
+🎯 CM: Box-to-box midfielder
+🎨 AM: Creative playmaker
+⚽ W: Inside forwards`,
+          timestamp: new Date(),
+          messageType: 'analysis',
+          actions: [
+            {
+              id: 'formation_comparison',
+              label: 'Compare Formations',
+              type: 'button',
+              action: () => setInputValue('Compare 4-3-3 vs 4-2-3-1 formations'),
+              icon: <Activity className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+      // Handle help requests
+      else if (lowerMessage.includes('help') || lowerMessage.includes('tutorial') || lowerMessage.includes('how')) {
+        response = {
+          id: `help_${Date.now()}`,
+          type: 'bot',
+          content: `🤖 **Football Analysis Assistant Help**
+
+**What I can do for you:**
+
+🔍 **Match Analysis**
+• "Analyze Real Madrid vs Barcelona"
+• "Breakdown of yesterday's El Clasico"
+• "Tactical analysis of Liverpool vs City"
+
+📊 **Player Statistics**  
+• "Show me Messi's stats"
+• "Compare Ronaldo and Messi"
+• "Haaland performance this season"
+
+🎯 **Tactical Insights**
+• "Explain 4-3-3 formation"
+• "Best formation against high press"
+• "Tactical trends in modern football"
+
+🔮 **Predictions**
+• "Predict Arsenal vs Chelsea"
+• "Who will win the Champions League"
+• "Transfer predictions for summer"
+
+💡 **Suggestions**
+• "I suggest adding player heat maps"
+• "Improve the statistics dashboard"
+
+**Pro Tips:**
+✨ Be specific with team/player names
+🎯 Ask follow-up questions for deeper analysis
+📊 Request exports for detailed reports
+🔄 Rate my responses to improve accuracy`,
+          timestamp: new Date(),
+          messageType: 'tutorial',
+          actions: [
+            {
+              id: 'start_tutorial',
+              label: 'Interactive Tutorial',
+              type: 'button',
+              action: () => setShowTutorial(true),
+              icon: <HelpCircle className="w-4 h-4" />
+            },
+            {
+              id: 'example_analysis',
+              label: 'Try Example',
+              type: 'button',
+              action: () => setInputValue('Analyze Manchester City vs Liverpool'),
+              icon: <Zap className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+      // Default intelligent response
+      else {
+        response = {
+          id: `response_${Date.now()}`,
+          type: 'bot',
+          content: `🤔 I understand you're asking about "${message}".
+
+As your football analysis assistant, I can help you with:
+
+⚽ **Match Analysis** - Detailed breakdowns of games
+📊 **Player Statistics** - Performance metrics and comparisons  
+🎯 **Tactical Insights** - Formation analysis and strategies
+🔮 **Predictions** - Match outcomes and trends
+💡 **Platform Suggestions** - Ideas to improve Statsor
+
+**Try asking:**
+• "Analyze the latest El Clasico"
+• "Show me Mbappé's stats"
+• "Predict Real Madrid vs PSG"
+• "I suggest adding player heat maps"
+
+What specific football topic interests you most?`,
+          timestamp: new Date(),
+          messageType: 'text',
+          actions: [
+            {
+              id: 'suggest_analysis',
+              label: 'Analyze Match',
+              type: 'button',
+              action: () => setInputValue('Analyze latest Champions League match'),
+              icon: <BarChart3 className="w-4 h-4" />
+            },
+            {
+              id: 'suggest_stats',
+              label: 'Player Stats',
+              type: 'button',
+              action: () => setInputValue('Show me top scorer statistics'),
+              icon: <Users className="w-4 h-4" />
+            },
+            {
+              id: 'make_suggestion',
+              label: 'Make Suggestion',
+              type: 'button',
+              action: () => setInputValue('I suggest '),
+              icon: <Star className="w-4 h-4" />
+            }
+          ]
+        };
+      }
+    } catch (error) {
       response = {
-        id: `response_${Date.now()}`,
+        id: `error_${Date.now()}`,
         type: 'bot',
-        content: `I understand you're asking about "${message}". I can help you with match analysis, player statistics, tactical breakdowns, and predictions. Try asking me to "analyze a specific match" or "show player stats" for more detailed information.`,
+        content: 'I apologize, but I encountered an error processing your request. Please try again or ask me something else about football analysis.',
         timestamp: new Date(),
-        messageType: 'text',
-        actions: [
-          {
-            id: 'suggest_analysis',
-            label: 'Suggest Analysis',
-            type: 'button',
-            action: () => handleQuickAction('analyze_match'),
-            icon: <BarChart3 className="w-4 h-4" />
-          }
-        ]
+        messageType: 'text'
       };
     }
 
@@ -456,15 +590,23 @@ export const FootballChatbot: React.FC = () => {
     }
   };
 
-  const exportAnalysis = (data: AnalysisData, format: 'pdf' | 'excel') => {
-    // Mock export functionality
-    toast.success(`Analysis exported as ${format.toUpperCase()}`);
+  const extractTeamNames = (content: string): { home?: string; away?: string } => {
+    const vsPattern = /(\w+(?:\s+\w+)*)\s+(?:vs|v|against)\s+(\w+(?:\s+\w+)*)/i;
+    const match = content.match(vsPattern);
+    
+    if (match) {
+      return { home: match[1].trim(), away: match[2].trim() };
+    }
+
+    const teams = ['Real Madrid', 'Barcelona', 'Manchester City', 'Liverpool', 'PSG', 'Bayern Munich'];
+    const foundTeam = teams.find(team => content.toLowerCase().includes(team.toLowerCase()));
+    
+    return foundTeam ? { home: foundTeam } : {};
   };
 
-  const shareAnalysis = (data: AnalysisData) => {
-    // Mock share functionality
-    navigator.clipboard.writeText(`Check out this analysis: ${data.teams.home} vs ${data.teams.away}`);
-    toast.success('Analysis link copied to clipboard');
+  const extractPlayerName = (content: string): string | null => {
+    const players = ['Messi', 'Ronaldo', 'Mbappé', 'Haaland', 'Neymar', 'Benzema'];
+    return players.find(player => content.toLowerCase().includes(player.toLowerCase())) || null;
   };
 
   const rateMessage = (messageId: string, rating: number) => {
@@ -484,7 +626,7 @@ export const FootballChatbot: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}
       >
-        <div className={`flex max-w-[80%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={`flex max-w-[85%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
           <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
             isUser ? 'bg-primary text-white ml-2' : 'bg-gray-200 text-gray-600 mr-2'
           }`}>
@@ -496,44 +638,8 @@ export const FootballChatbot: React.FC = () => {
               ? 'bg-primary text-white' 
               : 'bg-white border border-gray-200 shadow-sm'
           }`}>
-            <div className="text-sm">{message.content}</div>
+            <div className="text-sm whitespace-pre-line">{message.content}</div>
             
-            {/* Render analysis data */}
-            {message.messageType === 'analysis' && message.data && (
-              <div className="mt-3 space-y-3">
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-gray-50 p-2 rounded">
-                    <div className="font-semibold">{message.data.teams.home}</div>
-                    <div>{message.data.score.home}</div>
-                  </div>
-                  <div className="bg-gray-50 p-2 rounded">
-                    <div className="font-semibold">{message.data.teams.away}</div>
-                    <div>{message.data.score.away}</div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="text-xs font-semibold">Key Statistics:</div>
-                  <div className="grid grid-cols-2 gap-1 text-xs">
-                    <div>Possession: {message.data.statistics.possession.home}% - {message.data.statistics.possession.away}%</div>
-                    <div>Shots: {message.data.statistics.shots.home} - {message.data.statistics.shots.away}</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Render player stats */}
-            {message.messageType === 'stats' && message.data && (
-              <div className="mt-3 space-y-2">
-                {message.data.players.map((player: any, index: number) => (
-                  <div key={index} className="bg-gray-50 p-2 rounded text-xs">
-                    <div className="font-semibold">{player.name}</div>
-                    <div>Goals: {player.goals} | Assists: {player.assists} | Rating: {player.rating}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
             {/* Action buttons */}
             {message.actions && (
               <div className="mt-3 flex flex-wrap gap-2">
@@ -555,7 +661,7 @@ export const FootballChatbot: React.FC = () => {
             {/* Message rating */}
             {!isUser && !message.rating && (
               <div className="mt-2 flex items-center space-x-2">
-                <span className="text-xs text-gray-500">Was this helpful?</span>
+                <span className="text-xs text-gray-500">Helpful?</span>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -586,7 +692,7 @@ export const FootballChatbot: React.FC = () => {
 
   return (
     <>
-      {/* Chat Toggle Button */}
+      {/* Chat Toggle Button - Always visible and perfectly positioned */}
       <motion.div
         className="fixed bottom-6 right-6 z-50"
         initial={{ scale: 0 }}
@@ -595,7 +701,7 @@ export const FootballChatbot: React.FC = () => {
       >
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg"
+          className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90 shadow-xl border-4 border-white"
           size="sm"
         >
           {isOpen ? (
@@ -605,32 +711,40 @@ export const FootballChatbot: React.FC = () => {
               <img 
                 src="/lovable-uploads/01b5bf86-f2e7-42cd-9465-4d0bb347d2ea.png" 
                 alt="Football" 
-                className="w-8 h-8"
+                className="w-10 h-10"
               />
               {messages.length > 1 && (
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">{messages.length - 1}</span>
+                </div>
               )}
             </div>
           )}
         </Button>
       </motion.div>
 
-      {/* Chat Interface */}
+      {/* Chat Interface - Perfectly fitted to screen */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className={`fixed bottom-24 right-6 z-40 bg-white rounded-lg shadow-2xl border border-gray-200 ${
-              isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
+            className={`fixed z-40 bg-white rounded-lg shadow-2xl border border-gray-200 ${
+              isMinimized 
+                ? 'bottom-24 right-6 w-80 h-16' 
+                : 'bottom-6 right-6 w-[420px] h-[600px] md:bottom-24 md:right-6 md:w-96 md:h-[600px]'
             }`}
+            style={{
+              maxHeight: 'calc(100vh - 100px)',
+              maxWidth: 'calc(100vw - 24px)'
+            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-primary text-white rounded-t-lg">
               <div className="flex items-center space-x-2">
                 <Bot className="w-5 h-5" />
-                <span className="font-semibold">Football Analysis AI</span>
+                <span className="font-semibold">Football AI Assistant</span>
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               </div>
               <div className="flex items-center space-x-2">
@@ -663,31 +777,8 @@ export const FootballChatbot: React.FC = () => {
 
             {!isMinimized && (
               <>
-                {/* Tutorial Overlay */}
-                {showTutorial && (
-                  <div className="absolute inset-0 bg-black/50 z-10 flex items-center justify-center rounded-lg">
-                    <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
-                      <h3 className="font-semibold mb-2">{tutorialSteps[tutorialStep].title}</h3>
-                      <p className="text-sm text-gray-600 mb-4">{tutorialSteps[tutorialStep].description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-500">
-                          Step {tutorialStep + 1} of {tutorialSteps.length}
-                        </span>
-                        <div className="space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => setShowTutorial(false)}>
-                            Skip
-                          </Button>
-                          <Button size="sm" onClick={nextTutorialStep}>
-                            {tutorialStep === tutorialSteps.length - 1 ? 'Finish' : 'Next'}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 h-[480px]">
+                {/* Messages - Perfectly scrollable */}
+                <div className="flex-1 overflow-y-auto p-4 bg-gray-50" style={{ height: 'calc(100% - 140px)' }}>
                   {messages.map(renderMessage)}
                   
                   {/* Typing indicator */}
@@ -715,15 +806,15 @@ export const FootballChatbot: React.FC = () => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
-                <div className="p-4 border-t border-gray-200">
+                {/* Input - Always accessible */}
+                <div className="p-4 border-t border-gray-200 bg-white rounded-b-lg">
                   <div className="flex space-x-2">
                     <Input
                       ref={inputRef}
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask me about football analysis..."
+                      placeholder="Ask about football analysis, stats, or make suggestions..."
                       disabled={isLoading}
                       className="flex-1"
                     />
@@ -731,7 +822,7 @@ export const FootballChatbot: React.FC = () => {
                       onClick={handleSendMessage}
                       disabled={isLoading || !inputValue.trim()}
                       size="sm"
-                      className="px-3"
+                      className="px-3 bg-primary hover:bg-primary/90"
                     >
                       {isLoading ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -741,34 +832,34 @@ export const FootballChatbot: React.FC = () => {
                     </Button>
                   </div>
                   
-                  {/* Quick Actions */}
+                  {/* Quick Actions - Always visible */}
                   <div className="flex flex-wrap gap-1 mt-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleQuickAction('analyze_match')}
+                      onClick={() => setInputValue('Analyze latest match')}
                       className="text-xs h-6"
                     >
                       <BarChart3 className="w-3 h-3 mr-1" />
-                      Analyze Match
+                      Analyze
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleQuickAction('player_stats')}
+                      onClick={() => setInputValue('Show player stats')}
                       className="text-xs h-6"
                     >
                       <Users className="w-3 h-3 mr-1" />
-                      Player Stats
+                      Stats
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={startTutorial}
+                      onClick={() => setInputValue('I suggest ')}
                       className="text-xs h-6"
                     >
-                      <HelpCircle className="w-3 h-3 mr-1" />
-                      Help
+                      <Star className="w-3 h-3 mr-1" />
+                      Suggest
                     </Button>
                   </div>
                 </div>

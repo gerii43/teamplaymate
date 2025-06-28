@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { footballAnalysisService } from '@/services/footballAnalysisService';
+import { emailService } from '@/services/emailService';
 
 interface ChatSession {
   id: string;
@@ -19,7 +20,7 @@ interface ChatMessage {
   type: 'user' | 'bot';
   content: string;
   timestamp: Date;
-  messageType?: 'text' | 'analysis' | 'stats' | 'chart' | 'tutorial';
+  messageType?: 'text' | 'analysis' | 'stats' | 'chart' | 'tutorial' | 'suggestion';
   data?: any;
   actions?: any[];
   rating?: number;
@@ -34,6 +35,7 @@ interface ChatbotContextType {
   createSession: (title?: string) => Promise<ChatSession>;
   loadSession: (sessionId: string) => Promise<void>;
   sendMessage: (content: string, type?: string) => Promise<ChatMessage>;
+  sendSuggestion: (suggestion: string, context: string) => Promise<boolean>;
   rateMessage: (messageId: string, rating: number, feedback?: string) => Promise<void>;
   deleteSession: (sessionId: string) => Promise<void>;
   exportSession: (sessionId: string, format: 'json' | 'pdf') => Promise<string>;
@@ -80,11 +82,11 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       if (error) throw error;
 
-      const formattedSessions = data.map(session => ({
+      const formattedSessions = data?.map(session => ({
         id: session.id,
         userId: session.user_id,
         title: session.title,
-        messages: session.chat_messages.map((msg: any) => ({
+        messages: session.chat_messages?.map((msg: any) => ({
           id: msg.id,
           sessionId: msg.session_id,
           type: msg.type,
@@ -95,11 +97,11 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
           actions: msg.actions,
           rating: msg.rating,
           feedback: msg.feedback
-        })),
+        })) || [],
         createdAt: new Date(session.created_at),
         updatedAt: new Date(session.updated_at),
         metadata: session.metadata
-      }));
+      })) || [];
 
       setSessions(formattedSessions);
     } catch (err) {
@@ -174,7 +176,7 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
           id: data.id,
           userId: data.user_id,
           title: data.title,
-          messages: data.chat_messages.map((msg: any) => ({
+          messages: data.chat_messages?.map((msg: any) => ({
             id: msg.id,
             sessionId: msg.session_id,
             type: msg.type,
@@ -185,7 +187,7 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
             actions: msg.actions,
             rating: msg.rating,
             feedback: msg.feedback
-          })),
+          })) || [],
           createdAt: new Date(data.created_at),
           updatedAt: new Date(data.updated_at),
           metadata: data.metadata
@@ -242,6 +244,16 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
       throw err;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const sendSuggestion = async (suggestion: string, context: string): Promise<boolean> => {
+    try {
+      const result = await emailService.sendSuggestionEmail(suggestion, user, context);
+      return result.success;
+    } catch (error) {
+      console.error('Failed to send suggestion:', error);
+      return false;
     }
   };
 
@@ -480,7 +492,7 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       if (error) throw error;
 
-      return data.map(session => ({
+      return data?.map(session => ({
         id: session.id,
         userId: session.user_id,
         title: session.title,
@@ -488,7 +500,7 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
         createdAt: new Date(session.created_at),
         updatedAt: new Date(session.updated_at),
         metadata: session.metadata
-      }));
+      })) || [];
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search sessions');
       return [];
@@ -503,6 +515,7 @@ export const ChatbotProvider: React.FC<{ children: React.ReactNode }> = ({ child
     createSession,
     loadSession,
     sendMessage,
+    sendSuggestion,
     rateMessage,
     deleteSession,
     exportSession,

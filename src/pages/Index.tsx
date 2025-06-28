@@ -1,4 +1,3 @@
-
 import { Hero } from "@/components/Hero";
 import { KeyBenefits } from "@/components/KeyBenefits";
 import { Features } from "@/components/Features";
@@ -10,6 +9,7 @@ import { CTASection } from "@/components/CTASection";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { PersonalizedDemoForm } from "@/components/PersonalizedDemoForm";
 import { Footer } from "@/components/Footer";
+import { AuthChatbot } from "@/components/AuthChatbot";
 
 const Index = () => {
   return (
@@ -25,6 +25,7 @@ const Index = () => {
       <TestimonialsCarousel />
       <PersonalizedDemoForm />
       <Footer />
+      <AuthChatbot />
     </main>
   );
 };
