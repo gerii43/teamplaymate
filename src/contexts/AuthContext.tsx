@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { mockAuth } from '@/lib/supabase'
+
+interface User {
+  id: string
+  email: string
+}
 
 interface AuthContextType {
   user: User | null
-  session: Session | null
   loading: boolean
   signUp: (email: string, password: string) => Promise<any>
   signIn: (email: string, password: string) => Promise<any>
@@ -24,60 +27,60 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+  const [loading, setLoading] = useState(false)
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    return { data, error }
+    setLoading(true)
+    try {
+      const result = await mockAuth.signUp(email, password)
+      if (result.data?.user) {
+        setUser(result.data.user)
+      }
+      return result
+    } finally {
+      setLoading(false)
+    }
   }
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return { data, error }
+    setLoading(true)
+    try {
+      const result = await mockAuth.signIn(email, password)
+      if (result.data?.user) {
+        setUser(result.data.user)
+      }
+      return result
+    } finally {
+      setLoading(false)
+    }
   }
 
   const signInWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    })
-    return { data, error }
+    setLoading(true)
+    try {
+      const result = await mockAuth.signIn('demo@google.com', 'password')
+      if (result.data?.user) {
+        setUser(result.data.user)
+      }
+      return result
+    } finally {
+      setLoading(false)
+    }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    setLoading(true)
+    try {
+      await mockAuth.signOut()
+      setUser(null)
+      return { error: null }
+    } finally {
+      setLoading(false)
+    }
   }
 
   const value = {
     user,
-    session,
     loading,
     signUp,
     signIn,
