@@ -48,7 +48,7 @@ const translations = {
     'auth.signin.link': 'Inicia sesión aquí',
     
     // Hero Section
-    'hero.title': 'Digitaliza y analiza el rendimiento de tu equipo de futbol en tiempo real',
+    'hero.title': 'Digitaliza y analiza el rendimiento de tu equipo de fútbol en tiempo real',
     'hero.subtitle': 'Sin necesidad de Wi-Fi. Statsor revoluciona la gestión táctica y el análisis estadístico, dando a los entrenadores el control total para optimizar cada jugada y entrenamiento.',
     'hero.cta': 'Solicita tu demo',
     
@@ -76,9 +76,21 @@ const translations = {
     'features.reports.title': 'Informes automáticos',
     'features.reports.description': 'Genera reportes completos sobre el equipo y jugadores. Comparte documentos profesionales con directivos o padres.',
     
+    // Format Types
+    'format.future.title': 'El futuro del fútbol es AHORA',
+    'format.wenger.quote': '"Vivimos en un mundo donde los datos son muy importantes, y el siguiente paso será usar la inteligencia artificial para anticipar la toma de decisiones y el potencial de los jugadores. Los datos nos permiten analizar cada aspecto del juego y mejorar el rendimiento en todos los niveles."',
+    'format.wenger.author': '— Arsène Wenger',
+    
+    // Testimonials
+    'testimonials.title': 'Testimonios',
+    'testimonials.subtitle': 'Descubre cómo entrenadores de todos los niveles han mejorado con Statsor',
+    'testimonials.javier.quote': 'Como director deportivo, Statsor me permite supervisar todos nuestros equipos de manera eficiente. Los informes automáticos y la facilidad para compartir datos entre entrenadores son funcionalidades excepcionales.',
+    'testimonials.luisa.quote': 'Lo que más me gusta de Statsor es la facilidad de uso. Puedo acceder desde cualquier dispositivo, incluso desde el campo, y tener toda la información de mi equipo a un clic de distancia.',
+    'testimonials.carlos.quote': 'Como preparador físico, las estadísticas y la gestión de carga de trabajo en Statsor son insuperables. Hemos reducido lesiones en un 30% gracias a los entrenamientos personalizados.',
+    
     // Pricing
-    'pricing.title': 'Escoje tu plan',
-    'pricing.subtitle': 'Desbloquee funciones premium para aumentar la productividad y agilizar su flujo de trabajo. Elige el plan que más te convenga.',
+    'pricing.title': 'Escoge tu plan',
+    'pricing.subtitle': 'Desbloquea funciones premium para aumentar la productividad y agilizar su flujo de trabajo. Elige el plan que más te convenga.',
     'pricing.monthly': 'Facturación Mensual',
     'pricing.annual': 'Facturación Anual',
     'pricing.save': 'Ahorras hasta 60€!',
@@ -112,6 +124,30 @@ const translations = {
     'dashboard.statistics': 'Estadísticas',
     'dashboard.attendance': 'Asistencia',
     'dashboard.reports': 'Informes',
+    'dashboard.command.table': 'Tabla de comandos',
+    'dashboard.full.screen': 'Pantalla completa',
+    'dashboard.start': 'Iniciar',
+    'dashboard.restart': 'Reiniciar',
+    'dashboard.pause': 'Pausar',
+    'dashboard.actions': 'Acciones',
+    'dashboard.action.register': 'Registro Acciones',
+    'dashboard.save.stats': 'Guardar Estadísticas',
+    'dashboard.go.to.goals': 'Ir a Registro de Goles',
+    'dashboard.attendance.control': 'Control de Asistencia',
+    'dashboard.attendance.subtitle': 'Registra qué jugadores están presentes en el entrenamiento o partido',
+    'dashboard.total.players': 'Total Jugadores',
+    'dashboard.present': 'Presentes',
+    'dashboard.absent': 'Ausentes',
+    'dashboard.player.list': 'Lista de Jugadores',
+    'dashboard.attendance.instruction': 'Pulsa el botón para cambiar el estado de asistencia',
+    'dashboard.stats.title': 'Estadísticas',
+    'dashboard.stats.subtitle': 'Estadísticas generales del equipo en la temporada actual',
+    'dashboard.performance': 'Rendimiento',
+    'dashboard.attack': 'Ataque',
+    'dashboard.defense': 'Defensa',
+    'dashboard.discipline': 'Disciplina',
+    'dashboard.add.player': 'Añadir Jugador',
+    'dashboard.no.order': 'Sin ordenar',
   },
   en: {
     // Navigation
@@ -170,6 +206,18 @@ const translations = {
     'features.reports.title': 'Automatic reports',
     'features.reports.description': 'Generate comprehensive reports on team and players. Share professional documents with management or parents.',
     
+    // Format Types
+    'format.future.title': 'The future of football is NOW',
+    'format.wenger.quote': '"We live in a world where data is very important, and the next step will be to use artificial intelligence to anticipate decision-making and player potential. Data allows us to analyze every aspect of the game and improve performance at all levels."',
+    'format.wenger.author': '— Arsène Wenger',
+    
+    // Testimonials
+    'testimonials.title': 'Testimonials',
+    'testimonials.subtitle': 'Discover how coaches at all levels have improved with Statsor',
+    'testimonials.javier.quote': 'As sports director, Statsor allows me to efficiently supervise all our teams. The automatic reports and ease of sharing data between coaches are exceptional features.',
+    'testimonials.luisa.quote': 'What I like most about Statsor is the ease of use. I can access from any device, even from the field, and have all my team information at the click of a button.',
+    'testimonials.carlos.quote': 'As a physical trainer, the statistics and workload management in Statsor are unbeatable. We have reduced injuries by 30% thanks to personalized training.',
+    
     // Pricing
     'pricing.title': 'Choose your plan',
     'pricing.subtitle': 'Unlock premium features to boost productivity and streamline your workflow. Choose the plan that suits you best.',
@@ -206,6 +254,30 @@ const translations = {
     'dashboard.statistics': 'Statistics',
     'dashboard.attendance': 'Attendance',
     'dashboard.reports': 'Reports',
+    'dashboard.command.table': 'Command Table',
+    'dashboard.full.screen': 'Full Screen',
+    'dashboard.start': 'Start',
+    'dashboard.restart': 'Restart',
+    'dashboard.pause': 'Pause',
+    'dashboard.actions': 'Actions',
+    'dashboard.action.register': 'Action Register',
+    'dashboard.save.stats': 'Save Statistics',
+    'dashboard.go.to.goals': 'Go to Goals Register',
+    'dashboard.attendance.control': 'Attendance Control',
+    'dashboard.attendance.subtitle': 'Record which players are present at training or match',
+    'dashboard.total.players': 'Total Players',
+    'dashboard.present': 'Present',
+    'dashboard.absent': 'Absent',
+    'dashboard.player.list': 'Player List',
+    'dashboard.attendance.instruction': 'Press the button to change attendance status',
+    'dashboard.stats.title': 'Statistics',
+    'dashboard.stats.subtitle': 'General team statistics for the current season',
+    'dashboard.performance': 'Performance',
+    'dashboard.attack': 'Attack',
+    'dashboard.defense': 'Defense',
+    'dashboard.discipline': 'Discipline',
+    'dashboard.add.player': 'Add Player',
+    'dashboard.no.order': 'No order',
   }
 };
 
