@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { DatabaseStatus } from '@/components/DatabaseStatus';
+import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -28,7 +29,8 @@ import {
   Settings,
   ChevronDown,
   ChevronUp,
-  Database
+  Database,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -299,6 +301,7 @@ const Dashboard = () => {
     { id: 'players', icon: Users, label: t('dashboard.players') },
     { id: 'attendance', icon: ClipboardCheck, label: t('dashboard.attendance') },
     { id: 'statistics', icon: BarChart3, label: t('dashboard.statistics') },
+    { id: 'analytics', icon: Activity, label: 'Advanced Analytics' },
     { id: 'database', icon: Database, label: 'Database Status' },
   ];
 
@@ -763,6 +766,12 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderAnalytics = () => (
+    <div className="animate-fadeIn">
+      <AnalyticsDashboard />
+    </div>
+  );
+
   const renderDatabaseStatus = () => (
     <div className="p-6 animate-fadeIn">
       <div className="mb-6">
@@ -785,6 +794,8 @@ const Dashboard = () => {
         return renderPlayers();
       case 'statistics':
         return renderStatistics();
+      case 'analytics':
+        return renderAnalytics();
       case 'database':
         return renderDatabaseStatus();
       default:
