@@ -10,9 +10,17 @@ export class SQLiteManager {
 
   async initialize(): Promise<void> {
     try {
-      // Initialize SQL.js
+      // Initialize SQL.js with proper WebAssembly configuration
       const initSqlJs = await import('sql.js');
-      const SQL = await initSqlJs.default();
+      const SQL = await initSqlJs.default({
+        locateFile: (file: string) => {
+          // Ensure the WebAssembly file is loaded from the correct path
+          if (file.endsWith('.wasm')) {
+            return `/sql-wasm.wasm`;
+          }
+          return file;
+        }
+      });
       
       // Load existing database or create new one
       const dbData = this.loadFromStorage();
