@@ -25,6 +25,27 @@ const translations = {
     'nav.pricing': 'Precios',
     'nav.demo': 'Demo',
     'nav.contact': 'Contacto',
+    'nav.signin': 'Iniciar Sesión',
+    'nav.signup': 'Registrarse',
+    'nav.dashboard': 'Panel',
+    'nav.logout': 'Cerrar Sesión',
+    
+    // Auth
+    'auth.signin.title': 'Iniciar Sesión',
+    'auth.signin.subtitle': 'Accede a tu cuenta de Statsor',
+    'auth.signup.title': 'Crear Cuenta',
+    'auth.signup.subtitle': 'Únete a Statsor y revoluciona tu análisis de fútbol',
+    'auth.email': 'Correo electrónico',
+    'auth.password': 'Contraseña',
+    'auth.confirmPassword': 'Confirmar contraseña',
+    'auth.signin.button': 'Iniciar Sesión',
+    'auth.signup.button': 'Crear Cuenta',
+    'auth.google.button': 'Continuar con Google',
+    'auth.forgot.password': '¿Olvidaste tu contraseña?',
+    'auth.no.account': '¿No tienes cuenta?',
+    'auth.have.account': '¿Ya tienes cuenta?',
+    'auth.signup.link': 'Regístrate aquí',
+    'auth.signin.link': 'Inicia sesión aquí',
     
     // Hero Section
     'hero.title': 'Digitaliza y analiza el rendimiento de tu equipo de futbol en tiempo real',
@@ -58,8 +79,8 @@ const translations = {
     // Pricing
     'pricing.title': 'Escoje tu plan',
     'pricing.subtitle': 'Desbloquee funciones premium para aumentar la productividad y agilizar su flujo de trabajo. Elige el plan que más te convenga.',
-    'pricing.monthly': 'Mensual Billing',
-    'pricing.annual': 'Anual Billing',
+    'pricing.monthly': 'Facturación Mensual',
+    'pricing.annual': 'Facturación Anual',
     'pricing.save': 'Ahorras hasta 60€!',
     'pricing.starter.title': 'STARTER',
     'pricing.starter.price': '€0',
@@ -82,6 +103,15 @@ const translations = {
     'footer.rights': '© 2025 Statsor. Todos los derechos reservados.',
     'footer.privacy': 'Política de Privacidad',
     'footer.terms': 'Términos de Servicio',
+
+    // Dashboard
+    'dashboard.welcome': 'Bienvenido a Statsor',
+    'dashboard.overview': 'Resumen del equipo',
+    'dashboard.players': 'Jugadores',
+    'dashboard.matches': 'Partidos',
+    'dashboard.statistics': 'Estadísticas',
+    'dashboard.attendance': 'Asistencia',
+    'dashboard.reports': 'Informes',
   },
   en: {
     // Navigation
@@ -89,6 +119,27 @@ const translations = {
     'nav.pricing': 'Pricing',
     'nav.demo': 'Demo',
     'nav.contact': 'Contact',
+    'nav.signin': 'Sign In',
+    'nav.signup': 'Sign Up',
+    'nav.dashboard': 'Dashboard',
+    'nav.logout': 'Logout',
+    
+    // Auth
+    'auth.signin.title': 'Sign In',
+    'auth.signin.subtitle': 'Access your Statsor account',
+    'auth.signup.title': 'Create Account',
+    'auth.signup.subtitle': 'Join Statsor and revolutionize your football analysis',
+    'auth.email': 'Email address',
+    'auth.password': 'Password',
+    'auth.confirmPassword': 'Confirm password',
+    'auth.signin.button': 'Sign In',
+    'auth.signup.button': 'Create Account',
+    'auth.google.button': 'Continue with Google',
+    'auth.forgot.password': 'Forgot your password?',
+    'auth.no.account': "Don't have an account?",
+    'auth.have.account': 'Already have an account?',
+    'auth.signup.link': 'Sign up here',
+    'auth.signin.link': 'Sign in here',
     
     // Hero Section
     'hero.title': 'Digitize and analyze your football team\'s performance in real time',
@@ -146,6 +197,15 @@ const translations = {
     'footer.rights': '© 2025 Statsor. All rights reserved.',
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
+
+    // Dashboard
+    'dashboard.welcome': 'Welcome to Statsor',
+    'dashboard.overview': 'Team Overview',
+    'dashboard.players': 'Players',
+    'dashboard.matches': 'Matches',
+    'dashboard.statistics': 'Statistics',
+    'dashboard.attendance': 'Attendance',
+    'dashboard.reports': 'Reports',
   }
 };
 
