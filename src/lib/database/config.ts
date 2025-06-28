@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { Pool } from 'pg';
 
 // Database Configuration
 export const DATABASE_CONFIG = {
@@ -18,14 +17,6 @@ export const DATABASE_CONFIG = {
     storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'demo.appspot.com',
     messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789',
     appId: process.env.VITE_FIREBASE_APP_ID || 'demo-app-id'
-  },
-  postgresql: {
-    host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432'),
-    database: process.env.POSTGRES_DB || 'statsor_db',
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'password',
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   },
   sap: {
     serverUrl: process.env.SAP_SERVER_URL || 'https://demo-sap-server.com',
@@ -44,8 +35,6 @@ export const supabase = createClient(
 export const firebaseApp = initializeApp(DATABASE_CONFIG.firebase);
 export const firestore = getFirestore(firebaseApp);
 export const firebaseAuth = getAuth(firebaseApp);
-
-export const postgresPool = new Pool(DATABASE_CONFIG.postgresql);
 
 // SQLite Configuration for offline storage
 export const SQLITE_CONFIG = {

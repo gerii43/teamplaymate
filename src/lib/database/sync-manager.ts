@@ -1,4 +1,4 @@
-import { supabase, firestore, postgresPool } from './config';
+import { supabase, firestore } from './config';
 import { SQLiteManager } from './sqlite-manager';
 import { ConflictResolver } from './conflict-resolver';
 import { Logger } from '../utils/logger';
@@ -200,8 +200,6 @@ export class SyncManager {
             return this.syncToSupabase(operation);
           case 'firebase':
             return this.syncToFirebase(operation);
-          case 'postgresql':
-            return this.syncToPostgreSQL(operation);
           default:
             throw new Error(`Unknown database: ${database}`);
         }
@@ -269,37 +267,6 @@ export class SyncManager {
       case 'delete':
         await setDoc(docRef, { deleted: true, deleted_at: new Date().toISOString() });
         break;
-    }
-  }
-
-  private async syncToPostgreSQL(operation: SyncOperation): Promise<void> {
-    const { entity_type, entity_id, operation: op, data } = operation;
-    const client = await postgresPool.connect();
-
-    try {
-      switch (op) {
-        case 'create':
-          const insertColumns = Object.keys(data).join(', ');
-          const insertValues = Object.keys(data).map((_, i) => `$${i + 1}`).join(', ');
-          const insertQuery = `INSERT INTO ${entity_type} (${insertColumns}) VALUES (${insertValues})`;
-          await client.query(insertQuery, Object.values(data));
-          break;
-
-        case 'update':
-          const updateColumns = Object.keys(data)
-            .map((key, i) => `${key} = $${i + 1}`)
-            .join(', ');
-          const updateQuery = `UPDATE ${entity_type} SET ${updateColumns} WHERE id = $${Object.keys(data).length + 1}`;
-          await client.query(updateQuery, [...Object.values(data), entity_id]);
-          break;
-
-        case 'delete':
-          const deleteQuery = `DELETE FROM ${entity_type} WHERE id = $1`;
-          await client.query(deleteQuery, [entity_id]);
-          break;
-      }
-    } finally {
-      client.release();
     }
   }
 

@@ -5,7 +5,7 @@ import { ConflictResolver } from './conflict-resolver';
 import { PerformanceMonitor } from '../utils/performance-monitor';
 import { Logger } from '../utils/logger';
 import { BaseEntity, User, Team, Player, Match } from './schema';
-import { supabase, firestore, postgresPool } from './config';
+import { supabase, firestore } from './config';
 
 export class DatabaseManager {
   private sqliteManager: SQLiteManager;
@@ -53,14 +53,13 @@ export class DatabaseManager {
   private async testConnections(): Promise<void> {
     const connectionTests = [
       this.testSupabaseConnection(),
-      this.testFirebaseConnection(),
-      this.testPostgreSQLConnection()
+      this.testFirebaseConnection()
     ];
 
     const results = await Promise.allSettled(connectionTests);
     
     results.forEach((result, index) => {
-      const dbNames = ['Supabase', 'Firebase', 'PostgreSQL'];
+      const dbNames = ['Supabase', 'Firebase'];
       if (result.status === 'fulfilled') {
         this.logger.info(`${dbNames[index]} connection successful`);
       } else {
@@ -78,15 +77,6 @@ export class DatabaseManager {
     // Simple test to verify Firebase connection
     const testDoc = await firestore.collection('_test').limit(1).get();
     // Connection successful if no error thrown
-  }
-
-  private async testPostgreSQLConnection(): Promise<void> {
-    const client = await postgresPool.connect();
-    try {
-      await client.query('SELECT 1');
-    } finally {
-      client.release();
-    }
   }
 
   // CRUD Operations with caching and offline support
@@ -112,7 +102,7 @@ export class DatabaseManager {
           entity_id: entity.id,
           operation: 'create',
           data: entity,
-          target_databases: ['supabase', 'firebase', 'postgresql']
+          target_databases: ['supabase', 'firebase']
         });
 
         // Cache the entity
@@ -206,7 +196,7 @@ export class DatabaseManager {
           entity_id: id,
           operation: 'update',
           data: updated,
-          target_databases: ['supabase', 'firebase', 'postgresql']
+          target_databases: ['supabase', 'firebase']
         });
 
         // Update cache
@@ -238,7 +228,7 @@ export class DatabaseManager {
           entity_id: id,
           operation: 'delete',
           data: existing,
-          target_databases: ['supabase', 'firebase', 'postgresql']
+          target_databases: ['supabase', 'firebase']
         });
 
         // Remove from cache
