@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DatabaseProvider } from "@/contexts/DatabaseContext";
+import { ChatbotProvider } from "@/components/ChatbotBackend";
+import { FootballChatbot } from "@/components/FootballChatbot";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
 import SignIn from "./pages/SignIn";
@@ -34,27 +36,30 @@ const App = () => (
     <LanguageProvider>
       <AuthProvider>
         <DatabaseProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/valorant" element={<ValorantAnalysis />} />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <ChatbotProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/signin" element={<SignIn />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/valorant" element={<ValorantAnalysis />} />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                </Routes>
+                <FootballChatbot />
+              </BrowserRouter>
+            </TooltipProvider>
+          </ChatbotProvider>
         </DatabaseProvider>
       </AuthProvider>
     </LanguageProvider>
