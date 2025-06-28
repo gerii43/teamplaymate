@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDatabase } from '@/contexts/DatabaseContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { DatabaseStatus } from '@/components/DatabaseStatus';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Home, 
   Users, 
@@ -24,7 +27,8 @@ import {
   Upload,
   Settings,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Database
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -50,6 +54,7 @@ interface GameAction {
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const { databaseManager, isInitialized, initializeDatabase } = useDatabase();
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('command-table');
   const [gameTime, setGameTime] = useState(20 * 60); // 20 minutes in seconds
@@ -74,6 +79,16 @@ const Dashboard = () => {
   const [expandedStats, setExpandedStats] = useState<string[]>([]);
   const [draggedPlayer, setDraggedPlayer] = useState<Player | null>(null);
 
+  // Initialize database on component mount
+  useEffect(() => {
+    if (!isInitialized) {
+      initializeDatabase().catch(error => {
+        console.error('Failed to initialize database:', error);
+        toast.error('Failed to initialize database');
+      });
+    }
+  }, [isInitialized, initializeDatabase]);
+
   // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -85,6 +100,19 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, [isPlaying, gameTime]);
 
+  // Save players to database when they change
+  useEffect(() => {
+    if (databaseManager && isInitialized) {
+      players.forEach(async (player) => {
+        try {
+          await databaseManager.update('players', player.id, player);
+        } catch (error) {
+          console.error('Failed to save player:', error);
+        }
+      });
+    }
+  }, [players, databaseManager, isInitialized]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -95,16 +123,31 @@ const Dashboard = () => {
     await signOut();
   };
 
-  const togglePlayerAttendance = (playerId: string) => {
+  const togglePlayerAttendance = async (playerId: string) => {
     setPlayers(prev => prev.map(player => 
       player.id === playerId 
         ? { ...player, present: !player.present }
         : player
     ));
+    
+    if (databaseManager) {
+      try {
+        const player = players.find(p => p.id === playerId);
+        if (player) {
+          await databaseManager.update('players', playerId, { 
+            ...player, 
+            present: !player.present 
+          });
+        }
+      } catch (error) {
+        console.error('Failed to update attendance:', error);
+      }
+    }
+    
     toast.success('Attendance updated');
   };
 
-  const addGameAction = (actionType: string) => {
+  const addGameAction = async (actionType: string) => {
     const newAction: GameAction = {
       id: Date.now().toString(),
       type: actionType,
@@ -112,11 +155,28 @@ const Dashboard = () => {
       minute: Math.floor((20 * 60 - gameTime) / 60),
       description: `${actionType} recorded`
     };
+    
     setGameActions(prev => [...prev, newAction]);
+    
+    if (databaseManager) {
+      try {
+        await databaseManager.create('match_events', {
+          type: actionType,
+          player_id: 'unknown',
+          team_id: 'current_team',
+          minute: newAction.minute,
+          description: newAction.description,
+          metadata: {}
+        });
+      } catch (error) {
+        console.error('Failed to save game action:', error);
+      }
+    }
+    
     toast.success(`${actionType} recorded`);
   };
 
-  const addNewPlayer = (playerData: Partial<Player>) => {
+  const addNewPlayer = async (playerData: Partial<Player>) => {
     const newPlayer: Player = {
       id: Date.now().toString(),
       number: playerData.number || players.length + 1,
@@ -129,25 +189,82 @@ const Dashboard = () => {
       redCards: 0,
       ...playerData
     };
+    
     setPlayers(prev => [...prev, newPlayer]);
+    
+    if (databaseManager) {
+      try {
+        await databaseManager.createPlayer({
+          name: newPlayer.name,
+          number: newPlayer.number,
+          position: newPlayer.position as any,
+          team_id: 'current_team',
+          birth_date: '2000-01-01',
+          statistics: {
+            goals: newPlayer.goals,
+            assists: newPlayer.assists,
+            yellow_cards: newPlayer.yellowCards,
+            red_cards: newPlayer.redCards,
+            minutes_played: 0,
+            matches_played: 0,
+            passes_completed: 0,
+            passes_attempted: 0,
+            shots_on_target: 0,
+            shots_total: 0
+          },
+          attendance: [],
+          medical_info: {
+            injuries: [],
+            medical_clearance: true,
+            emergency_contact: {
+              name: '',
+              phone: '',
+              relationship: ''
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Failed to save new player:', error);
+      }
+    }
+    
     setNewPlayerModal(false);
     toast.success('Player added successfully');
   };
 
-  const updatePlayer = (playerData: Partial<Player>) => {
+  const updatePlayer = async (playerData: Partial<Player>) => {
     if (!selectedPlayer) return;
+    
     setPlayers(prev => prev.map(player => 
       player.id === selectedPlayer.id 
         ? { ...player, ...playerData }
         : player
     ));
+    
+    if (databaseManager) {
+      try {
+        await databaseManager.update('players', selectedPlayer.id, playerData);
+      } catch (error) {
+        console.error('Failed to update player:', error);
+      }
+    }
+    
     setEditPlayerModal(false);
     setSelectedPlayer(null);
     toast.success('Player updated successfully');
   };
 
-  const deletePlayer = (playerId: string) => {
+  const deletePlayer = async (playerId: string) => {
     setPlayers(prev => prev.filter(player => player.id !== playerId));
+    
+    if (databaseManager) {
+      try {
+        await databaseManager.delete('players', playerId);
+      } catch (error) {
+        console.error('Failed to delete player:', error);
+      }
+    }
+    
     toast.success('Player deleted');
   };
 
@@ -182,6 +299,7 @@ const Dashboard = () => {
     { id: 'players', icon: Users, label: t('dashboard.players') },
     { id: 'attendance', icon: ClipboardCheck, label: t('dashboard.attendance') },
     { id: 'statistics', icon: BarChart3, label: t('dashboard.statistics') },
+    { id: 'database', icon: Database, label: 'Database Status' },
   ];
 
   const actions = [
@@ -645,6 +763,16 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderDatabaseStatus = () => (
+    <div className="p-6 animate-fadeIn">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">Database Status</h2>
+        <p className="text-gray-600">Monitor and manage your multi-database system</p>
+      </div>
+      <DatabaseStatus />
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeTab) {
       case 'command-table':
@@ -657,6 +785,8 @@ const Dashboard = () => {
         return renderPlayers();
       case 'statistics':
         return renderStatistics();
+      case 'database':
+        return renderDatabaseStatus();
       default:
         return renderCommandTable();
     }
