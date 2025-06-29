@@ -1,13 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-// For demo purposes, we'll use a mock setup
-// In production, you would use your actual Supabase credentials
-const supabaseUrl = 'https://demo.supabase.co'
-const supabaseAnonKey = 'demo-key'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables. Please check your .env file.')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Mock authentication for demo
+// Mock authentication for demo when Supabase is not properly configured
 export const mockAuth = {
   signUp: async (email: string, password: string) => {
     // Simulate API call
