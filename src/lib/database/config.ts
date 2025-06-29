@@ -6,23 +6,23 @@ import { getAuth } from 'firebase/auth';
 // Database Configuration
 export const DATABASE_CONFIG = {
   supabase: {
-    url: process.env.VITE_SUPABASE_URL || 'https://demo.supabase.co',
-    anonKey: process.env.VITE_SUPABASE_ANON_KEY || 'demo-key',
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || 'demo-service-key'
+    url: import.meta.env.VITE_SUPABASE_URL || 'https://demo.supabase.co',
+    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'demo-key',
+    serviceRoleKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY || 'demo-service-key'
   },
   firebase: {
-    apiKey: process.env.VITE_FIREBASE_API_KEY || 'demo-api-key',
-    authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'demo.firebaseapp.com',
-    projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'demo-project',
-    storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'demo.appspot.com',
-    messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789',
-    appId: process.env.VITE_FIREBASE_APP_ID || 'demo-app-id'
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'demo-api-key',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'demo.firebaseapp.com',
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'demo-project',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'demo.appspot.com',
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789',
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || 'demo-app-id'
   },
   sap: {
-    serverUrl: process.env.SAP_SERVER_URL || 'https://demo-sap-server.com',
-    applicationId: process.env.SAP_APPLICATION_ID || 'com.statsor.mobile',
-    clientId: process.env.SAP_CLIENT_ID || 'demo-client-id',
-    clientSecret: process.env.SAP_CLIENT_SECRET || 'demo-client-secret'
+    serverUrl: import.meta.env.SAP_SERVER_URL || 'https://demo-sap-server.com',
+    applicationId: import.meta.env.SAP_APPLICATION_ID || 'com.statsor.mobile',
+    clientId: import.meta.env.SAP_CLIENT_ID || 'demo-client-id',
+    clientSecret: import.meta.env.SAP_CLIENT_SECRET || 'demo-client-secret'
   }
 };
 
@@ -69,7 +69,7 @@ export const SECURITY_CONFIG = {
     ivLength: 16
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'demo-jwt-secret',
+    secret: import.meta.env.JWT_SECRET || 'demo-jwt-secret',
     expiresIn: '24h'
   },
   rateLimit: {
