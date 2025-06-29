@@ -84,7 +84,7 @@
     "@types/lodash": "^4.14.202",
     "@types/crypto-js": "^4.2.1",
     "@types/ws": "^8.5.10",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
