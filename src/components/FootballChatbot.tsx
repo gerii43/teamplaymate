@@ -692,7 +692,7 @@ What specific football topic interests you most?`,
 
   return (
     <>
-      {/* Chat Toggle Button - Always visible and perfectly positioned */}
+      {/* Chat Toggle Button - Updated with new football image */}
       <motion.div
         className="fixed bottom-6 right-6 z-50"
         initial={{ scale: 0 }}
@@ -701,17 +701,21 @@ What specific football topic interests you most?`,
       >
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90 shadow-xl border-4 border-white"
+          className="w-16 h-16 rounded-full bg-primary hover:bg-primary/90 shadow-xl border-4 border-white overflow-hidden p-0"
           size="sm"
         >
           {isOpen ? (
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 text-white" />
           ) : (
-            <div className="relative">
+            <div className="relative w-full h-full flex items-center justify-center">
               <img 
-                src="/lovable-uploads/01b5bf86-f2e7-42cd-9465-4d0bb347d2ea.png" 
+                src="/lovable-uploads/360_F_683941481_OLhYrjnwaGk4clbTW2DyxUYT2Tcr1ecA.jpg" 
                 alt="Football" 
-                className="w-10 h-10"
+                className="w-12 h-12 object-cover rounded-full"
+                style={{
+                  filter: 'brightness(1.1) contrast(1.2)',
+                  objectPosition: 'center'
+                }}
               />
               {messages.length > 1 && (
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
