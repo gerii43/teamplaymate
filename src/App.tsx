@@ -13,6 +13,7 @@ import Pricing from "./pages/Pricing";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
+import Training from "./pages/Training";
 import ValorantAnalysis from "./pages/ValorantAnalysis";
 
 const queryClient = new QueryClient({
@@ -63,6 +64,14 @@ const App = () => (
                     element={
                       <ProtectedRoute>
                         <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/training" 
+                    element={
+                      <ProtectedRoute>
+                        <Training />
                       </ProtectedRoute>
                     } 
                   />
