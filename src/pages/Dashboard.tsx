@@ -30,7 +30,9 @@ import {
   ChevronDown,
   ChevronUp,
   Database,
-  Activity
+  Activity,
+  Dumbbell,
+  ArrowLeft
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -80,6 +82,7 @@ const Dashboard = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [expandedStats, setExpandedStats] = useState<string[]>([]);
   const [draggedPlayer, setDraggedPlayer] = useState<Player | null>(null);
+  const [selectedPlayerDetail, setSelectedPlayerDetail] = useState<Player | null>(null);
 
   // Initialize database on component mount
   useEffect(() => {
@@ -299,6 +302,7 @@ const Dashboard = () => {
     { id: 'command-table', icon: Home, label: t('dashboard.command.table') },
     { id: 'action-register', icon: FileText, label: t('dashboard.action.register') },
     { id: 'players', icon: Users, label: t('dashboard.players') },
+    { id: 'training', icon: Dumbbell, label: 'Entrenamientos' },
     { id: 'attendance', icon: ClipboardCheck, label: t('dashboard.attendance') },
     { id: 'statistics', icon: BarChart3, label: t('dashboard.statistics') },
     { id: 'analytics', icon: Activity, label: 'Advanced Analytics' },
@@ -487,8 +491,12 @@ const Dashboard = () => {
             </thead>
             <tbody>
               {players.map((player, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium">{player.name}</td>
+                <tr 
+                  key={index} 
+                  className="border-b hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => setSelectedPlayerDetail(player)}
+                >
+                  <td className="px-4 py-3 font-medium hover:text-blue-600">{player.name}</td>
                   <td className="px-4 py-3">{player.goals}</td>
                   <td className="px-4 py-3">{player.assists}</td>
                   <td className="px-4 py-3">{Math.floor(Math.random() * 5)}</td>
@@ -782,7 +790,170 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderPlayerDetail = () => {
+    if (!selectedPlayerDetail) return null;
+    
+    return (
+      <div className="p-6 animate-fadeIn">
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setSelectedPlayerDetail(null)}
+            className="mr-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver
+          </Button>
+          <h2 className="text-2xl font-bold">Detalle del Jugador</h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Player Info */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold">
+                  {selectedPlayerDetail.number}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">{selectedPlayerDetail.name}</h3>
+                  <p className="text-gray-600">{selectedPlayerDetail.position}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Estado:</span>
+                  <span className={`font-semibold ${selectedPlayerDetail.present ? 'text-green-600' : 'text-red-600'}`}>
+                    {selectedPlayerDetail.present ? 'Presente' : 'Ausente'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Partidos jugados:</span>
+                  <span className="font-semibold">12</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Minutos jugados:</span>
+                  <span className="font-semibold">1,080</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Statistics */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h4 className="text-lg font-semibold mb-4">Estadísticas Detalladas</h4>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">{selectedPlayerDetail.goals}</div>
+                  <div className="text-sm text-gray-600">Goles</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{selectedPlayerDetail.assists}</div>
+                  <div className="text-sm text-gray-600">Asistencias</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">{selectedPlayerDetail.yellowCards}</div>
+                  <div className="text-sm text-gray-600">T. Amarillas</div>
+                </div>
+                <div className="text-center p-4 bg-red-50 rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">{selectedPlayerDetail.redCards}</div>
+                  <div className="text-sm text-gray-600">T. Rojas</div>
+                </div>
+              </div>
+
+              {/* Additional stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h5 className="font-semibold mb-3">Acciones Ofensivas</h5>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Tiros a portería:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 15) + 5}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tiros a puerta:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 8) + 2}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pases clave:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 20) + 5}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h5 className="font-semibold mb-3">Acciones Defensivas</h5>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Balones recuperados:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 25) + 10}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Duelos ganados:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 30) + 15}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Intercepciones:</span>
+                      <span className="font-semibold">{Math.floor(Math.random() * 20) + 8}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance chart placeholder */}
+              <div className="mt-6">
+                <h5 className="font-semibold mb-3">Rendimiento por Partido</h5>
+                <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500">Gráfico de rendimiento (próximamente)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTraining = () => (
+    <div className="p-6 animate-fadeIn">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Entrenamientos</h2>
+        <Button 
+          className="bg-blue-500 hover:bg-blue-600"
+          onClick={() => window.location.href = '/training'}
+        >
+          <Dumbbell className="w-4 h-4 mr-2" />
+          Acceder al Módulo Completo
+        </Button>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center py-12">
+          <Dumbbell className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">Módulo de Entrenamientos</h3>
+          <p className="text-gray-500 mb-4">
+            Crea sesiones de entrenamiento personalizadas con ejercicios predefinidos
+          </p>
+          <Button 
+            className="bg-blue-500 hover:bg-blue-600"
+            onClick={() => window.location.href = '/training'}
+          >
+            Acceder al Módulo
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
+    if (selectedPlayerDetail) {
+      return renderPlayerDetail();
+    }
+    
     switch (activeTab) {
       case 'command-table':
         return renderCommandTable();
@@ -792,6 +963,8 @@ const Dashboard = () => {
         return renderAttendance();
       case 'players':
         return renderPlayers();
+      case 'training':
+        return renderTraining();
       case 'statistics':
         return renderStatistics();
       case 'analytics':
