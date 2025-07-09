@@ -84,6 +84,20 @@ const Dashboard = () => {
   const [expandedStats, setExpandedStats] = useState<string[]>([]);
   const [draggedPlayer, setDraggedPlayer] = useState<Player | null>(null);
   const [selectedPlayerDetail, setSelectedPlayerDetail] = useState<Player | null>(null);
+  
+  // Training states
+  const [sessionName, setSessionName] = useState('Nueva Sesión de Entrenamiento');
+  const [selectedExercises, setSelectedExercises] = useState<{[key: string]: any[]}>({
+    activacion: [],
+    juego: [],
+    analitica: [],
+    situacional: [],
+    final: []
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('todas');
+  const [activeFilter, setActiveFilter] = useState('todos');
+  const [sessionDate, setSessionDate] = useState<Date>();
 
   // Initialize database on component mount
   useEffect(() => {
@@ -920,17 +934,6 @@ const Dashboard = () => {
   };
 
   const renderTraining = () => {
-    const [sessionName, setSessionName] = useState('Nueva Sesión de Entrenamiento');
-    const [selectedExercises, setSelectedExercises] = useState<{[key: string]: any[]}>({
-      activacion: [],
-      juego: [],
-      analitica: [],
-      situacional: [],
-      final: []
-    });
-    const [searchTerm, setSearchTerm] = useState('');
-    const [activeFilter, setActiveFilter] = useState('todos');
-    const [sessionDate, setSessionDate] = useState<Date>();
     
     const phases = [
       { id: 'activacion', name: 'Activación', color: 'bg-green-500', maxDuration: 15 },
