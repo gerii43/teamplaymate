@@ -44,9 +44,9 @@ export class CacheManager {
       const entryTTL = ttl || this.config.defaultTTL;
 
       // Encrypt sensitive data if configured
-      let processedData = data;
+      let processedData: T = data;
       if (this.config.encryptSensitiveData && this.isSensitiveData(key)) {
-        processedData = this.encryption.encryptObject(data);
+        processedData = this.encryption.encryptObject(data) as T;
       }
 
       const entry: CacheEntry<T> = {

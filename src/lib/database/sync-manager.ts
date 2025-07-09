@@ -125,7 +125,7 @@ export class SyncManager {
       await this.sqliteManager.insert(table, record);
     } else {
       // Conflict: record exists locally
-      await this.resolveConflict(table, record.id, localRecord, record, 'data');
+      await this.resolveConflict(table, record.id, localRecord as BaseEntity, record, 'data');
     }
   }
 
@@ -136,9 +136,9 @@ export class SyncManager {
       // Record doesn't exist locally, insert it
       await this.sqliteManager.insert(table, record);
     } else {
-      // Check for version conflicts
-      if (localRecord.version !== record.version - 1) {
-        await this.resolveConflict(table, record.id, localRecord, record, 'version');
+      // Check for version conflicts  
+      if ((localRecord as any).version !== record.version - 1) {
+        await this.resolveConflict(table, record.id, localRecord as BaseEntity, record, 'version');
       } else {
         // No conflict, update locally
         await this.sqliteManager.update(table, record.id, record);
@@ -150,9 +150,9 @@ export class SyncManager {
     const localRecord = await this.sqliteManager.findById(table, record.id);
     
     if (localRecord) {
-      if (localRecord.sync_status === 'pending') {
+      if ((localRecord as any).sync_status === 'pending') {
         // Conflict: local changes pending
-        await this.resolveConflict(table, record.id, localRecord, null, 'delete');
+        await this.resolveConflict(table, record.id, localRecord as BaseEntity, null, 'delete');
       } else {
         // No conflict, delete locally
         await this.sqliteManager.delete(table, record.id);

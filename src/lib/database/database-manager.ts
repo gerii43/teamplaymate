@@ -74,9 +74,13 @@ export class DatabaseManager {
   }
 
   private async testFirebaseConnection(): Promise<void> {
-    // Simple test to verify Firebase connection
-    const testDoc = await firestore.collection('_test').limit(1).get();
-    // Connection successful if no error thrown
+    try {
+      // Simple test to verify Firebase connection using admin SDK methods
+      const testQuery = await (firestore as any).collection('_test').limit(1).get();
+      // Connection successful if no error thrown
+    } catch (error) {
+      throw new Error('Firebase connection test failed');
+    }
   }
 
   // CRUD Operations with caching and offline support
@@ -299,7 +303,7 @@ export class DatabaseManager {
     await this.sqliteManager.vacuum();
   }
 
-  async clearCache(): void {
+  async clearCache(): Promise<void> {
     this.cacheManager.clear();
   }
 
@@ -337,7 +341,7 @@ export class DatabaseManager {
       }
 
       // Fallback to Firebase
-      const doc = await firestore.collection(table).doc(id).get();
+      const doc = await (firestore as any).collection(table).doc(id).get();
       if (doc.exists) {
         return { id: doc.id, ...doc.data() } as T;
       }

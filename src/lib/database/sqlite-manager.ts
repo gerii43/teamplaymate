@@ -157,15 +157,20 @@ export class SQLiteManager {
 
   async addToSyncQueue(operation: Omit<SyncOperation, 'id' | 'timestamp' | 'status' | 'retry_count'>): Promise<void> {
     try {
-      const syncOp: SyncOperation = {
+      const syncOp: SyncOperation & BaseEntity = {
         id: this.generateId(),
         timestamp: new Date().toISOString(),
         status: 'pending',
         retry_count: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        version: 1,
+        sync_status: 'pending',
+        checksum: '',
         ...operation
       };
 
-      await this.insert('sync_queue', syncOp);
+      await this.insert('sync_queue', syncOp as any);
       this.logger.debug('Added operation to sync queue', { operation: syncOp.operation, entity_type: syncOp.entity_type });
     } catch (error) {
       this.logger.error('Failed to add to sync queue', error);

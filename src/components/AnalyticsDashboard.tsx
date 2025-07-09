@@ -437,48 +437,52 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ classNam
                   className="h-80"
                 >
                   <ResponsiveContainer width="100%" height="100%">
-                    {chartType === 'bar' && (
-                      <BarChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Bar dataKey={selectedMetric} fill="#4ADE80" />
-                      </BarChart>
-                    )}
-                    {chartType === 'line' && (
-                      <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Line 
-                          type="monotone" 
-                          dataKey={selectedMetric} 
-                          stroke="#4ADE80" 
-                          strokeWidth={3}
-                          dot={{ fill: '#4ADE80', strokeWidth: 2, r: 6 }}
-                        />
-                      </LineChart>
-                    )}
-                    {chartType === 'pie' && (
-                      <PieChart>
-                        <Pie
-                          data={chartData}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={100}
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}`}
-                        >
-                          {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.fill} />
-                          ))}
-                        </Pie>
-                        <Tooltip content={<CustomTooltip />} />
-                      </PieChart>
-                    )}
-                    {chartType === 'radar' && (
+                    <>
+                      {chartType === 'bar' && (
+                        <BarChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey={selectedMetric} fill="#4ADE80" />
+                        </BarChart>
+                      )}
+                      {chartType === 'line' && (
+                        <LineChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Line 
+                            type="monotone" 
+                            dataKey={selectedMetric} 
+                            stroke="#4ADE80" 
+                            strokeWidth={3}
+                            dot={{ fill: '#4ADE80', strokeWidth: 2, r: 6 }}
+                          />
+                        </LineChart>
+                      )}
+                      {chartType === 'pie' && (
+                        <PieChart>
+                          <Pie
+                            data={chartData}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={100}
+                            dataKey="value"
+                            label={({ name, value }) => `${name}: ${value}`}
+                          >
+                            {chartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                        </PieChart>
+                      )}
+                    </>
+                  </ResponsiveContainer>
+                  {chartType === 'radar' && (
+                    <ResponsiveContainer width="100%" height="100%">
                       <RadarChart data={chartData}>
                         <PolarGrid />
                         <PolarAngleAxis dataKey="metric" />
@@ -493,8 +497,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ classNam
                         />
                         <Tooltip content={<CustomTooltip />} />
                       </RadarChart>
-                    )}
-                  </ResponsiveContainer>
+                    </ResponsiveContainer>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </CardContent>
