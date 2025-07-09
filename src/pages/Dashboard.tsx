@@ -4,6 +4,7 @@ import { useDatabase } from '@/contexts/DatabaseContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { format } from 'date-fns';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { DatabaseStatus } from '@/components/DatabaseStatus';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
@@ -918,36 +919,297 @@ const Dashboard = () => {
     );
   };
 
-  const renderTraining = () => (
-    <div className="p-6 animate-fadeIn">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Entrenamientos</h2>
-        <Button 
-          className="bg-blue-500 hover:bg-blue-600"
-          onClick={() => window.location.href = '/training'}
-        >
-          <Dumbbell className="w-4 h-4 mr-2" />
-          Acceder al Módulo Completo
-        </Button>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="text-center py-12">
-          <Dumbbell className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">Módulo de Entrenamientos</h3>
-          <p className="text-gray-500 mb-4">
-            Crea sesiones de entrenamiento personalizadas con ejercicios predefinidos
-          </p>
-          <Button 
-            className="bg-blue-500 hover:bg-blue-600"
-            onClick={() => window.location.href = '/training'}
-          >
-            Acceder al Módulo
-          </Button>
+  const renderTraining = () => {
+    const [sessionName, setSessionName] = useState('Nueva Sesión de Entrenamiento');
+    const [selectedExercises, setSelectedExercises] = useState<{[key: string]: any[]}>({
+      activacion: [],
+      juego: [],
+      analitica: [],
+      situacional: [],
+      final: []
+    });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeFilter, setActiveFilter] = useState('todos');
+    const [sessionDate, setSessionDate] = useState<Date>();
+    
+    const phases = [
+      { id: 'activacion', name: 'Activación', color: 'bg-green-500', maxDuration: 15 },
+      { id: 'juego', name: 'Juego', color: 'bg-blue-500', maxDuration: 30 },
+      { id: 'analitica', name: 'Analítica', color: 'bg-purple-500', maxDuration: 20 },
+      { id: 'situacional', name: 'Situacional', color: 'bg-orange-500', maxDuration: 25 },
+      { id: 'final', name: 'Final', color: 'bg-red-500', maxDuration: 10 }
+    ];
+
+    const exerciseLibrary = [
+      {
+        id: 1,
+        name: 'Pase y seguimiento',
+        category: 'ataque',
+        type: 'tecnico',
+        duration: 15,
+        players: '10-15',
+        description: 'Ejercicio de precisión en el pase',
+        objective: 'Mejorar la precisión del pase corto'
+      },
+      {
+        id: 2,
+        name: 'Defensa en línea',
+        category: 'defensa',
+        type: 'tactico',
+        duration: 20,
+        players: '8-11',
+        description: 'Mantener línea defensiva',
+        objective: 'Coordinar movimientos defensivos'
+      },
+      {
+        id: 3,
+        name: 'Transición rápida',
+        category: 'transicion',
+        type: 'fisico',
+        duration: 18,
+        players: '6-8',
+        description: 'Cambio rápido de defensa a ataque',
+        objective: 'Mejorar velocidad de transición'
+      },
+      {
+        id: 4,
+        name: 'Rondo 4 vs 2',
+        category: 'posesion',
+        type: 'tactico',
+        duration: 12,
+        players: '6',
+        description: 'Conservación del balón en espacio reducido',
+        objective: 'Mantener posesión bajo presión'
+      },
+      {
+        id: 5,
+        name: 'Finalización',
+        category: 'ataque',
+        type: 'tecnico',
+        duration: 25,
+        players: '8-12',
+        description: 'Ejercicios de definición',
+        objective: 'Mejorar efectividad en área'
+      },
+      {
+        id: 6,
+        name: 'Pressing coordinado',
+        category: 'defensa',
+        type: 'tactico',
+        duration: 22,
+        players: '11',
+        description: 'Presión alta organizada',
+        objective: 'Recuperar balón en campo rival'
+      }
+    ];
+
+    const filters = [
+      { id: 'todos', name: 'Todos' },
+      { id: 'ataque', name: 'Ataque' },
+      { id: 'defensa', name: 'Defensa' },
+      { id: 'transicion', name: 'Transición' },
+      { id: 'posesion', name: 'Posesión' },
+      { id: 'estrategia', name: 'Estrategia' }
+    ];
+
+    const filteredExercises = exerciseLibrary.filter(exercise => {
+      const matchesSearch = exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          exercise.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = activeFilter === 'todos' || exercise.category === activeFilter;
+      return matchesSearch && matchesFilter;
+    });
+
+    const totalDuration = Object.values(selectedExercises).flat().reduce((total: number, exercise: any) => total + exercise.duration, 0);
+
+    const handleDragStart = (e: React.DragEvent, exercise: any) => {
+      e.dataTransfer.setData('application/json', JSON.stringify(exercise));
+    };
+
+    const handleDrop = (e: React.DragEvent, phaseId: string) => {
+      e.preventDefault();
+      const exercise = JSON.parse(e.dataTransfer.getData('application/json'));
+      setSelectedExercises(prev => ({
+        ...prev,
+        [phaseId]: [...prev[phaseId], { ...exercise, id: `${exercise.id}-${Date.now()}` }]
+      }));
+      toast.success(`Ejercicio añadido a ${phases.find(p => p.id === phaseId)?.name}`);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+    };
+
+    const removeExercise = (phaseId: string, exerciseId: string) => {
+      setSelectedExercises(prev => ({
+        ...prev,
+        [phaseId]: prev[phaseId].filter(ex => ex.id !== exerciseId)
+      }));
+    };
+
+    const saveTraining = () => {
+      toast.success('Entrenamiento guardado correctamente');
+    };
+
+    return (
+      <div className="p-6 animate-fadeIn">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <Input
+              value={sessionName}
+              onChange={(e) => setSessionName(e.target.value)}
+              className="text-xl font-bold bg-transparent border-none focus:ring-0 p-0"
+            />
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <Calendar className="w-4 h-4" />
+              <span>{sessionDate ? format(sessionDate, 'dd/MM/yyyy') : 'Seleccionar fecha'}</span>
+            </div>
+          </div>
+          <div className="flex space-x-3">
+            <Button variant="outline" onClick={saveTraining}>
+              <Download className="w-4 h-4 mr-2" />
+              Guardar entrenamiento
+            </Button>
+            <Button className="bg-blue-500 hover:bg-blue-600">
+              Ver entrenamiento
+            </Button>
+          </div>
+        </div>
+
+        {/* Duration counter */}
+        <div className="bg-blue-50 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold">Duración total: {totalDuration} minutos</span>
+            <div className="flex items-center space-x-2">
+              <Users className="w-4 h-4" />
+              <span className="text-sm text-gray-600">Jugadores presentes: 20</span>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+            <div 
+              className="bg-blue-500 h-2 rounded-full transition-all" 
+              style={{ width: `${Math.min((totalDuration / 90) * 100, 100)}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Training phases */}
+        <div className="grid grid-cols-5 gap-4 mb-8">
+          {phases.map((phase) => (
+            <div
+              key={phase.id}
+              className="bg-white rounded-lg shadow-lg border-2 border-dashed border-gray-300 min-h-48"
+              onDrop={(e) => handleDrop(e, phase.id)}
+              onDragOver={handleDragOver}
+            >
+              <div className={`${phase.color} text-white p-3 rounded-t-lg`}>
+                <h3 className="font-semibold text-center">{phase.name}</h3>
+                <div className="text-xs text-center opacity-80">
+                  {selectedExercises[phase.id].reduce((total, ex) => total + ex.duration, 0)}/{phase.maxDuration} min
+                </div>
+              </div>
+              <div className="p-3 space-y-2">
+                {selectedExercises[phase.id].map((exercise) => (
+                  <div
+                    key={exercise.id}
+                    className="bg-gray-50 rounded p-2 text-sm border hover:shadow-md transition-all"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="font-medium">{exercise.name}</div>
+                        <div className="text-xs text-gray-600">{exercise.duration} min</div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => removeExercise(phase.id, exercise.id)}
+                        className="h-6 w-6 p-0 hover:bg-red-100"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {selectedExercises[phase.id].length === 0 && (
+                  <div className="text-center text-gray-400 text-sm py-8">
+                    Arrastra ejercicios aquí
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Exercise library */}
+        <div className="bg-white rounded-lg shadow-lg">
+          <div className="p-4 border-b bg-gray-50 rounded-t-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Librería de Ejercicios</h3>
+              <div className="text-sm text-gray-600">{filteredExercises.length} ejercicios encontrados</div>
+            </div>
+            
+            {/* Search and filters */}
+            <div className="flex space-x-4">
+              <div className="flex-1">
+                <Input
+                  placeholder="Buscar ejercicios..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex space-x-2">
+                {filters.map((filter) => (
+                  <Button
+                    key={filter.id}
+                    size="sm"
+                    variant={activeFilter === filter.id ? "default" : "outline"}
+                    onClick={() => setActiveFilter(filter.id)}
+                  >
+                    {filter.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredExercises.map((exercise) => (
+                <div
+                  key={exercise.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, exercise)}
+                  className="bg-white border rounded-lg p-4 cursor-grab hover:shadow-md transition-all hover:scale-105 active:cursor-grabbing"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-semibold text-gray-900">{exercise.name}</h4>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      exercise.category === 'ataque' ? 'bg-green-100 text-green-800' :
+                      exercise.category === 'defensa' ? 'bg-red-100 text-red-800' :
+                      exercise.category === 'transicion' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {exercise.category}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">{exercise.description}</p>
+                  <div className="flex justify-between items-center text-xs text-gray-500">
+                    <span>{exercise.duration} min</span>
+                    <span>{exercise.players} jugadores</span>
+                    <span className="capitalize">{exercise.type}</span>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-700 italic">
+                    {exercise.objective}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderContent = () => {
     if (selectedPlayerDetail) {
