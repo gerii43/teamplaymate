@@ -1,0 +1,192 @@
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { Trophy, Target, TrendingUp, Users } from 'lucide-react';
+
+const EnhancedDashboard = () => {
+  // Mock data for performance charts
+  const performanceData = [
+    { name: 'Partido 1', puntos: 3, golesF: 2, golesC: 1, victorias: 100 },
+    { name: 'Partido 2', puntos: 1, golesF: 1, golesC: 1, victorias: 50 },
+    { name: 'Partido 3', puntos: 3, golesF: 3, golesC: 0, victorias: 100 },
+    { name: 'Partido 4', puntos: 0, golesF: 0, golesC: 2, victorias: 0 },
+    { name: 'Partido 5', puntos: 3, golesF: 4, golesC: 1, victorias: 100 },
+    { name: 'Partido 6', puntos: 3, golesF: 2, golesC: 0, victorias: 100 },
+  ];
+
+  // Mock data for top 5 players
+  const topPlayers = [
+    { 
+      jugador: 'Fernando Torres', 
+      posicion: 'DEL', 
+      minutos: 480, 
+      goles: 5, 
+      asistencias: 3, 
+      faltasRecibidas: 8, 
+      tiros: 12, 
+      tarjetasAmarillas: 0, 
+      faltasCometidas: 2 
+    },
+    { 
+      jugador: 'Pablo Sánchez', 
+      posicion: 'CEN', 
+      minutos: 465, 
+      goles: 2, 
+      asistencias: 6, 
+      faltasRecibidas: 5, 
+      tiros: 8, 
+      tarjetasAmarillas: 2, 
+      faltasCometidas: 4 
+    },
+    { 
+      jugador: 'Juan Pérez', 
+      posicion: 'DEL', 
+      minutos: 420, 
+      goles: 3, 
+      asistencias: 2, 
+      faltasRecibidas: 6, 
+      tiros: 10, 
+      tarjetasAmarillas: 1, 
+      faltasCometidas: 3 
+    },
+    { 
+      jugador: 'Miguel Rodríguez', 
+      posicion: 'CEN', 
+      minutos: 390, 
+      goles: 1, 
+      asistencias: 4, 
+      faltasRecibidas: 3, 
+      tiros: 6, 
+      tarjetasAmarillas: 2, 
+      faltasCometidas: 5 
+    },
+    { 
+      jugador: 'David González', 
+      posicion: 'DEF', 
+      minutos: 480, 
+      goles: 1, 
+      asistencias: 0, 
+      faltasRecibidas: 2, 
+      tiros: 3, 
+      tarjetasAmarillas: 1, 
+      faltasCometidas: 8 
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Key Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-blue-100">Puntos</p>
+              <p className="text-3xl font-bold">24</p>
+              <p className="text-sm text-blue-100">Temporada actual</p>
+            </div>
+            <Trophy className="w-12 h-12 text-blue-200" />
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-r from-green-500 to-green-600 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-green-100">Último Resultado</p>
+              <p className="text-lg font-bold">CD Statsor 5-3 Jaén</p>
+              <p className="text-sm text-green-100">hace 3 días</p>
+            </div>
+            <Target className="w-12 h-12 text-green-200" />
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-purple-100">% Victorias</p>
+              <p className="text-3xl font-bold">66.7%</p>
+              <p className="text-sm text-purple-100">8 de 12 partidos</p>
+            </div>
+            <TrendingUp className="w-12 h-12 text-purple-200" />
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-orange-100">Equipo</p>
+              <p className="text-lg font-bold">FC Statsor</p>
+              <p className="text-sm text-orange-100">Primera División</p>
+            </div>
+            <Users className="w-12 h-12 text-orange-200" />
+          </div>
+        </Card>
+      </div>
+
+      {/* Performance Chart */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">Rendimiento del Equipo</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={performanceData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="puntos" stroke="#3b82f6" name="Puntos por partido" />
+            <Line type="monotone" dataKey="golesF" stroke="#10b981" name="Goles a favor" />
+            <Line type="monotone" dataKey="golesC" stroke="#ef4444" name="Goles en contra" />
+            <Line type="monotone" dataKey="victorias" stroke="#8b5cf6" name="% Victorias" />
+          </LineChart>
+        </ResponsiveContainer>
+      </Card>
+
+      {/* Top 5 Players Table */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-2">Jugador</th>
+                <th className="text-left p-2">Posición</th>
+                <th className="text-left p-2">Minutos</th>
+                <th className="text-left p-2">Goles</th>
+                <th className="text-left p-2">Asistencias</th>
+                <th className="text-left p-2">Faltas Recibidas</th>
+                <th className="text-left p-2">Tiros</th>
+                <th className="text-left p-2">T. Amarillas</th>
+                <th className="text-left p-2">Faltas Cometidas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topPlayers.map((player, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  <td className="p-2 font-medium">{player.jugador}</td>
+                  <td className="p-2">
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                      {player.posicion}
+                    </span>
+                  </td>
+                  <td className="p-2">{player.minutos}</td>
+                  <td className="p-2 font-semibold text-green-600">{player.goles}</td>
+                  <td className="p-2 font-semibold text-blue-600">{player.asistencias}</td>
+                  <td className="p-2">{player.faltasRecibidas}</td>
+                  <td className="p-2">{player.tiros}</td>
+                  <td className="p-2">
+                    {player.tarjetasAmarillas > 0 && (
+                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
+                        {player.tarjetasAmarillas}
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-2">{player.faltasCometidas}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export default EnhancedDashboard;
