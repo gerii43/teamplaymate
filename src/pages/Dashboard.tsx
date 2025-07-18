@@ -632,7 +632,8 @@ const Dashboard = () => {
         {players.map((player, index) => (
           <div 
             key={index} 
-            className="bg-white p-4 rounded-lg shadow border flex items-center space-x-4 hover:shadow-lg transform hover:scale-[1.02] transition-all"
+            className="bg-white p-4 rounded-lg shadow border flex items-center space-x-4 hover:shadow-lg transform hover:scale-[1.02] transition-all cursor-pointer"
+            onClick={() => setSelectedPlayerDetail(player)}
           >
             <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
               {player.name.split(' ').map(n => n[0]).join('')}
@@ -856,78 +857,114 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Statistics */}
+          {/* Statistics Cards */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+                <div className="text-2xl font-bold text-green-600">{selectedPlayerDetail.goals}</div>
+                <div className="text-sm text-gray-600">Goles</div>
+                <div className="text-xs text-gray-500 mt-1">Máximo temporada</div>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
+                <div className="text-2xl font-bold text-blue-600">{selectedPlayerDetail.assists}</div>
+                <div className="text-sm text-gray-600">Asistencias</div>
+                <div className="text-xs text-gray-500 mt-1">2º del equipo</div>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+                <div className="text-2xl font-bold text-green-600">15</div>
+                <div className="text-sm text-gray-600">Partidos Jugados</div>
+                <div className="text-xs text-gray-500 mt-1">Esta temporada</div>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-yellow-500">
+                <div className="text-2xl font-bold text-yellow-600">{selectedPlayerDetail.yellowCards}</div>
+                <div className="text-sm text-gray-600">Tarjetas</div>
+                <div className="text-xs text-gray-500 mt-1">{selectedPlayerDetail.redCards} rojas</div>
+              </div>
+            </div>
+
+            {/* Detailed Statistics */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h4 className="text-lg font-semibold mb-4">Estadísticas Detalladas</h4>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{selectedPlayerDetail.goals}</div>
-                  <div className="text-sm text-gray-600">Goles</div>
-                </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{selectedPlayerDetail.assists}</div>
-                  <div className="text-sm text-gray-600">Asistencias</div>
-                </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">{selectedPlayerDetail.yellowCards}</div>
-                  <div className="text-sm text-gray-600">T. Amarillas</div>
-                </div>
-                <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">{selectedPlayerDetail.redCards}</div>
-                  <div className="text-sm text-gray-600">T. Rojas</div>
-                </div>
-              </div>
-
-              {/* Additional stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h5 className="font-semibold mb-3">Acciones Ofensivas</h5>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Tiros a portería:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 15) + 5}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Tiros a puerta:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 8) + 2}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Pases clave:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 20) + 5}</span>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Minutos Jugados</span>
+                    <span className="font-semibold">1,350</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Faltas Cometidas</span>
+                    <span className="font-semibold">15</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Tiros a Portería</span>
+                    <span className="font-semibold">28</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Balones perdidos</span>
+                    <span className="font-semibold">45</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Balones Recuperados</span>
+                    <span className="font-semibold">52</span>
                   </div>
                 </div>
                 
-                <div>
-                  <h5 className="font-semibold mb-3">Acciones Defensivas</h5>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Balones recuperados:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 25) + 10}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Duelos ganados:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 30) + 15}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Intercepciones:</span>
-                      <span className="font-semibold">{Math.floor(Math.random() * 20) + 8}</span>
-                    </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Precisión de Pases</span>
+                    <span className="font-semibold">87%</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Duelos (G/P)</span>
+                    <span className="font-semibold">65/30</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Tiros fuera</span>
+                    <span className="font-semibold">15</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Centros</span>
+                    <span className="font-semibold">23</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span className="text-gray-600">Intercepciones</span>
+                    <span className="font-semibold">18</span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Performance chart placeholder */}
-              <div className="mt-6">
-                <h5 className="font-semibold mb-3">Rendimiento por Partido</h5>
-                <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">Gráfico de rendimiento (próximamente)</span>
+            {/* Performance Chart */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h4 className="text-lg font-semibold mb-4">Rendimiento</h4>
+              <div className="flex items-end space-x-4 h-48">
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-blue-500 w-full rounded-t" style={{height: `${(selectedPlayerDetail.goals / 15) * 100}%`, minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Goles</span>
+                </div>
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-green-500 w-full rounded-t" style={{height: `${(selectedPlayerDetail.assists / 10) * 100}%`, minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Asistencias</span>
+                </div>
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-yellow-500 w-full rounded-t" style={{height: '40%', minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Faltas</span>
+                </div>
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-purple-500 w-full rounded-t" style={{height: '85%', minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Pases</span>
+                </div>
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-red-500 w-full rounded-t" style={{height: '70%', minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Duelos Won</span>
+                </div>
+                <div className="flex flex-col items-center flex-1">
+                  <div className="bg-teal-500 w-full rounded-t" style={{height: '60%', minHeight: '20px'}}></div>
+                  <span className="text-xs mt-2 text-center">Balones perdidos</span>
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     );
