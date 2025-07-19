@@ -16,7 +16,8 @@ import {
   AlertTriangle,
   Trophy,
   Zap,
-  Timer
+  Timer,
+  Square
 } from 'lucide-react';
 
 const CommandTable = () => {
@@ -55,15 +56,28 @@ const CommandTable = () => {
     { id: '8', name: 'Francisco Ruiz', number: 2, position: 'DEF', status: 'bench' },
   ];
 
-  const quickActions = [
-    { id: 'goal', name: 'GOL', icon: Target, color: 'bg-green-500 hover:bg-green-600' },
-    { id: 'assist', name: 'ASISTENCIA', icon: TrendingUp, color: 'bg-blue-500 hover:bg-blue-600' },
-    { id: 'shot', name: 'TIRO', icon: Target, color: 'bg-purple-500 hover:bg-purple-600' },
-    { id: 'foul', name: 'FALTA', icon: AlertTriangle, color: 'bg-yellow-500 hover:bg-yellow-600' },
-    { id: 'save', name: 'PARADA', icon: Shield, color: 'bg-indigo-500 hover:bg-indigo-600' },
-    { id: 'card', name: 'TARJETA', icon: Activity, color: 'bg-red-500 hover:bg-red-600' },
-    { id: 'duel', name: 'DUELO', icon: Trophy, color: 'bg-orange-500 hover:bg-orange-600' },
-    { id: 'sub', name: 'CAMBIO', icon: Users, color: 'bg-gray-500 hover:bg-gray-600' },
+  // Actions organized by categories
+  const offensiveActions = [
+    { id: 'goal_favor', name: 'GOL FAVOR', icon: Target, color: 'bg-green-500 hover:bg-green-600' },
+    { id: 'assist', name: 'ASISTENCIA', icon: TrendingUp, color: 'bg-yellow-200 hover:bg-yellow-300 text-gray-800' },
+    { id: 'shot_goal', name: 'TIRO PUERTA', icon: Target, color: 'bg-purple-500 hover:bg-purple-600' },
+    { id: 'shot_out', name: 'TIRO FUERA', icon: AlertTriangle, color: 'bg-gray-400 hover:bg-gray-500' },
+  ];
+
+  const defensiveActions = [
+    { id: 'ball_recovered', name: 'BALÓN RECUPERADO', icon: Shield, color: 'bg-gray-500 hover:bg-gray-600' },
+    { id: 'duel_won', name: 'DUELO GANADO', icon: Trophy, color: 'bg-pink-500 hover:bg-pink-600' },
+    { id: 'save', name: 'PARADA', icon: Shield, color: 'bg-blue-300 hover:bg-blue-400 text-gray-800' },
+    { id: 'goal_against', name: 'GOL CONTRA', icon: Target, color: 'bg-red-800 hover:bg-red-900' },
+  ];
+
+  const penaltyActions = [
+    { id: 'foul_against', name: 'FALTA CONTRA', icon: AlertTriangle, color: 'bg-red-500 hover:bg-red-600' },
+    { id: 'foul_favor', name: 'FALTA A FAVOR', icon: AlertTriangle, color: 'bg-green-500 hover:bg-green-600' },
+    { id: 'penalty_favor', name: 'PENALTI FAVOR', icon: Activity, color: 'bg-blue-500 hover:bg-blue-600' },
+    { id: 'penalty_against', name: 'PENALTI CONTRA', icon: Activity, color: 'bg-orange-500 hover:bg-orange-600' },
+    { id: 'ball_lost', name: 'BALÓN PERDIDO', icon: AlertTriangle, color: 'bg-yellow-500 hover:bg-yellow-600' },
+    { id: 'duel_lost', name: 'DUELO PERDIDO', icon: Trophy, color: 'bg-black hover:bg-gray-800' },
   ];
 
   const registerQuickAction = (actionId: string, actionName: string) => {
@@ -99,191 +113,219 @@ const CommandTable = () => {
 
   return (
     <Layout>
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Tabla de Comandos</h1>
-          <Badge className="bg-green-100 text-green-800 text-lg px-4 py-2">
-            Partido en Directo
-          </Badge>
+      <div className="p-4 space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Tabla de Comandos</h1>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={pauseTimer}
+              disabled={!isRunning}
+              variant="outline"
+              size="sm"
+            >
+              <Pause className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="text-sm"
+            >
+              Ajustar
+            </Button>
+          </div>
         </div>
 
-        {/* Match Timer */}
-        <Card className="border-2 border-blue-200 bg-blue-50">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="text-6xl font-mono font-bold text-blue-600">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Timer and Match Info */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Timer Section */}
+            <Card className="p-6">
+              <div className="text-center space-y-4">
+                <div className="text-6xl font-mono font-bold text-gray-900">
                   {formatTime(time)}
                 </div>
-                <div className="flex flex-col space-y-2">
+                <div className="flex justify-center space-x-2">
                   <Button
                     onClick={startTimer}
                     disabled={isRunning}
-                    className="bg-green-500 hover:bg-green-600 text-white"
+                    size="sm"
+                    className="bg-green-500 hover:bg-green-600"
                   >
-                    <Play className="h-4 w-4 mr-2" />
+                    <Play className="h-4 w-4 mr-1" />
                     Iniciar
-                  </Button>
-                  <Button
-                    onClick={pauseTimer}
-                    disabled={!isRunning}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white"
-                  >
-                    <Pause className="h-4 w-4 mr-2" />
-                    Pausar
                   </Button>
                   <Button
                     onClick={resetTimer}
                     variant="outline"
-                    className="border-red-300 text-red-600 hover:bg-red-50"
+                    size="sm"
                   >
-                    <RotateCcw className="h-4 w-4 mr-2" />
+                    <RotateCcw className="h-4 w-4 mr-1" />
                     Reiniciar
                   </Button>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Estado del Cronómetro</p>
-                <p className="text-lg font-semibold">
-                  {isRunning ? (
-                    <span className="text-green-600 flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
-                      En Marcha
-                    </span>
-                  ) : (
-                    <span className="text-red-600 flex items-center">
-                      <Pause className="h-4 w-4 mr-1" />
-                      Pausado
-                    </span>
-                  )}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Players Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Jugadores en Campo
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {activePlayers.map((player) => (
-                  <Button
-                    key={player.id}
-                    onClick={() => setSelectedPlayer(player.id)}
-                    variant={selectedPlayer === player.id ? "default" : "outline"}
-                    className={`h-16 flex flex-col items-center justify-center space-y-1 ${
-                      selectedPlayer === player.id 
-                        ? 'bg-blue-600 text-white' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="font-bold text-lg">#{player.number}</div>
-                    <div className="text-xs">{player.name}</div>
-                    <div className="text-xs opacity-75">{player.position}</div>
-                  </Button>
-                ))}
-              </div>
-              
-              {benchPlayers.length > 0 && (
-                <>
-                  <div className="mt-4 mb-2 text-sm font-medium text-gray-600">Suplentes</div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {benchPlayers.map((player) => (
+            {/* Match Score */}
+            <Card className="p-4 text-center">
+              <div className="text-4xl font-bold text-gray-900 mb-2">1 - 0</div>
+              <div className="text-sm text-gray-600">1ª parte</div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-3 text-red-600 border-red-200 hover:bg-red-50"
+              >
+                <Square className="h-4 w-4 mr-1" />
+                Finalizar
+              </Button>
+            </Card>
+
+            {/* Action Categories */}
+            <div className="space-y-4">
+              {/* Ataque */}
+              <Card className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <Target className="h-4 w-4 text-orange-500" />
+                  Ataque
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {offensiveActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
                       <Button
-                        key={player.id}
-                        onClick={() => setSelectedPlayer(player.id)}
-                        variant="outline"
+                        key={action.id}
+                        onClick={() => registerQuickAction(action.id, action.name)}
+                        disabled={!selectedPlayer}
                         size="sm"
-                        className={`h-12 flex flex-col items-center justify-center ${
-                          selectedPlayer === player.id ? 'bg-blue-100 border-blue-300' : ''
+                        className={`h-12 text-xs ${action.color} ${
+                          !selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                       >
-                        <div className="font-bold">#{player.number}</div>
-                        <div className="text-xs">{player.name.split(' ')[0]}</div>
+                        <Icon className="h-3 w-3 mr-1" />
+                        {action.name}
                       </Button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
+                    );
+                  })}
+                </div>
+              </Card>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5" />
-                Acciones Rápidas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {quickActions.map((action) => {
-                  const Icon = action.icon;
-                  return (
-                    <Button
-                      key={action.id}
-                      onClick={() => registerQuickAction(action.id, action.name)}
-                      disabled={!selectedPlayer}
-                      className={`h-16 flex flex-col items-center justify-center space-y-2 text-white ${action.color} ${
-                        !selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      <Icon className="h-6 w-6" />
-                      <span className="text-sm font-medium">{action.name}</span>
-                    </Button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              {/* Defensa */}
+              <Card className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-green-500" />
+                  Defensa
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {defensiveActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <Button
+                        key={action.id}
+                        onClick={() => registerQuickAction(action.id, action.name)}
+                        disabled={!selectedPlayer}
+                        size="sm"
+                        className={`h-12 text-xs ${action.color} ${
+                          !selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        <Icon className="h-3 w-3 mr-1" />
+                        {action.name}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </Card>
 
-        {/* Live Actions Log */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Timer className="h-5 w-5" />
-              Registro en Directo ({liveActions.length} acciones)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {liveActions.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No hay acciones registradas</p>
-                <p className="text-sm">Selecciona un jugador y registra acciones en tiempo real</p>
+              {/* Penalizaciones */}
+              <Card className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  Penalizaciones
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {penaltyActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <Button
+                        key={action.id}
+                        onClick={() => registerQuickAction(action.id, action.name)}
+                        disabled={!selectedPlayer}
+                        size="sm"
+                        className={`h-12 text-xs ${action.color} ${
+                          !selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        <Icon className="h-3 w-3 mr-1" />
+                        {action.name}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* Right Column - Players */}
+          <div className="lg:col-span-2">
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-lg">Jugadores</h3>
+                <Badge variant="outline" className="text-xs">
+                  {selectedPlayer ? `Seleccionado: #${players.find(p => p.id === selectedPlayer)?.number}` : 'Ninguno seleccionado'}
+                </Badge>
               </div>
-            ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {liveActions.map((action) => (
-                  <div key={action.id} className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-white rounded-lg border border-blue-100">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                        {action.playerNumber}
+              
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {players.map((player) => (
+                  <div
+                    key={player.id}
+                    onClick={() => setSelectedPlayer(player.id)}
+                    className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedPlayer === player.id 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                        <span className="font-bold text-gray-700">#{player.number}</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{action.playerName}</p>
-                        <p className="text-sm text-blue-600 font-medium">{action.action}</p>
+                        <div className="font-semibold text-gray-900">{player.name}</div>
+                        <div className="text-sm text-gray-600">{player.position}</div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono font-bold text-lg text-blue-600">{action.time}</div>
-                      <div className="text-xs text-gray-500">En directo</div>
+                      <div className="text-2xl font-bold text-gray-900">{player.number}</div>
+                      <Badge 
+                        variant={player.status === 'active' ? 'default' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {player.status === 'active' ? 'Activo' : 'Suplente'}
+                      </Badge>
                     </div>
                   </div>
                 ))}
               </div>
+            </Card>
+
+            {/* Live Actions */}
+            {liveActions.length > 0 && (
+              <Card className="p-4 mt-4">
+                <h3 className="font-semibold text-lg mb-3">Últimas acciones</h3>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {liveActions.slice(0, 3).map((action) => (
+                    <div key={action.id} className="text-sm text-gray-700 flex justify-between">
+                      <span>{action.action} - {action.playerName}</span>
+                      <span className="font-mono">Min {action.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </Layout>
   );
