@@ -7,7 +7,7 @@ import { Trophy, Target, Users, Award, TrendingUp, Activity, ChevronDown, Chevro
 
 const GeneralStats = () => {
   const [openSections, setOpenSections] = useState({
-    rendimiento: true,
+    rendimiento: false,
     ataque: false,
     defensa: false,
     disciplina: false
@@ -54,87 +54,6 @@ const GeneralStats = () => {
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Estadísticas Generales</h1>
           <div className="text-sm text-gray-500">Temporada 2024/25</div>
-        </div>
-
-        {/* Key Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-l-4 border-l-blue-500">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Partidos</p>
-                  <p className="text-3xl font-bold text-gray-900">{teamStats.totalMatches}</p>
-                </div>
-                <Trophy className="h-12 w-12 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-l-4 border-l-green-500">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Goles a Favor</p>
-                  <p className="text-3xl font-bold text-gray-900">{teamStats.goalsFor}</p>
-                </div>
-                <Target className="h-12 w-12 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-l-4 border-l-red-500">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Goles en Contra</p>
-                  <p className="text-3xl font-bold text-gray-900">{teamStats.goalsAgainst}</p>
-                </div>
-                <Activity className="h-12 w-12 text-red-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-l-4 border-l-purple-500">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">% Victorias</p>
-                  <p className="text-3xl font-bold text-gray-900">{teamStats.winPercentage}%</p>
-                </div>
-                <Award className="h-12 w-12 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Detailed Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-600 mb-2">Asistencias Totales</p>
-                <p className="text-4xl font-bold text-blue-600">{teamStats.totalAssists}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-600 mb-2">Faltas Cometidas</p>
-                <p className="text-4xl font-bold text-red-600">{teamStats.foulsCommitted}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-600 mb-2">Faltas Recibidas</p>
-                <p className="text-4xl font-bold text-green-600">{teamStats.foulsReceived}</p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Estadísticas por Categorías Plegables */}
