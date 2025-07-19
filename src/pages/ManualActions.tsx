@@ -2,223 +2,208 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  Target, 
-  TrendingUp, 
-  TrendingDown, 
-  Zap, 
-  Shield, 
-  Activity, 
-  Users, 
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Trophy
-} from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 
 const ManualActions = () => {
-  const [selectedPlayer, setSelectedPlayer] = useState<string>('');
-  const [actions, setActions] = useState<any[]>([]);
-
   // Mock players data
   const players = [
-    { id: '1', name: 'Juan García', number: 10, position: 'Delantero' },
-    { id: '2', name: 'Carlos López', number: 8, position: 'Centrocampista' },
-    { id: '3', name: 'Miguel Rodríguez', number: 4, position: 'Defensa' },
-    { id: '4', name: 'Antonio Martín', number: 1, position: 'Portero' },
-    { id: '5', name: 'David Fernández', number: 9, position: 'Delantero' },
-    { id: '6', name: 'Luis Sánchez', number: 6, position: 'Centrocampista' },
+    { id: 1, name: 'Carlos Rodríguez', number: 7, position: 'Delantero' },
+    { id: 2, name: 'Miguel Ángel Torres', number: 10, position: 'Centrocampista' },
+    { id: 3, name: 'David López', number: 4, position: 'Defensa' },
+    { id: 4, name: 'Juan Martínez', number: 9, position: 'Delantero' },
+    { id: 5, name: 'Roberto García', number: 6, position: 'Centrocampista' },
+    { id: 6, name: 'Luis Sánchez', number: 3, position: 'Defensa' },
+    { id: 7, name: 'Antonio Pérez', number: 2, position: 'Defensa' },
+    { id: 8, name: 'Fernando Ruiz', number: 11, position: 'Delantero' },
+    { id: 9, name: 'Pablo Díaz', number: 8, position: 'Centrocampista' },
+    { id: 10, name: 'Javier Moreno', number: 1, position: 'Portero' },
   ];
 
-  const actionTypes = [
-    { 
-      category: 'Goles', 
-      actions: [
-        { id: 'goal_for', name: 'Gol Favor', icon: Target, color: 'bg-green-500 text-white' },
-        { id: 'goal_against', name: 'Gol Contra', icon: Target, color: 'bg-red-500 text-white' }
-      ]
-    },
-    { 
-      category: 'Asistencias y Tiros', 
-      actions: [
-        { id: 'assist', name: 'Asistencia', icon: TrendingUp, color: 'bg-blue-500 text-white' },
-        { id: 'shot_on_target', name: 'Tiro Puerta', icon: Target, color: 'bg-purple-500 text-white' },
-        { id: 'shot_off_target', name: 'Tiro Fuera', icon: XCircle, color: 'bg-gray-500 text-white' }
-      ]
-    },
-    { 
-      category: 'Faltas', 
-      actions: [
-        { id: 'foul_for', name: 'Falta Favor', icon: Shield, color: 'bg-green-600 text-white' },
-        { id: 'foul_against', name: 'Falta Contra', icon: AlertTriangle, color: 'bg-red-600 text-white' }
-      ]
-    },
-    { 
-      category: 'Balones', 
-      actions: [
-        { id: 'ball_lost', name: 'Balón Perdido', icon: TrendingDown, color: 'bg-orange-500 text-white' },
-        { id: 'ball_recovered', name: 'Balón Recuperado', icon: TrendingUp, color: 'bg-teal-500 text-white' }
-      ]
-    },
-    { 
-      category: 'Duelos', 
-      actions: [
-        { id: 'duel_won', name: 'Duelo Ganado', icon: Trophy, color: 'bg-yellow-500 text-white' },
-        { id: 'duel_lost', name: 'Duelo Perdido', icon: XCircle, color: 'bg-red-400 text-white' }
-      ]
-    },
-    { 
-      category: 'Portero', 
-      actions: [
-        { id: 'save', name: 'Parada', icon: Shield, color: 'bg-indigo-500 text-white' },
-        { id: 'penalty_for', name: 'Penalti Favor', icon: Target, color: 'bg-green-700 text-white' },
-        { id: 'penalty_against', name: 'Penalti Contra', icon: AlertTriangle, color: 'bg-red-700 text-white' }
-      ]
-    }
-  ];
+  // State para las estadísticas de cada jugador
+  const [playerStats, setPlayerStats] = useState(() => {
+    const initialStats: any = {};
+    players.forEach(player => {
+      initialStats[player.id] = {
+        goles: 0,
+        asistencias: 0,
+        balonesPerdidos: 0,
+        balonesRecuperados: 0,
+        duelosGanados: 0,
+        duelosPerdidos: 0,
+        tirosPorteria: 0,
+        tirosFuera: 0,
+        faltasCometidas: 0,
+        faltasRecibidas: 0,
+        paradas: 0,
+      };
+    });
+    return initialStats;
+  });
 
-  const registerAction = (actionId: string, actionName: string) => {
-    if (!selectedPlayer) {
-      alert('Por favor, selecciona un jugador primero');
-      return;
-    }
-
-    const player = players.find(p => p.id === selectedPlayer);
-    const newAction = {
-      id: Date.now(),
-      playerId: selectedPlayer,
-      playerName: player?.name,
-      playerNumber: player?.number,
-      actionId,
-      actionName,
-      timestamp: new Date().toLocaleTimeString(),
-    };
-
-    setActions(prev => [newAction, ...prev]);
-  };
-
-  const getActionIcon = (actionId: string) => {
-    for (const category of actionTypes) {
-      const action = category.actions.find(a => a.id === actionId);
-      if (action) {
-        const Icon = action.icon;
-        return <Icon className="h-4 w-4" />;
+  const updateStat = (playerId: number, stat: string, increment: boolean) => {
+    setPlayerStats(prev => ({
+      ...prev,
+      [playerId]: {
+        ...prev[playerId],
+        [stat]: Math.max(0, prev[playerId][stat] + (increment ? 1 : -1))
       }
-    }
-    return <Activity className="h-4 w-4" />;
+    }));
   };
 
-  const getActionColor = (actionId: string) => {
-    for (const category of actionTypes) {
-      const action = category.actions.find(a => a.id === actionId);
-      if (action) return action.color;
-    }
-    return 'bg-gray-500 text-white';
-  };
+  const StatCounter = ({ value, onIncrement, onDecrement }: { value: number, onIncrement: () => void, onDecrement: () => void }) => (
+    <div className="flex items-center justify-center space-x-1">
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-6 w-6 p-0 hover:bg-red-50 hover:border-red-300"
+        onClick={onDecrement}
+      >
+        <Minus className="h-3 w-3 text-red-600" />
+      </Button>
+      <span className="w-8 text-center text-sm font-medium">{value}</span>
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-6 w-6 p-0 hover:bg-green-50 hover:border-green-300"
+        onClick={onIncrement}
+      >
+        <Plus className="h-3 w-3 text-green-600" />
+      </Button>
+    </div>
+  );
 
   return (
     <Layout>
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Registro Manual de Acciones</h1>
-          <div className="text-sm text-gray-500">Partido en curso</div>
+          <h1 className="text-3xl font-bold text-gray-900">Tabla de Registro de Acciones</h1>
+          <div className="text-sm text-gray-500">Registro en tiempo real</div>
         </div>
 
-        {/* Player Selection */}
+        {/* Tabla de Registro de Acciones */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Seleccionar Jugador
-            </CardTitle>
+            <CardTitle>Registro Manual de Estadísticas por Jugador</CardTitle>
           </CardHeader>
           <CardContent>
-            <Select value={selectedPlayer} onValueChange={setSelectedPlayer}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecciona un jugador para registrar acciones" />
-              </SelectTrigger>
-              <SelectContent>
-                {players.map((player) => (
-                  <SelectItem key={player.id} value={player.id}>
-                    #{player.number} - {player.name} ({player.position})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-
-        {/* Action Buttons */}
-        <div className="space-y-6">
-          {actionTypes.map((category) => (
-            <Card key={category.category}>
-              <CardHeader>
-                <CardTitle className="text-lg">{category.category}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {category.actions.map((action) => {
-                    const Icon = action.icon;
-                    return (
-                      <Button
-                        key={action.id}
-                        onClick={() => registerAction(action.id, action.name)}
-                        className={`h-20 flex flex-col items-center justify-center space-y-2 ${action.color} hover:opacity-90 transition-opacity`}
-                        disabled={!selectedPlayer}
-                      >
-                        <Icon className="h-6 w-6" />
-                        <span className="text-sm font-medium">{action.name}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Actions Log */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              Registro de Acciones ({actions.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {actions.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No hay acciones registradas aún</p>
-                <p className="text-sm">Selecciona un jugador y comienza a registrar acciones</p>
-              </div>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {actions.map((action) => (
-                  <div key={action.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600 text-sm">
-                        {action.playerNumber}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{action.playerName}</p>
-                        <p className="text-sm text-gray-500">#{action.playerNumber}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Badge className={`${getActionColor(action.actionId)} flex items-center gap-1`}>
-                        {getActionIcon(action.actionId)}
-                        {action.actionName}
-                      </Badge>
-                      <span className="text-sm text-gray-500">{action.timestamp}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-gray-50">
+                    <th className="text-left p-3 font-medium">Jugador</th>
+                    <th className="text-center p-3 font-medium">Goles</th>
+                    <th className="text-center p-3 font-medium">Asistencias</th>
+                    <th className="text-center p-3 font-medium">Balones Perdidos</th>
+                    <th className="text-center p-3 font-medium">Balones Recuperados</th>
+                    <th className="text-center p-3 font-medium">Duelos Ganados</th>
+                    <th className="text-center p-3 font-medium">Duelos Perdidos</th>
+                    <th className="text-center p-3 font-medium">Tiros a Portería</th>
+                    <th className="text-center p-3 font-medium">Tiros Fuera</th>
+                    <th className="text-center p-3 font-medium">Faltas Cometidas</th>
+                    <th className="text-center p-3 font-medium">Faltas Recibidas</th>
+                    <th className="text-center p-3 font-medium">Paradas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {players.map((player) => (
+                    <tr key={player.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                      <td className="p-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600 text-sm">
+                            {player.number}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">{player.name}</p>
+                            <p className="text-xs text-gray-500">{player.position}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.goles || 0}
+                          onIncrement={() => updateStat(player.id, 'goles', true)}
+                          onDecrement={() => updateStat(player.id, 'goles', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.asistencias || 0}
+                          onIncrement={() => updateStat(player.id, 'asistencias', true)}
+                          onDecrement={() => updateStat(player.id, 'asistencias', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.balonesPerdidos || 0}
+                          onIncrement={() => updateStat(player.id, 'balonesPerdidos', true)}
+                          onDecrement={() => updateStat(player.id, 'balonesPerdidos', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.balonesRecuperados || 0}
+                          onIncrement={() => updateStat(player.id, 'balonesRecuperados', true)}
+                          onDecrement={() => updateStat(player.id, 'balonesRecuperados', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.duelosGanados || 0}
+                          onIncrement={() => updateStat(player.id, 'duelosGanados', true)}
+                          onDecrement={() => updateStat(player.id, 'duelosGanados', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.duelosPerdidos || 0}
+                          onIncrement={() => updateStat(player.id, 'duelosPerdidos', true)}
+                          onDecrement={() => updateStat(player.id, 'duelosPerdidos', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.tirosPorteria || 0}
+                          onIncrement={() => updateStat(player.id, 'tirosPorteria', true)}
+                          onDecrement={() => updateStat(player.id, 'tirosPorteria', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.tirosFuera || 0}
+                          onIncrement={() => updateStat(player.id, 'tirosFuera', true)}
+                          onDecrement={() => updateStat(player.id, 'tirosFuera', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.faltasCometidas || 0}
+                          onIncrement={() => updateStat(player.id, 'faltasCometidas', true)}
+                          onDecrement={() => updateStat(player.id, 'faltasCometidas', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        <StatCounter
+                          value={playerStats[player.id]?.faltasRecibidas || 0}
+                          onIncrement={() => updateStat(player.id, 'faltasRecibidas', true)}
+                          onDecrement={() => updateStat(player.id, 'faltasRecibidas', false)}
+                        />
+                      </td>
+                      <td className="p-3 text-center">
+                        {player.position === 'Portero' ? (
+                          <StatCounter
+                            value={playerStats[player.id]?.paradas || 0}
+                            onIncrement={() => updateStat(player.id, 'paradas', true)}
+                            onDecrement={() => updateStat(player.id, 'paradas', false)}
+                          />
+                        ) : (
+                          <span className="text-gray-400 text-sm">N/A</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       </div>

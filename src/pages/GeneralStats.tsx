@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Trophy, Target, Users, Award, TrendingUp, Activity } from 'lucide-react';
+import { Trophy, Target, Users, Award, TrendingUp, Activity, ChevronDown, ChevronRight, Zap, Shield, AlertTriangle } from 'lucide-react';
 
 const GeneralStats = () => {
+  const [openSections, setOpenSections] = useState({
+    rendimiento: true,
+    ataque: false,
+    defensa: false,
+    disciplina: false
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section as keyof typeof prev]
+    }));
+  };
+
   // Mock data for general statistics
   const teamStats = {
     totalMatches: 12,
@@ -122,50 +137,189 @@ const GeneralStats = () => {
           </Card>
         </div>
 
-        {/* Performance Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Rendimiento Global
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="wins" stroke="#3b82f6" strokeWidth={3} name="Victorias" />
-                <Line type="monotone" dataKey="goals" stroke="#10b981" strokeWidth={3} name="Goles" />
-                <Line type="monotone" dataKey="assists" stroke="#8b5cf6" strokeWidth={3} name="Asistencias" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* Estadísticas por Categorías Plegables */}
+        <div className="space-y-4">
+          {/* Rendimiento */}
+          <Card>
+            <Collapsible open={openSections.rendimiento} onOpenChange={() => toggleSection('rendimiento')}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <span>Rendimiento</span>
+                    </div>
+                    {openSections.rendimiento ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium">Victorias</p>
+                      <p className="text-2xl font-bold text-blue-700">{teamStats.wins}</p>
+                    </div>
+                    <div className="text-center p-4 bg-gray-50 rounded-lg">
+                      <p className="text-sm text-gray-600 font-medium">Empates</p>
+                      <p className="text-2xl font-bold text-gray-700">{teamStats.draws}</p>
+                    </div>
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <p className="text-sm text-red-600 font-medium">Derrotas</p>
+                      <p className="text-2xl font-bold text-red-700">{teamStats.losses}</p>
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <LineChart data={performanceData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="wins" stroke="#3b82f6" strokeWidth={3} name="Victorias" />
+                      <Line type="monotone" dataKey="goals" stroke="#10b981" strokeWidth={3} name="Goles" />
+                      <Line type="monotone" dataKey="assists" stroke="#8b5cf6" strokeWidth={3} name="Asistencias" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
 
-        {/* Position Stats */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Estadísticas por Posición
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={positionStats}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="position" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="goals" fill="#3b82f6" name="Goles" />
-                <Bar dataKey="assists" fill="#10b981" name="Asistencias" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Ataque */}
+          <Card>
+            <Collapsible open={openSections.ataque} onOpenChange={() => toggleSection('ataque')}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Target className="h-6 w-6 text-green-600" />
+                      </div>
+                      <span>Ataque</span>
+                    </div>
+                    {openSections.ataque ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <p className="text-sm text-green-600 font-medium">Goles a Favor</p>
+                      <p className="text-2xl font-bold text-green-700">{teamStats.goalsFor}</p>
+                    </div>
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium">Asistencias</p>
+                      <p className="text-2xl font-bold text-blue-700">{teamStats.totalAssists}</p>
+                    </div>
+                    <div className="text-center p-4 bg-purple-50 rounded-lg">
+                      <p className="text-sm text-purple-600 font-medium">Tiros a Portería</p>
+                      <p className="text-2xl font-bold text-purple-700">124</p>
+                    </div>
+                    <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                      <p className="text-sm text-yellow-600 font-medium">Tiros Fuera</p>
+                      <p className="text-2xl font-bold text-yellow-700">89</p>
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={positionStats}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="position" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="goals" fill="#10b981" name="Goles" />
+                      <Bar dataKey="assists" fill="#3b82f6" name="Asistencias" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+
+          {/* Defensa */}
+          <Card>
+            <Collapsible open={openSections.defensa} onOpenChange={() => toggleSection('defensa')}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <span>Defensa</span>
+                    </div>
+                    {openSections.defensa ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <p className="text-sm text-red-600 font-medium">Goles en Contra</p>
+                      <p className="text-2xl font-bold text-red-700">{teamStats.goalsAgainst}</p>
+                    </div>
+                    <div className="text-center p-4 bg-teal-50 rounded-lg">
+                      <p className="text-sm text-teal-600 font-medium">Balones Recuperados</p>
+                      <p className="text-2xl font-bold text-teal-700">156</p>
+                    </div>
+                    <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                      <p className="text-sm text-yellow-600 font-medium">Duelos Ganados</p>
+                      <p className="text-2xl font-bold text-yellow-700">89</p>
+                    </div>
+                    <div className="text-center p-4 bg-indigo-50 rounded-lg">
+                      <p className="text-sm text-indigo-600 font-medium">Paradas</p>
+                      <p className="text-2xl font-bold text-indigo-700">67</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+
+          {/* Disciplina */}
+          <Card>
+            <Collapsible open={openSections.disciplina} onOpenChange={() => toggleSection('disciplina')}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <AlertTriangle className="h-6 w-6 text-red-600" />
+                      </div>
+                      <span>Disciplina</span>
+                    </div>
+                    {openSections.disciplina ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <p className="text-sm text-red-600 font-medium">Faltas Cometidas</p>
+                      <p className="text-2xl font-bold text-red-700">{teamStats.foulsCommitted}</p>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <p className="text-sm text-green-600 font-medium">Faltas Recibidas</p>
+                      <p className="text-2xl font-bold text-green-700">{teamStats.foulsReceived}</p>
+                    </div>
+                    <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                      <p className="text-sm text-yellow-600 font-medium">Tarjetas Amarillas</p>
+                      <p className="text-2xl font-bold text-yellow-700">8</p>
+                    </div>
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <p className="text-sm text-red-600 font-medium">Tarjetas Rojas</p>
+                      <p className="text-2xl font-bold text-red-700">2</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+        </div>
       </div>
     </Layout>
   );
