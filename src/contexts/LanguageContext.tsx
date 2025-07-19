@@ -286,10 +286,30 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => {
+    // Check localStorage for saved language preference
+    const savedLanguage = localStorage.getItem('statsor_language');
+    return (savedLanguage as Language) || 'es'; // Default to Spanish
+  });
+
+  // Save language preference to localStorage when it changes
+  React.useEffect(() => {
+    localStorage.setItem('statsor_language', language);
+  }, [language]);
 
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    const translation = translations[language]?.[key];
+    if (translation) {
+      return translation;
+    }
+    
+    // Fallback to English if Spanish translation is missing
+    if (language === 'es' && translations['en'][key]) {
+      return translations['en'][key];
+    }
+    
+    // Return the key itself if no translation found
+    return key;
   };
 
   return (

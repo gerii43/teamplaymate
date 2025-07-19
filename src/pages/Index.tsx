@@ -1,3 +1,4 @@
+import React from 'react';
 import { Hero } from "@/components/Hero";
 import { KeyBenefits } from "@/components/KeyBenefits";
 import { Features } from "@/components/Features";
@@ -12,6 +13,15 @@ import { Footer } from "@/components/Footer";
 import { AuthChatbot } from "@/components/AuthChatbot";
 
 const Index = () => {
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  
+  // Listen for language changes to force re-render
+  React.useEffect(() => {
+    const handleLanguageChange = () => forceUpdate();
+    window.addEventListener('languageChanged', handleLanguageChange);
+    return () => window.removeEventListener('languageChanged', handleLanguageChange);
+  }, []);
+
   return (
     <main className="min-h-screen bg-white">
       <Hero />

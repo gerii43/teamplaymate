@@ -7,6 +7,11 @@ export const LanguageSwitcher: React.FC = () => {
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
+    // Force a small delay to ensure the change is applied
+    setTimeout(() => {
+      // Trigger a re-render by updating a state or forcing component update
+      window.dispatchEvent(new Event('languageChanged'));
+    }, 100);
   };
 
   return (
