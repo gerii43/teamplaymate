@@ -99,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   }`}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <Icon className="w-6 h-6" />
+                  <Icon className={`${isCollapsed ? 'w-10 h-10' : 'w-6 h-6'}`} />
                   {!isCollapsed && <span className="text-sm">{item.label}</span>}
                 </Link>
               );
