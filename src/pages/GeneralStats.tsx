@@ -57,20 +57,20 @@ const GeneralStats = () => {
         </div>
 
         {/* Estadísticas por Categorías Plegables */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Rendimiento */}
-          <Card>
-            <Collapsible open={openSections.rendimiento} onOpenChange={() => toggleSection('rendimiento')}>
+          <Collapsible open={openSections.rendimiento} onOpenChange={() => toggleSection('rendimiento')}>
+            <Card className="border-l-4 border-l-purple-500 shadow-sm">
               <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors p-4">
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <TrendingUp className="h-6 w-6 text-purple-600" />
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-5 w-5 text-purple-600" />
                       </div>
-                      <span>Rendimiento</span>
+                      <span className="text-lg font-semibold">Rendimiento</span>
                     </div>
-                    {openSections.rendimiento ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    <ChevronRight className={`h-5 w-5 transition-transform ${openSections.rendimiento ? 'rotate-90' : ''}`} />
                   </CardTitle>
                 </CardHeader>
               </CollapsibleTrigger>
@@ -103,22 +103,22 @@ const GeneralStats = () => {
                   </ResponsiveContainer>
                 </CardContent>
               </CollapsibleContent>
-            </Collapsible>
-          </Card>
+            </Card>
+          </Collapsible>
 
           {/* Ataque */}
-          <Card>
-            <Collapsible open={openSections.ataque} onOpenChange={() => toggleSection('ataque')}>
+          <Collapsible open={openSections.ataque} onOpenChange={() => toggleSection('ataque')}>
+            <Card className="border-l-4 border-l-green-500 shadow-sm">
               <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors p-4">
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Target className="h-6 w-6 text-green-600" />
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Target className="h-5 w-5 text-green-600" />
                       </div>
-                      <span>Ataque</span>
+                      <span className="text-lg font-semibold">Ataque</span>
                     </div>
-                    {openSections.ataque ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    <ChevronRight className={`h-5 w-5 transition-transform ${openSections.ataque ? 'rotate-90' : ''}`} />
                   </CardTitle>
                 </CardHeader>
               </CollapsibleTrigger>
@@ -154,22 +154,22 @@ const GeneralStats = () => {
                   </ResponsiveContainer>
                 </CardContent>
               </CollapsibleContent>
-            </Collapsible>
-          </Card>
+            </Card>
+          </Collapsible>
 
           {/* Defensa */}
-          <Card>
-            <Collapsible open={openSections.defensa} onOpenChange={() => toggleSection('defensa')}>
+          <Collapsible open={openSections.defensa} onOpenChange={() => toggleSection('defensa')}>
+            <Card className="border-l-4 border-l-blue-500 shadow-sm">
               <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors p-4">
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Shield className="h-6 w-6 text-blue-600" />
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-5 w-5 text-blue-600" />
                       </div>
-                      <span>Defensa</span>
+                      <span className="text-lg font-semibold">Defensa</span>
                     </div>
-                    {openSections.defensa ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    <ChevronRight className={`h-5 w-5 transition-transform ${openSections.defensa ? 'rotate-90' : ''}`} />
                   </CardTitle>
                 </CardHeader>
               </CollapsibleTrigger>
@@ -195,22 +195,22 @@ const GeneralStats = () => {
                   </div>
                 </CardContent>
               </CollapsibleContent>
-            </Collapsible>
-          </Card>
+            </Card>
+          </Collapsible>
 
           {/* Disciplina */}
-          <Card>
-            <Collapsible open={openSections.disciplina} onOpenChange={() => toggleSection('disciplina')}>
+          <Collapsible open={openSections.disciplina} onOpenChange={() => toggleSection('disciplina')}>
+            <Card className="border-l-4 border-l-red-500 shadow-sm">
               <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors">
+                <CardHeader className="cursor-pointer hover:bg-gray-50/50 transition-colors p-4">
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <AlertTriangle className="h-6 w-6 text-red-600" />
+                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <AlertTriangle className="h-5 w-5 text-red-600" />
                       </div>
-                      <span>Disciplina</span>
+                      <span className="text-lg font-semibold">Disciplina</span>
                     </div>
-                    {openSections.disciplina ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    <ChevronRight className={`h-5 w-5 transition-transform ${openSections.disciplina ? 'rotate-90' : ''}`} />
                   </CardTitle>
                 </CardHeader>
               </CollapsibleTrigger>
@@ -236,8 +236,8 @@ const GeneralStats = () => {
                   </div>
                 </CardContent>
               </CollapsibleContent>
-            </Collapsible>
-          </Card>
+            </Card>
+          </Collapsible>
         </div>
       </div>
     </Layout>
