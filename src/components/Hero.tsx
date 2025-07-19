@@ -69,15 +69,15 @@ export const Hero = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">
-            {t('hero.title')}
+            Digitize and analyze your football team's performance in real time
           </h1>
           <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
-            {t('hero.subtitle')}
+            No Wi-Fi needed. Statsor revolutionizes tactical management and statistical analysis, giving coaches total control to optimize every play and training session.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button className="bg-primary text-white px-8 py-6 rounded-lg font-medium text-lg shadow-lg hover:bg-primary/90 transition-colors">
-              {t('hero.cta')}
+              Request your demo
             </Button>
           </div>
           
