@@ -72,7 +72,7 @@ export const Hero = () => {
             Digitize and analyze your football team's performance in real time
           </h1>
           <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
-            No Wi-Fi needed. Statsor revolutionizes tactical management and statistical analysis, giving coaches total control to optimize every play and training session.
+            {t('hero.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
