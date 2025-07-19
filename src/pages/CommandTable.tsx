@@ -17,7 +17,9 @@ import {
   Trophy,
   Zap,
   Timer,
-  Square
+  Square,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 
 const CommandTable = () => {
@@ -25,6 +27,7 @@ const CommandTable = () => {
   const [time, setTime] = useState(0);
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [liveActions, setLiveActions] = useState<any[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Timer effect
   useEffect(() => {
@@ -108,37 +111,79 @@ const CommandTable = () => {
     setLiveActions([]);
   };
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   const activePlayers = players.filter(p => p.status === 'active');
   const benchPlayers = players.filter(p => p.status === 'bench');
 
   return (
     <Layout>
       <div className="p-4 max-w-7xl mx-auto">
-        {/* Header centrado - Cronómetro y Marcador */}
+        {/* Botón de pantalla completa */}
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={toggleFullscreen}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            {isFullscreen ? (
+              <>
+                <Minimize className="h-4 w-4" />
+                Salir de pantalla completa
+              </>
+            ) : (
+              <>
+                <Maximize className="h-4 w-4" />
+                Pantalla completa
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Header centrado - Cronómetro y Marcador (más pequeño) */}
         <div className="flex justify-center mb-6">
-          <Card className="p-6 max-w-2xl w-full">
-            <div className="text-center space-y-4">
+          <Card className="p-4 max-w-lg w-full">
+            <div className="text-center space-y-3">
               {/* Timer */}
-              <div className="text-6xl font-mono font-bold text-gray-900">
+              <div className="text-4xl font-mono font-bold text-gray-900">
                 {formatTime(time)}
               </div>
               
               {/* Teams and Score */}
-              <div className="flex items-center justify-center gap-6 text-xl font-semibold">
+              <div className="flex items-center justify-center gap-4 text-lg font-semibold">
                 <span className="text-gray-800">CD Statsor</span>
-                <div className="text-3xl font-bold text-gray-900">1 - 0</div>
+                <div className="text-2xl font-bold text-gray-900">1 - 0</div>
                 <span className="text-gray-800">Rival</span>
               </div>
               
               {/* Controls */}
-              <div className="flex justify-center space-x-3">
+              <div className="flex justify-center space-x-2">
                 <Button
                   onClick={startTimer}
                   disabled={isRunning}
                   size="sm"
                   className="bg-green-500 hover:bg-green-600"
                 >
-                  <Play className="h-4 w-4 mr-1" />
+                  <Play className="h-3 w-3 mr-1" />
                   Iniciar
                 </Button>
                 <Button
@@ -147,7 +192,7 @@ const CommandTable = () => {
                   variant="outline"
                   size="sm"
                 >
-                  <Pause className="h-4 w-4 mr-1" />
+                  <Pause className="h-3 w-3 mr-1" />
                   Pausar
                 </Button>
                 <Button
@@ -155,7 +200,7 @@ const CommandTable = () => {
                   variant="outline"
                   size="sm"
                 >
-                  <RotateCcw className="h-4 w-4 mr-1" />
+                  <RotateCcw className="h-3 w-3 mr-1" />
                   Reiniciar
                 </Button>
                 <Button 
@@ -163,11 +208,11 @@ const CommandTable = () => {
                   size="sm" 
                   className="text-red-600 border-red-200 hover:bg-red-50"
                 >
-                  <Square className="h-4 w-4 mr-1" />
+                  <Square className="h-3 w-3 mr-1" />
                   Finalizar
                 </Button>
               </div>
-              <div className="text-sm text-gray-600">1ª parte</div>
+              <div className="text-xs text-gray-600">1ª parte</div>
             </div>
           </Card>
         </div>
