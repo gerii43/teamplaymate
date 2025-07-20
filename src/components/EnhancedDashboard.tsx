@@ -73,6 +73,30 @@ const EnhancedDashboard = () => {
     },
   ];
 
+  // Mock data for upcoming matches
+  const upcomingMatches = [
+    {
+      fecha: '25 Julio 2025',
+      equipos: 'CD Statsor vs Jaén FS',
+      lugar: 'Pabellón Municipal'
+    },
+    {
+      fecha: '1 Agosto 2025',
+      equipos: 'Córdoba CF vs CD Statsor',
+      lugar: 'Estadio Córdoba'
+    },
+    {
+      fecha: '8 Agosto 2025',
+      equipos: 'CD Statsor vs Málaga FS',
+      lugar: 'Pabellón Municipal'
+    },
+    {
+      fecha: '15 Agosto 2025',
+      equipos: 'Sevilla FC vs CD Statsor',
+      lugar: 'Estadio Sevilla'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Key Metrics Cards */}
@@ -122,69 +146,91 @@ const EnhancedDashboard = () => {
         </Card>
       </div>
 
-      {/* Performance Chart */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Rendimiento del Equipo</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={performanceData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="puntos" stroke="#3b82f6" name="Puntos por partido" />
-            <Line type="monotone" dataKey="golesF" stroke="#10b981" name="Goles a favor" />
-            <Line type="monotone" dataKey="golesC" stroke="#ef4444" name="Goles en contra" />
-            <Line type="monotone" dataKey="victorias" stroke="#8b5cf6" name="% Victorias" />
-          </LineChart>
-        </ResponsiveContainer>
-      </Card>
+      {/* Bottom Row - Two Columns Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column - Team Evolution Chart */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Evolución del Equipo</h3>
+          <ResponsiveContainer width="100%" height={350}>
+            <LineChart data={performanceData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="puntos" stroke="#3b82f6" name="Puntos por partido" strokeWidth={2} />
+              <Line type="monotone" dataKey="golesF" stroke="#10b981" name="Goles a favor" strokeWidth={2} />
+              <Line type="monotone" dataKey="golesC" stroke="#ef4444" name="Goles en contra" strokeWidth={2} />
+              <Line type="monotone" dataKey="victorias" stroke="#8b5cf6" name="% Victorias" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </Card>
 
-      {/* Top 5 Players Table */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Jugador</th>
-                <th className="text-left p-2">Posición</th>
-                <th className="text-left p-2">Minutos</th>
-                <th className="text-left p-2">Goles</th>
-                <th className="text-left p-2">Asistencias</th>
-                <th className="text-left p-2">Faltas Recibidas</th>
-                <th className="text-left p-2">Tiros</th>
-                <th className="text-left p-2">T. Amarillas</th>
-                <th className="text-left p-2">Faltas Cometidas</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topPlayers.map((player, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
-                  <td className="p-2 font-medium">{player.jugador}</td>
-                  <td className="p-2">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                      {player.posicion}
-                    </span>
-                  </td>
-                  <td className="p-2">{player.minutos}</td>
-                  <td className="p-2 font-semibold text-green-600">{player.goles}</td>
-                  <td className="p-2 font-semibold text-blue-600">{player.asistencias}</td>
-                  <td className="p-2">{player.faltasRecibidas}</td>
-                  <td className="p-2">{player.tiros}</td>
-                  <td className="p-2">
-                    {player.tarjetasAmarillas > 0 && (
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
-                        {player.tarjetasAmarillas}
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-2">{player.faltasCometidas}</td>
-                </tr>
+        {/* Right Column - Top Players + Upcoming Matches */}
+        <div className="space-y-6">
+          {/* Top 5 Players Table */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2">Jugador</th>
+                    <th className="text-left p-2">Pos</th>
+                    <th className="text-left p-2">Min</th>
+                    <th className="text-left p-2">Gol</th>
+                    <th className="text-left p-2">Ast</th>
+                    <th className="text-left p-2">Flt</th>
+                    <th className="text-left p-2">Tiros</th>
+                    <th className="text-left p-2">Tarj</th>
+                    <th className="text-left p-2">Flt Com</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topPlayers.map((player, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="p-2 font-medium">{player.jugador}</td>
+                      <td className="p-2">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                          {player.posicion}
+                        </span>
+                      </td>
+                      <td className="p-2">{player.minutos}</td>
+                      <td className="p-2 font-semibold text-green-600">{player.goles}</td>
+                      <td className="p-2 font-semibold text-blue-600">{player.asistencias}</td>
+                      <td className="p-2">{player.faltasRecibidas}</td>
+                      <td className="p-2">{player.tiros}</td>
+                      <td className="p-2">
+                        {player.tarjetasAmarillas > 0 && (
+                          <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
+                            {player.tarjetasAmarillas}
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-2">{player.faltasCometidas}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* Upcoming Matches */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Próximos Partidos</h3>
+            <div className="space-y-3">
+              {upcomingMatches.map((match, index) => (
+                <div key={index} className="flex flex-col p-3 bg-gray-50 rounded-lg border">
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-sm font-semibold text-gray-600">{match.fecha}</span>
+                  </div>
+                  <div className="font-medium text-gray-900 mb-1">{match.equipos}</div>
+                  <div className="text-sm text-gray-500">{match.lugar}</div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </Card>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
