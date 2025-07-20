@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Trophy, Target, Clock, Award } from 'lucide-react';
+import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Player {
@@ -29,6 +29,8 @@ interface Player {
   duelsLost: number;
   crosses: number;
   saves?: number;
+  photo?: string;
+  shotMap?: { [key: string]: number };
 }
 
 const Players = () => {
@@ -57,7 +59,9 @@ const Players = () => {
       ballsRecovered: 25,
       duelsWon: 18,
       duelsLost: 7,
-      crosses: 5
+      crosses: 5,
+      photo: '/placeholder.svg',
+      shotMap: { 'top-left': 2, 'top-center': 1, 'top-right': 0, 'middle-left': 0, 'middle-center': 1, 'middle-right': 1, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     },
     {
       id: '2',
@@ -81,7 +85,9 @@ const Players = () => {
       ballsRecovered: 28,
       duelsWon: 22,
       duelsLost: 9,
-      crosses: 12
+      crosses: 12,
+      photo: '/placeholder.svg',
+      shotMap: { 'top-left': 1, 'top-center': 0, 'top-right': 1, 'middle-left': 0, 'middle-center': 0, 'middle-right': 0, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     },
     {
       id: '3',
@@ -105,7 +111,9 @@ const Players = () => {
       ballsRecovered: 20,
       duelsWon: 15,
       duelsLost: 8,
-      crosses: 3
+      crosses: 3,
+      photo: '/placeholder.svg',
+      shotMap: { 'top-left': 0, 'top-center': 1, 'top-right': 1, 'middle-left': 1, 'middle-center': 0, 'middle-right': 0, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     },
     {
       id: '4',
@@ -130,7 +138,9 @@ const Players = () => {
       duelsWon: 3,
       duelsLost: 1,
       crosses: 0,
-      saves: 15
+      saves: 15,
+      photo: '/placeholder.svg',
+      shotMap: { 'top-left': 0, 'top-center': 0, 'top-right': 0, 'middle-left': 0, 'middle-center': 0, 'middle-right': 0, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     },
     {
       id: '5',
@@ -154,7 +164,9 @@ const Players = () => {
       ballsRecovered: 35,
       duelsWon: 25,
       duelsLost: 6,
-      crosses: 8
+      crosses: 8,
+      photo: '/placeholder.svg',
+      shotMap: { 'top-left': 0, 'top-center': 0, 'top-right': 0, 'middle-left': 0, 'middle-center': 1, 'middle-right': 0, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     }
   ];
 
@@ -187,8 +199,21 @@ const Players = () => {
         {/* Player Info */}
         <Card className="p-6">
           <div className="flex items-center space-x-6">
-            <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              {selectedPlayer.number}
+            <div className="relative">
+              {selectedPlayer.photo ? (
+                <img 
+                  src={selectedPlayer.photo} 
+                  alt={selectedPlayer.name}
+                  className="w-20 h-20 rounded-full object-cover border-4 border-blue-500"
+                />
+              ) : (
+                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                  {selectedPlayer.number}
+                </div>
+              )}
+              <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-blue-500 flex items-center justify-center hover:bg-gray-50">
+                <Camera className="w-3 h-3 text-blue-500" />
+              </button>
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{selectedPlayer.name}</h1>
@@ -310,6 +335,28 @@ const Players = () => {
           </div>
         </Card>
 
+        {/* Shot Map */}
+        {selectedPlayer.shotMap && (
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Mapa de Disparos</h3>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-3 gap-2 w-80 h-60 bg-green-100 border-4 border-gray-600 rounded-lg p-4">
+                {['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].map((zone) => (
+                  <div
+                    key={zone}
+                    className="bg-white border-2 border-gray-400 rounded flex items-center justify-center text-lg font-bold text-gray-800 hover:bg-blue-50 transition-colors"
+                  >
+                    {selectedPlayer.shotMap?.[zone] || 0}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Número de goles marcados por zona de la portería
+            </p>
+          </Card>
+        )}
+
         {/* Performance Chart */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Gráfico de Rendimiento</h3>
@@ -341,8 +388,18 @@ const Players = () => {
             onClick={() => setSelectedPlayer(player)}
           >
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                {player.number}
+              <div className="relative">
+                {player.photo ? (
+                  <img 
+                    src={player.photo} 
+                    alt={player.name}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                    {player.number}
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-900">{player.name}</h3>

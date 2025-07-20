@@ -216,7 +216,7 @@ const EnhancedDashboard = () => {
       {/* Bottom Row - Upcoming Matches */}
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Próximos Partidos</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="space-y-4">
           {upcomingMatches.map((match, index) => (
             <div key={index} className="p-4 bg-gray-50 rounded-lg border hover:shadow-md transition-shadow">
               <div className="text-sm font-semibold text-gray-600 mb-2">{match.fecha}</div>
