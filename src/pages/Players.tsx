@@ -175,17 +175,23 @@ const Players = () => {
   const renderPlayerDetail = () => {
     if (!selectedPlayer) return null;
 
-    // Datos de performance simulados por partido (últimos 5 partidos)
+    // Datos de performance simulados por partido (últimos partidos)
     const performanceData = [
-      { match: 'vs Real', date: '12 Ene', score: 85 },
-      { match: 'vs Barcelona', date: '17 Ene', score: 92 },
-      { match: 'vs Atlético', date: '25 Ene', score: 78 },
-      { match: 'vs Valencia', date: '29 Ene', score: 88 },
-      { match: 'vs Sevilla', date: '4 Feb', score: 95 }
+      { match: 'vs Real', date: '12 Dic', score: 85, rival: 'Real Madrid' },
+      { match: 'vs Arsenal', date: '17 Dic', score: 92, rival: 'Arsenal' },
+      { match: 'vs Wolves', date: '25 Dic', score: 78, rival: 'Wolverhampton' },
+      { match: 'vs West Ham', date: '29 Dic', score: 88, rival: 'West Ham' },
+      { match: 'vs Aston Villa', date: '4 Ene', score: 68, rival: 'Aston Villa' },
+      { match: 'vs Brighton', date: '8 Ene', score: 85, rival: 'Brighton' },
+      { match: 'vs Fulham', date: '15 Ene', score: 95, rival: 'Fulham' },
+      { match: 'vs Man City', date: '29 Ene', score: 55, rival: 'Manchester City' },
+      { match: 'vs Everton', date: '6 Feb', score: 88, rival: 'Everton' },
+      { match: 'vs Sheffield', date: '17 Feb', score: 95, rival: 'Sheffield United' },
+      { match: 'vs Chelsea', date: '24 Feb', score: 68, rival: 'Chelsea' }
     ];
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Button
@@ -194,197 +200,260 @@ const Players = () => {
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Volver a Jugadores</span>
+            <span>Volver al equipo</span>
           </Button>
         </div>
 
-        {/* Main Layout: Three Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Player Info */}
-          <Card className="p-6">
-            <div className="flex flex-col items-center space-y-4">
-              {/* Player Photo */}
-              <div className="relative">
-                {selectedPlayer.photo ? (
-                  <img 
-                    src={selectedPlayer.photo} 
-                    alt={selectedPlayer.name}
-                    className="w-32 h-32 rounded-lg object-cover border-4 border-primary"
+        {/* Main Layout: Three Columns - Inspired by Marcus Rashford layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* LEFT COLUMN: Player Info (Marcus Rashford style) */}
+          <div className="lg:col-span-3">
+            <Card className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+              <div className="flex flex-col space-y-6">
+                {/* Player Photo */}
+                <div className="relative mx-auto">
+                  {selectedPlayer.photo ? (
+                    <img 
+                      src={selectedPlayer.photo} 
+                      alt={selectedPlayer.name}
+                      className="w-48 h-48 rounded-xl object-cover border-4 border-white/20"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-6xl font-bold border-4 border-white/20">
+                      {selectedPlayer.number}
+                    </div>
+                  )}
+                  <button className="absolute -bottom-3 -right-3 w-12 h-12 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
+                    <Camera className="w-6 h-6 text-white" />
+                  </button>
+                </div>
+
+                {/* Player Name & Position */}
+                <div className="text-center space-y-3">
+                  <h1 className="text-3xl font-bold">{selectedPlayer.name}</h1>
+                  <div className="flex items-center justify-center space-x-4 text-white/80">
+                    <span className="text-lg">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                    <span className="text-lg font-medium">{selectedPlayer.position}</span>
+                  </div>
+                </div>
+
+                {/* Key Stats */}
+                <div className="space-y-4 pt-4 border-t border-white/20">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/70">Posición</span>
+                    <span className="font-bold text-lg">{selectedPlayer.position}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/70">Partidos jugados</span>
+                    <span className="font-bold text-lg">{selectedPlayer.games}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/70">Goles</span>
+                    <span className="font-bold text-lg text-green-400">{selectedPlayer.goals}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* CENTER COLUMN: Performance Chart */}
+          <div className="lg:col-span-6">
+            <Card className="p-6 h-full">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">Performance</h3>
+                <div className="flex space-x-2">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">
+                    Todo
+                  </button>
+                  <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
+                    En casa
+                  </button>
+                  <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
+                    Fuera
+                  </button>
+                </div>
+              </div>
+              
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
                   />
-                ) : (
-                  <div className="w-32 h-32 bg-primary rounded-lg flex items-center justify-center text-white text-4xl font-bold">
-                    {selectedPlayer.number}
+                  <YAxis 
+                    domain={[0, 100]}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Tooltip 
+                    formatter={(value) => [`${value} pts`, 'Puntuación']}
+                    labelFormatter={(label, payload) => {
+                      if (payload && payload[0]) {
+                        const data = payload[0].payload;
+                        return `${data.rival} - ${data.date}`;
+                      }
+                      return label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: 'white'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="score" 
+                    fill="#10b981"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+
+          {/* RIGHT COLUMN: Statistics */}
+          <div className="lg:col-span-3">
+            <Card className="p-6 h-full">
+              <h3 className="text-2xl font-bold mb-6">Estadísticas</h3>
+              
+              {/* Main 6 Stats */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="text-gray-600">Minutos jugados</span>
                   </div>
-                )}
-                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full border-2 border-primary flex items-center justify-center hover:bg-gray-50 shadow-lg">
-                  <Camera className="w-4 h-4 text-primary" />
-                </button>
-              </div>
-
-              {/* Player Basic Info */}
-              <div className="text-center space-y-2">
-                <h1 className="text-2xl font-bold text-gray-900">{selectedPlayer.name}</h1>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                  {selectedPlayer.position}
-                </span>
-              </div>
-
-              {/* Key Stats */}
-              <div className="w-full space-y-3 mt-6">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Partidos jugados</span>
-                  <span className="font-bold text-lg">{selectedPlayer.games}</span>
+                  <span className="font-bold text-lg">{selectedPlayer.minutes}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Goles</span>
-                  <span className="font-bold text-lg text-green-600">{selectedPlayer.goals}</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Center Column: Performance Chart */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4 text-center">Performance</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="match" 
-                  tick={{ fontSize: 12 }}
-                  interval={0}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis 
-                  domain={[0, 100]}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip 
-                  formatter={(value, name) => [`${value} pts`, 'Puntuación']}
-                  labelFormatter={(label, payload) => {
-                    if (payload && payload[0]) {
-                      return `${payload[0].payload.match} - ${payload[0].payload.date}`;
-                    }
-                    return label;
-                  }}
-                />
-                <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-
-          {/* Right Column: Statistics */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Estadísticas</h3>
-            
-            {/* Main 6 Stats */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 flex items-center">
-                  <Clock className="w-4 h-4 mr-2" />
-                  Minutos jugados
-                </span>
-                <span className="font-semibold">{selectedPlayer.minutes}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 flex items-center">
-                  <Target className="w-4 h-4 mr-2" />
-                  Tiros a portería
-                </span>
-                <span className="font-semibold">{selectedPlayer.shotsOnTarget}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 flex items-center">
-                  <Target className="w-4 h-4 mr-2" />
-                  Tiros fuera
-                </span>
-                <span className="font-semibold">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Precisión de pases</span>
-                <span className="font-semibold">{selectedPlayer.passAccuracy}%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Faltas cometidas</span>
-                <span className="font-semibold">{selectedPlayer.foulsCommitted}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Faltas recibidas</span>
-                <span className="font-semibold">{selectedPlayer.foulsReceived}</span>
-              </div>
-            </div>
-
-            {/* Show More Button */}
-            <Button
-              variant="outline"
-              onClick={() => setShowMoreStats(!showMoreStats)}
-              className="w-full mt-4 text-sm"
-            >
-              {showMoreStats ? 'Mostrar menos' : 'Ver más estadísticas'}
-            </Button>
-
-            {/* Additional Stats (Collapsible) */}
-            {showMoreStats && (
-              <div className="mt-4 pt-4 border-t space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Balones perdidos</span>
-                  <span className="font-semibold">{selectedPlayer.ballsLost}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Balones recuperados</span>
-                  <span className="font-semibold">{selectedPlayer.ballsRecovered}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Duelos ganados</span>
-                  <span className="font-semibold">{selectedPlayer.duelsWon}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Duelos perdidos</span>
-                  <span className="font-semibold">{selectedPlayer.duelsLost}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Centros</span>
-                  <span className="font-semibold">{selectedPlayer.crosses}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tarjetas amarillas</span>
-                  <span className="font-semibold">{selectedPlayer.yellowCards}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tarjetas rojas</span>
-                  <span className="font-semibold">{selectedPlayer.redCards}</span>
-                </div>
-                {selectedPlayer.saves !== undefined && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Paradas</span>
-                    <span className="font-semibold">{selectedPlayer.saves}</span>
+                
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Target className="w-4 h-4 text-green-600" />
+                    </div>
+                    <span className="text-gray-600">Tiros a portería</span>
                   </div>
-                )}
+                  <span className="font-bold text-lg">{selectedPlayer.shotsOnTarget}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                      <Target className="w-4 h-4 text-red-600" />
+                    </div>
+                    <span className="text-gray-600">Tiros fuera</span>
+                  </div>
+                  <span className="font-bold text-lg">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Trophy className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <span className="text-gray-600">Precisión de pases</span>
+                  </div>
+                  <span className="font-bold text-lg">{selectedPlayer.passAccuracy}%</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                      <Award className="w-4 h-4 text-yellow-600" />
+                    </div>
+                    <span className="text-gray-600">Faltas cometidas</span>
+                  </div>
+                  <span className="font-bold text-lg">{selectedPlayer.foulsCommitted}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Award className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <span className="text-gray-600">Faltas recibidas</span>
+                  </div>
+                  <span className="font-bold text-lg">{selectedPlayer.foulsReceived}</span>
+                </div>
               </div>
-            )}
-          </Card>
+
+              {/* Show More Button */}
+              <Button
+                variant="outline"
+                onClick={() => setShowMoreStats(!showMoreStats)}
+                className="w-full mt-6 border-gray-300 hover:bg-gray-50"
+              >
+                {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
+              </Button>
+
+              {/* Additional Stats (Collapsible) */}
+              {showMoreStats && (
+                <div className="mt-6 pt-6 border-t space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Balones perdidos</span>
+                    <span className="font-bold">{selectedPlayer.ballsLost}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Balones recuperados</span>
+                    <span className="font-bold">{selectedPlayer.ballsRecovered}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Duelos ganados</span>
+                    <span className="font-bold">{selectedPlayer.duelsWon}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Duelos perdidos</span>
+                    <span className="font-bold">{selectedPlayer.duelsLost}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Centros</span>
+                    <span className="font-bold">{selectedPlayer.crosses}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Tarjetas amarillas</span>
+                    <span className="font-bold text-yellow-600">{selectedPlayer.yellowCards}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Tarjetas rojas</span>
+                    <span className="font-bold text-red-600">{selectedPlayer.redCards}</span>
+                  </div>
+                  {selectedPlayer.saves !== undefined && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Paradas</span>
+                      <span className="font-bold">{selectedPlayer.saves}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
+          </div>
         </div>
 
-        {/* Bottom Center: Shot Map */}
+        {/* BOTTOM: Shot Map (replacing Price Chart from reference) */}
         {selectedPlayer.shotMap && (
-          <div className="flex justify-center">
-            <Card className="p-6 w-full max-w-2xl">
-              <h3 className="text-lg font-semibold mb-4 text-center">Mapa de Disparos</h3>
+          <div className="mt-8">
+            <Card className="p-8">
+              <h3 className="text-2xl font-bold mb-6 text-center">Mapa de Disparos</h3>
               <div className="flex justify-center">
-                <div className="grid grid-cols-3 gap-3 w-80 h-60 bg-green-50 border-4 border-gray-400 rounded-lg p-4">
+                <div className="grid grid-cols-3 gap-4 w-96 h-72 bg-gradient-to-b from-green-100 to-green-200 border-4 border-gray-700 rounded-xl p-6 shadow-lg">
                   {['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].map((zone, index) => (
                     <div
                       key={zone}
-                      className="bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-800 hover:bg-primary/5 transition-colors shadow-sm"
+                      className="bg-white/80 backdrop-blur-sm border-2 border-gray-400 rounded-lg flex items-center justify-center text-2xl font-bold text-gray-800 hover:bg-white hover:scale-105 transition-all duration-200 shadow-md"
                     >
                       {selectedPlayer.shotMap?.[zone] || 0}
                     </div>
                   ))}
                 </div>
               </div>
-              <p className="text-center text-sm text-gray-600 mt-4">
+              <p className="text-center text-gray-600 mt-6 text-lg">
                 Número de goles marcados por zona de la portería
               </p>
             </Card>
