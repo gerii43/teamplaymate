@@ -146,7 +146,7 @@ const EnhancedDashboard = () => {
         </Card>
       </div>
 
-      {/* Bottom Row - Two Columns Layout */}
+      {/* Middle Row - Two Columns Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column - Team Evolution Chart */}
         <Card className="p-6">
@@ -165,72 +165,67 @@ const EnhancedDashboard = () => {
           </ResponsiveContainer>
         </Card>
 
-        {/* Right Column - Top Players + Upcoming Matches */}
-        <div className="space-y-6">
-          {/* Top 5 Players Table */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-2">Jugador</th>
-                    <th className="text-left p-2">Pos</th>
-                    <th className="text-left p-2">Min</th>
-                    <th className="text-left p-2">Gol</th>
-                    <th className="text-left p-2">Ast</th>
-                    <th className="text-left p-2">Flt</th>
-                    <th className="text-left p-2">Tiros</th>
-                    <th className="text-left p-2">Tarj</th>
-                    <th className="text-left p-2">Flt Com</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topPlayers.map((player, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="p-2 font-medium">{player.jugador}</td>
-                      <td className="p-2">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                          {player.posicion}
+        {/* Right Column - Top 5 Players */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2">Jugador</th>
+                  <th className="text-left p-2">Pos</th>
+                  <th className="text-left p-2">Min</th>
+                  <th className="text-left p-2">Gol</th>
+                  <th className="text-left p-2">Ast</th>
+                  <th className="text-left p-2">Flt</th>
+                  <th className="text-left p-2">Tiros</th>
+                  <th className="text-left p-2">Tarj</th>
+                  <th className="text-left p-2">Flt Com</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topPlayers.map((player, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="p-2 font-medium">{player.jugador}</td>
+                    <td className="p-2">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                        {player.posicion}
+                      </span>
+                    </td>
+                    <td className="p-2">{player.minutos}</td>
+                    <td className="p-2 font-semibold text-green-600">{player.goles}</td>
+                    <td className="p-2 font-semibold text-blue-600">{player.asistencias}</td>
+                    <td className="p-2">{player.faltasRecibidas}</td>
+                    <td className="p-2">{player.tiros}</td>
+                    <td className="p-2">
+                      {player.tarjetasAmarillas > 0 && (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
+                          {player.tarjetasAmarillas}
                         </span>
-                      </td>
-                      <td className="p-2">{player.minutos}</td>
-                      <td className="p-2 font-semibold text-green-600">{player.goles}</td>
-                      <td className="p-2 font-semibold text-blue-600">{player.asistencias}</td>
-                      <td className="p-2">{player.faltasRecibidas}</td>
-                      <td className="p-2">{player.tiros}</td>
-                      <td className="p-2">
-                        {player.tarjetasAmarillas > 0 && (
-                          <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
-                            {player.tarjetasAmarillas}
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-2">{player.faltasCometidas}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          {/* Upcoming Matches */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Próximos Partidos</h3>
-            <div className="space-y-3">
-              {upcomingMatches.map((match, index) => (
-                <div key={index} className="flex flex-col p-3 bg-gray-50 rounded-lg border">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-sm font-semibold text-gray-600">{match.fecha}</span>
-                  </div>
-                  <div className="font-medium text-gray-900 mb-1">{match.equipos}</div>
-                  <div className="text-sm text-gray-500">{match.lugar}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
+                      )}
+                    </td>
+                    <td className="p-2">{player.faltasCometidas}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </div>
+
+      {/* Bottom Row - Upcoming Matches */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">Próximos Partidos</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {upcomingMatches.map((match, index) => (
+            <div key={index} className="p-4 bg-gray-50 rounded-lg border hover:shadow-md transition-shadow">
+              <div className="text-sm font-semibold text-gray-600 mb-2">{match.fecha}</div>
+              <div className="font-medium text-gray-900 mb-2">{match.equipos}</div>
+              <div className="text-sm text-gray-500">{match.lugar}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 };
