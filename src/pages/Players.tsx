@@ -170,16 +170,18 @@ const Players = () => {
     }
   ];
 
+  const [showMoreStats, setShowMoreStats] = useState(false);
+
   const renderPlayerDetail = () => {
     if (!selectedPlayer) return null;
 
+    // Datos de performance simulados por partido (últimos 5 partidos)
     const performanceData = [
-      { name: 'Goles', value: selectedPlayer.goals },
-      { name: 'Asistencias', value: selectedPlayer.assists },
-      { name: 'Faltas', value: selectedPlayer.foulsCommitted },
-      { name: 'Duelos Ganados', value: selectedPlayer.duelsWon },
-      { name: 'Balones Recuperados', value: selectedPlayer.ballsRecovered },
-      { name: 'Tiros a Portería', value: selectedPlayer.shotsOnTarget }
+      { match: 'vs Real', date: '12 Ene', score: 85 },
+      { match: 'vs Barcelona', date: '17 Ene', score: 92 },
+      { match: 'vs Atlético', date: '25 Ene', score: 78 },
+      { match: 'vs Valencia', date: '29 Ene', score: 88 },
+      { match: 'vs Sevilla', date: '4 Feb', score: 95 }
     ];
 
     return (
@@ -196,180 +198,198 @@ const Players = () => {
           </Button>
         </div>
 
-        {/* Player Info */}
-        <Card className="p-6">
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              {selectedPlayer.photo ? (
-                <img 
-                  src={selectedPlayer.photo} 
-                  alt={selectedPlayer.name}
-                  className="w-20 h-20 rounded-full object-cover border-4 border-blue-500"
-                />
-              ) : (
-                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {selectedPlayer.number}
-                </div>
-              )}
-              <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-blue-500 flex items-center justify-center hover:bg-gray-50">
-                <Camera className="w-3 h-3 text-blue-500" />
-              </button>
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{selectedPlayer.name}</h1>
-              <div className="flex items-center space-x-4 mt-2">
-                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+        {/* Main Layout: Three Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column: Player Info */}
+          <Card className="p-6">
+            <div className="flex flex-col items-center space-y-4">
+              {/* Player Photo */}
+              <div className="relative">
+                {selectedPlayer.photo ? (
+                  <img 
+                    src={selectedPlayer.photo} 
+                    alt={selectedPlayer.name}
+                    className="w-32 h-32 rounded-lg object-cover border-4 border-primary"
+                  />
+                ) : (
+                  <div className="w-32 h-32 bg-primary rounded-lg flex items-center justify-center text-white text-4xl font-bold">
+                    {selectedPlayer.number}
+                  </div>
+                )}
+                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full border-2 border-primary flex items-center justify-center hover:bg-gray-50 shadow-lg">
+                  <Camera className="w-4 h-4 text-primary" />
+                </button>
+              </div>
+
+              {/* Player Basic Info */}
+              <div className="text-center space-y-2">
+                <h1 className="text-2xl font-bold text-gray-900">{selectedPlayer.name}</h1>
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {selectedPlayer.position}
                 </span>
-                <span className="text-gray-600">#{selectedPlayer.number}</span>
-                <span className="text-gray-600">{selectedPlayer.age} años</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Activo</span>
               </div>
-            </div>
-          </div>
-        </Card>
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="p-6 bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-green-100">Partidos Jugados</p>
-                <p className="text-3xl font-bold">{selectedPlayer.games}</p>
+              {/* Key Stats */}
+              <div className="w-full space-y-3 mt-6">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Partidos jugados</span>
+                  <span className="font-bold text-lg">{selectedPlayer.games}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Goles</span>
+                  <span className="font-bold text-lg text-green-600">{selectedPlayer.goals}</span>
+                </div>
               </div>
-              <Clock className="w-12 h-12 text-green-200" />
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-blue-100">Goles</p>
-                <p className="text-3xl font-bold">{selectedPlayer.goals}</p>
-              </div>
-              <Trophy className="w-12 h-12 text-blue-200" />
-            </div>
+          {/* Center Column: Performance Chart */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4 text-center">Performance</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={performanceData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="match" 
+                  tick={{ fontSize: 12 }}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                />
+                <YAxis 
+                  domain={[0, 100]}
+                  tick={{ fontSize: 12 }}
+                />
+                <Tooltip 
+                  formatter={(value, name) => [`${value} pts`, 'Puntuación']}
+                  labelFormatter={(label, payload) => {
+                    if (payload && payload[0]) {
+                      return `${payload[0].payload.match} - ${payload[0].payload.date}`;
+                    }
+                    return label;
+                  }}
+                />
+                <Bar dataKey="score" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </Card>
 
-          <Card className="p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100">Asistencias</p>
-                <p className="text-3xl font-bold">{selectedPlayer.assists}</p>
+          {/* Right Column: Statistics */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Estadísticas</h3>
+            
+            {/* Main 6 Stats */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 flex items-center">
+                  <Clock className="w-4 h-4 mr-2" />
+                  Minutos jugados
+                </span>
+                <span className="font-semibold">{selectedPlayer.minutes}</span>
               </div>
-              <Target className="w-12 h-12 text-purple-200" />
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 flex items-center">
+                  <Target className="w-4 h-4 mr-2" />
+                  Tiros a portería
+                </span>
+                <span className="font-semibold">{selectedPlayer.shotsOnTarget}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 flex items-center">
+                  <Target className="w-4 h-4 mr-2" />
+                  Tiros fuera
+                </span>
+                <span className="font-semibold">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Precisión de pases</span>
+                <span className="font-semibold">{selectedPlayer.passAccuracy}%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Faltas cometidas</span>
+                <span className="font-semibold">{selectedPlayer.foulsCommitted}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Faltas recibidas</span>
+                <span className="font-semibold">{selectedPlayer.foulsReceived}</span>
+              </div>
             </div>
-          </Card>
 
-          <Card className="p-6 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-yellow-100">Tarjetas</p>
-                <p className="text-3xl font-bold">{selectedPlayer.yellowCards + selectedPlayer.redCards}</p>
+            {/* Show More Button */}
+            <Button
+              variant="outline"
+              onClick={() => setShowMoreStats(!showMoreStats)}
+              className="w-full mt-4 text-sm"
+            >
+              {showMoreStats ? 'Mostrar menos' : 'Ver más estadísticas'}
+            </Button>
+
+            {/* Additional Stats (Collapsible) */}
+            {showMoreStats && (
+              <div className="mt-4 pt-4 border-t space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Balones perdidos</span>
+                  <span className="font-semibold">{selectedPlayer.ballsLost}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Balones recuperados</span>
+                  <span className="font-semibold">{selectedPlayer.ballsRecovered}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Duelos ganados</span>
+                  <span className="font-semibold">{selectedPlayer.duelsWon}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Duelos perdidos</span>
+                  <span className="font-semibold">{selectedPlayer.duelsLost}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Centros</span>
+                  <span className="font-semibold">{selectedPlayer.crosses}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tarjetas amarillas</span>
+                  <span className="font-semibold">{selectedPlayer.yellowCards}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tarjetas rojas</span>
+                  <span className="font-semibold">{selectedPlayer.redCards}</span>
+                </div>
+                {selectedPlayer.saves !== undefined && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Paradas</span>
+                    <span className="font-semibold">{selectedPlayer.saves}</span>
+                  </div>
+                )}
               </div>
-              <Award className="w-12 h-12 text-yellow-200" />
-            </div>
+            )}
           </Card>
         </div>
 
-        {/* Detailed Stats */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Estadísticas Detalladas</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Minutos jugados:</span>
-                <span className="font-semibold">{selectedPlayer.minutes}'</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Tiros a portería:</span>
-                <span className="font-semibold">{selectedPlayer.shotsOnTarget}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Tiros fuera:</span>
-                <span className="font-semibold">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Precisión de pases:</span>
-                <span className="font-semibold">{selectedPlayer.passAccuracy}%</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Faltas cometidas:</span>
-                <span className="font-semibold">{selectedPlayer.foulsCommitted}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Faltas recibidas:</span>
-                <span className="font-semibold">{selectedPlayer.foulsReceived}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Balones perdidos:</span>
-                <span className="font-semibold">{selectedPlayer.ballsLost}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Balones recuperados:</span>
-                <span className="font-semibold">{selectedPlayer.ballsRecovered}</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Duelos ganados:</span>
-                <span className="font-semibold">{selectedPlayer.duelsWon}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Duelos perdidos:</span>
-                <span className="font-semibold">{selectedPlayer.duelsLost}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Centros:</span>
-                <span className="font-semibold">{selectedPlayer.crosses}</span>
-              </div>
-              {selectedPlayer.saves !== undefined && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Paradas:</span>
-                  <span className="font-semibold">{selectedPlayer.saves}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        {/* Shot Map */}
+        {/* Bottom Center: Shot Map */}
         {selectedPlayer.shotMap && (
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Mapa de Disparos</h3>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-3 gap-2 w-80 h-60 bg-green-100 border-4 border-gray-600 rounded-lg p-4">
-                {['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].map((zone) => (
-                  <div
-                    key={zone}
-                    className="bg-white border-2 border-gray-400 rounded flex items-center justify-center text-lg font-bold text-gray-800 hover:bg-blue-50 transition-colors"
-                  >
-                    {selectedPlayer.shotMap?.[zone] || 0}
-                  </div>
-                ))}
+          <div className="flex justify-center">
+            <Card className="p-6 w-full max-w-2xl">
+              <h3 className="text-lg font-semibold mb-4 text-center">Mapa de Disparos</h3>
+              <div className="flex justify-center">
+                <div className="grid grid-cols-3 gap-3 w-80 h-60 bg-green-50 border-4 border-gray-400 rounded-lg p-4">
+                  {['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].map((zone, index) => (
+                    <div
+                      key={zone}
+                      className="bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-800 hover:bg-primary/5 transition-colors shadow-sm"
+                    >
+                      {selectedPlayer.shotMap?.[zone] || 0}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <p className="text-center text-sm text-gray-600 mt-4">
-              Número de goles marcados por zona de la portería
-            </p>
-          </Card>
+              <p className="text-center text-sm text-gray-600 mt-4">
+                Número de goles marcados por zona de la portería
+              </p>
+            </Card>
+          </div>
         )}
-
-        {/* Performance Chart */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Gráfico de Rendimiento</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={performanceData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
       </div>
     );
   };
