@@ -207,58 +207,58 @@ const Players = () => {
         </div>
 
         {/* Main Layout: Following exact reference structure - 4 card layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
           
-          {/* LEFT: Player Card (Full height, takes entire left column) */}
+          {/* LEFT: Player Card (Full height, narrower width) */}
           <div className="lg:row-span-2 h-full">
             <Card 
-              className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              className="p-4 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
               onClick={() => setModalCard('player')}
             >
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Maximize2 className="w-5 h-5 text-white/80" />
               </div>
-              <div className="flex flex-col space-y-6 h-full">
+              <div className="flex flex-col space-y-4 h-full">
                 {/* Player Photo */}
                 <div className="relative mx-auto">
                   {selectedPlayer.photo ? (
                     <img 
                       src={selectedPlayer.photo} 
                       alt={selectedPlayer.name}
-                      className="w-48 h-48 rounded-xl object-cover border-4 border-white/20"
+                      className="w-32 h-32 rounded-xl object-cover border-4 border-white/20"
                     />
                   ) : (
-                    <div className="w-48 h-48 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-6xl font-bold border-4 border-white/20">
+                    <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-4xl font-bold border-4 border-white/20">
                       {selectedPlayer.number}
                     </div>
                   )}
-                  <button className="absolute -bottom-3 -right-3 w-12 h-12 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
-                    <Camera className="w-6 h-6 text-white" />
+                  <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
+                    <Camera className="w-4 h-4 text-white" />
                   </button>
                 </div>
 
                 {/* Player Name & Position */}
-                <div className="text-center space-y-3">
-                  <h1 className="text-3xl font-bold">{selectedPlayer.name}</h1>
-                  <div className="flex items-center justify-center space-x-4 text-white/80">
-                    <span className="text-lg">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-                    <span className="text-lg font-medium">{selectedPlayer.position}</span>
+                <div className="text-center space-y-2">
+                  <h1 className="text-2xl font-bold">{selectedPlayer.name}</h1>
+                  <div className="flex items-center justify-center space-x-2 text-white/80">
+                    <span className="text-sm">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                    <span className="text-sm font-medium">{selectedPlayer.position}</span>
                   </div>
                 </div>
 
                 {/* Key Stats */}
-                <div className="space-y-4 pt-4 border-t border-white/20 flex-1">
+                <div className="space-y-3 pt-3 border-t border-white/20 flex-1">
                   <div className="flex justify-between items-center">
-                    <span className="text-white/70">Posición</span>
-                    <span className="font-bold text-lg">{selectedPlayer.position}</span>
+                    <span className="text-white/70 text-sm">Posición</span>
+                    <span className="font-bold">{selectedPlayer.position}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/70">Partidos jugados</span>
-                    <span className="font-bold text-lg">{selectedPlayer.games}</span>
+                    <span className="text-white/70 text-sm">Partidos jugados</span>
+                    <span className="font-bold">{selectedPlayer.games}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white/70">Goles</span>
-                    <span className="font-bold text-lg text-green-400">{selectedPlayer.goals}</span>
+                    <span className="text-white/70 text-sm">Goles</span>
+                    <span className="font-bold text-green-400">{selectedPlayer.goals}</span>
                   </div>
                 </div>
               </div>
@@ -266,7 +266,7 @@ const Players = () => {
           </div>
 
           {/* TOP RIGHT: Performance Chart */}
-          <div className="lg:col-span-2 h-1/2">
+          <div className="lg:col-span-3 h-1/2">
             <Card 
               className="p-6 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
               onClick={() => setModalCard('performance')}
@@ -289,7 +289,8 @@ const Players = () => {
                 </div>
               </div>
               
-              <ResponsiveContainer width="100%" height="calc(100% - 80px)">
+              <div className="h-[calc(100%-80px)]">
+                <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis 
@@ -326,7 +327,8 @@ const Players = () => {
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              </div>
             </Card>
           </div>
 
