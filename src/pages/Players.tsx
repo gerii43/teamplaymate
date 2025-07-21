@@ -3,15 +3,23 @@ import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload, X, Maximize2 } from 'lucide-react';
+import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload, X, Maximize2, Plus } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import AddPlayerForm from '@/components/AddPlayerForm';
 
 interface Player {
   id: string;
   number: number;
   name: string;
+  nickname?: string;
   position: string;
   age: number;
+  nationality: string;
+  height?: number;
+  weight?: number;
+  secondaryPositions?: string[];
+  dominantFoot: string;
+  birthDate: Date;
   goals: number;
   assists: number;
   games: number;
@@ -36,8 +44,12 @@ interface Player {
 
 const Players = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [isAddPlayerFormOpen, setIsAddPlayerFormOpen] = useState(false);
 
-  const players: Player[] = [
+  const [showMoreStats, setShowMoreStats] = useState(false);
+  const [modalCard, setModalCard] = useState<'player' | 'performance' | 'stats' | 'shotMap' | null>(null);
+
+  const [players, setPlayers] = useState<Player[]>([
     {
       id: '1',
       number: 9,
@@ -169,10 +181,15 @@ const Players = () => {
       photo: '/placeholder.svg',
       shotMap: { 'top-left': 0, 'top-center': 0, 'top-right': 0, 'middle-left': 0, 'middle-center': 1, 'middle-right': 0, 'bottom-left': 0, 'bottom-center': 0, 'bottom-right': 0 }
     }
-  ];
+  ]);
 
-  const [showMoreStats, setShowMoreStats] = useState(false);
-  const [modalCard, setModalCard] = useState<'player' | 'performance' | 'stats' | 'shotMap' | null>(null);
+  const handleAddPlayer = (newPlayerData: Omit<Player, 'id'>) => {
+    const newPlayer: Player = {
+      ...newPlayerData,
+      id: Date.now().toString() // Simple ID generation
+    };
+    setPlayers(prev => [...prev, newPlayer]);
+  };
 
   const renderPlayerDetail = () => {
     if (!selectedPlayer) return null;
@@ -610,6 +627,13 @@ const Players = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Jugadores</h1>
+        <Button
+          onClick={() => setIsAddPlayerFormOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Añadir Jugador</span>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -661,6 +685,12 @@ const Players = () => {
           </Card>
         ))}
       </div>
+
+      <AddPlayerForm
+        isOpen={isAddPlayerFormOpen}
+        onClose={() => setIsAddPlayerFormOpen(false)}
+        onSave={handleAddPlayer}
+      />
     </div>
   );
 
