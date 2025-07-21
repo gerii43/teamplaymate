@@ -446,49 +446,55 @@ const Attendance = () => {
               {historicData.map((player) => {
                 const percentage = Math.round((player.present / player.total) * 100);
                 return (
-                  <div key={player.name} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
-                        {player.number}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{player.name}</p>
-                        <p className="text-sm text-gray-500">{player.position}</p>
+                  <div key={player.name} className="flex flex-col md:flex-row gap-4">
+                    {/* Bloque 1: Jugador */}
+                    <div className="flex-1 p-4 border rounded-lg bg-gray-50">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
+                          {player.number}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{player.name}</p>
+                          <p className="text-sm text-gray-500">{player.position}</p>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-6">
-                      <div className="text-center">
-                        <p className="text-lg font-bold text-gray-900">{percentage}%</p>
-                        <p className="text-xs text-gray-500">Asistencia</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-green-600">{player.present}</p>
-                        <p className="text-xs text-gray-500">Presentes</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-red-600">{player.absent}</p>
-                        <p className="text-xs text-gray-500">Ausentes</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-yellow-600">{player.justified}</p>
-                        <p className="text-xs text-gray-500">Justificados</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-purple-600">{player.consecutivePresent}</p>
-                        <p className="text-xs text-gray-500">Consecutivos</p>
-                      </div>
-                      
-                      {player.lastAbsence && (
+                    {/* Bloque 2: Estadísticas */}
+                    <div className="flex-1 p-4 border rounded-lg bg-white">
+                      <div className="flex items-center justify-between space-x-6">
                         <div className="text-center">
-                          <p className="text-sm font-medium text-gray-600">{formatDate(player.lastAbsence)}</p>
-                          <p className="text-xs text-gray-500">Última ausencia</p>
+                          <p className="text-lg font-bold text-gray-900">{percentage}%</p>
+                          <p className="text-xs text-gray-500">Asistencia</p>
                         </div>
-                      )}
+                        
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-green-600">{player.present}</p>
+                          <p className="text-xs text-gray-500">Presentes</p>
+                        </div>
+                        
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-red-600">{player.absent}</p>
+                          <p className="text-xs text-gray-500">Ausentes</p>
+                        </div>
+                        
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-yellow-600">{player.justified}</p>
+                          <p className="text-xs text-gray-500">Justificados</p>
+                        </div>
+                        
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-purple-600">{player.consecutivePresent}</p>
+                          <p className="text-xs text-gray-500">Consecutivos</p>
+                        </div>
+                        
+                        {player.lastAbsence && (
+                          <div className="text-center">
+                            <p className="text-sm font-medium text-gray-600">{formatDate(player.lastAbsence)}</p>
+                            <p className="text-xs text-gray-500">Última ausencia</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
