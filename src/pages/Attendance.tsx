@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,7 @@ interface Player {
   name: string;
   position: string;
   number: number;
-  attendance: 'present' | 'absent' | 'justified';
+  attendance: 'present' | 'absent' | 'justified' | 'pending';
 }
 
 interface Training {
