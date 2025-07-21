@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload } from 'lucide-react';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload, X, Maximize2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Player {
@@ -171,6 +172,7 @@ const Players = () => {
   ];
 
   const [showMoreStats, setShowMoreStats] = useState(false);
+  const [modalCard, setModalCard] = useState<'player' | 'performance' | 'stats' | 'shotMap' | null>(null);
 
   const renderPlayerDetail = () => {
     if (!selectedPlayer) return null;
@@ -204,12 +206,18 @@ const Players = () => {
           </Button>
         </div>
 
-        {/* Main Layout: Following exact reference structure */}
+        {/* Main Layout: Following exact reference structure - 4 card layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
           
-          {/* LEFT: Player Card (Tall, reaches bottom) */}
-          <div className="h-full">
-            <Card className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full">
+          {/* LEFT: Player Card (Full height, takes entire left column) */}
+          <div className="lg:row-span-2 h-full">
+            <Card 
+              className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              onClick={() => setModalCard('player')}
+            >
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Maximize2 className="w-5 h-5 text-white/80" />
+              </div>
               <div className="flex flex-col space-y-6 h-full">
                 {/* Player Photo */}
                 <div className="relative mx-auto">
@@ -257,9 +265,15 @@ const Players = () => {
             </Card>
           </div>
 
-          {/* MIDDLE: Performance Chart */}
-          <div className="h-full">
-            <Card className="p-6 h-full">
+          {/* TOP RIGHT: Performance Chart */}
+          <div className="lg:col-span-2 h-1/2">
+            <Card 
+              className="p-6 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              onClick={() => setModalCard('performance')}
+            >
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Maximize2 className="w-5 h-5 text-gray-600" />
+              </div>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold">Performance</h3>
                 <div className="flex space-x-2">
@@ -316,13 +330,16 @@ const Players = () => {
             </Card>
           </div>
 
-          {/* RIGHT: Two rows - Statistics (top) and Shot Map (bottom) */}
-          <div className="h-full flex flex-col gap-6">
-            
-            {/* Statistics */}
-            <div className="h-1/2">
-              <Card className="p-6 h-full overflow-y-auto">
-                <h3 className="text-2xl font-bold mb-6">Estadísticas</h3>
+          {/* BOTTOM LEFT: Statistics */}
+          <div className="h-1/2">
+            <Card 
+              className="p-6 h-full overflow-y-auto cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              onClick={() => setModalCard('stats')}
+            >
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Maximize2 className="w-5 h-5 text-gray-600" />
+              </div>
+              <h3 className="text-2xl font-bold mb-6">Estadísticas</h3>
                 
                 {/* Main 6 Stats */}
                 <div className="space-y-4">
@@ -387,14 +404,17 @@ const Players = () => {
                   </div>
                 </div>
 
-                {/* Show More Button */}
-                <Button
-                  variant="outline"
-                  onClick={() => setShowMoreStats(!showMoreStats)}
-                  className="w-full mt-6 border-gray-300 hover:bg-gray-50"
-                >
-                  {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
-                </Button>
+              {/* Show More Button */}
+              <Button
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMoreStats(!showMoreStats);
+                }}
+                className="w-full mt-6 border-gray-300 hover:bg-gray-50"
+              >
+                {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
+              </Button>
 
                 {/* Additional Stats (Collapsible) */}
                 {showMoreStats && (
@@ -438,10 +458,16 @@ const Players = () => {
               </Card>
             </div>
 
-            {/* Shot Map */}
-            <div className="h-1/2">
-              <Card className="p-6 h-full bg-blue-50">
-                <h3 className="text-2xl font-bold mb-6">Mapa de Disparos</h3>
+          {/* BOTTOM RIGHT: Shot Map */}
+          <div className="h-1/2">
+            <Card 
+              className="p-6 h-full bg-blue-50 cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              onClick={() => setModalCard('shotMap')}
+            >
+              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Maximize2 className="w-5 h-5 text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-bold mb-6 text-blue-900">Mapa de Disparos</h3>
                 
                 <div className="grid grid-cols-3 gap-2 h-32 w-full max-w-xs mx-auto">
                   {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
@@ -454,13 +480,178 @@ const Players = () => {
                   ))}
                 </div>
                 
-                <p className="text-center text-sm text-gray-600 mt-4">
-                  Goles por zona de la portería
-                </p>
-              </Card>
-            </div>
+              <p className="text-center text-sm text-blue-600 mt-4">
+                Goles por zona de la portería
+              </p>
+            </Card>
           </div>
         </div>
+
+        {/* Modals for expanded views */}
+        <Dialog open={modalCard !== null} onOpenChange={() => setModalCard(null)}>
+          <DialogContent className="max-w-6xl w-[90vw] h-[90vh] overflow-y-auto">
+            <button 
+              onClick={() => setModalCard(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            {modalCard === 'player' && (
+              <div className="bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 rounded-lg">
+                <div className="text-center space-y-6">
+                  <div className="relative mx-auto w-64 h-64">
+                    {selectedPlayer.photo ? (
+                      <img 
+                        src={selectedPlayer.photo} 
+                        alt={selectedPlayer.name}
+                        className="w-64 h-64 rounded-xl object-cover border-4 border-white/20"
+                      />
+                    ) : (
+                      <div className="w-64 h-64 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-8xl font-bold border-4 border-white/20">
+                        {selectedPlayer.number}
+                      </div>
+                    )}
+                  </div>
+                  <h1 className="text-5xl font-bold">{selectedPlayer.name}</h1>
+                  <div className="text-2xl text-white/80">{selectedPlayer.position}</div>
+                  <div className="grid grid-cols-3 gap-8 mt-8 text-center">
+                    <div>
+                      <div className="text-3xl font-bold">{selectedPlayer.games}</div>
+                      <div className="text-white/70">Partidos</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-green-400">{selectedPlayer.goals}</div>
+                      <div className="text-white/70">Goles</div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-blue-400">{selectedPlayer.assists}</div>
+                      <div className="text-white/70">Asistencias</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {modalCard === 'performance' && (
+              <div className="p-8">
+                <h2 className="text-3xl font-bold mb-8">Performance Detallado</h2>
+                <div style={{ width: '100%', height: '600px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis 
+                        dataKey="date" 
+                        tick={{ fontSize: 14 }}
+                        interval={0}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis 
+                        domain={[0, 100]}
+                        tick={{ fontSize: 14 }}
+                      />
+                      <Tooltip 
+                        formatter={(value) => [`${value} pts`, 'Puntuación']}
+                        labelFormatter={(label, payload) => {
+                          if (payload && payload[0]) {
+                            const data = payload[0].payload;
+                            return `${data.rival} - ${data.date}`;
+                          }
+                          return label;
+                        }}
+                        contentStyle={{
+                          backgroundColor: '#1f2937',
+                          border: 'none',
+                          borderRadius: '8px',
+                          color: 'white'
+                        }}
+                      />
+                      <Bar 
+                        dataKey="score" 
+                        fill="#10b981"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {modalCard === 'stats' && (
+              <div className="p-8">
+                <h2 className="text-3xl font-bold mb-8">Estadísticas Completas</h2>
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-blue-600">Estadísticas Ofensivas</h3>
+                    <div className="space-y-4">
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Goles</span>
+                        <span className="font-bold text-green-600">{selectedPlayer.goals}</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Asistencias</span>
+                        <span className="font-bold text-blue-600">{selectedPlayer.assists}</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Tiros</span>
+                        <span className="font-bold">{selectedPlayer.shots}</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Tiros a portería</span>
+                        <span className="font-bold">{selectedPlayer.shotsOnTarget}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-purple-600">Estadísticas Defensivas</h3>
+                    <div className="space-y-4">
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Duelos ganados</span>
+                        <span className="font-bold">{selectedPlayer.duelsWon}</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Balones recuperados</span>
+                        <span className="font-bold">{selectedPlayer.ballsRecovered}</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Precisión de pases</span>
+                        <span className="font-bold">{selectedPlayer.passAccuracy}%</span>
+                      </div>
+                      <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                        <span>Faltas cometidas</span>
+                        <span className="font-bold">{selectedPlayer.foulsCommitted}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {modalCard === 'shotMap' && (
+              <div className="p-8 bg-blue-50">
+                <h2 className="text-3xl font-bold mb-8 text-blue-900">Mapa de Disparos Detallado</h2>
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-3 gap-4 w-96 h-64">
+                    {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
+                      <div
+                        key={zone}
+                        className="border-4 border-blue-400 bg-blue-200 rounded-lg flex flex-col items-center justify-center text-2xl font-bold text-blue-800 hover:bg-blue-300 transition-colors"
+                      >
+                        <div className="text-4xl">{goals}</div>
+                        <div className="text-sm text-blue-600 capitalize">{zone.replace('-', ' ')}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-center text-lg text-blue-700 mt-8">
+                  Distribución de goles por zona de la portería
+                </p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     );
   };
