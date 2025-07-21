@@ -3,8 +3,9 @@ import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { CheckCircle, XCircle, Clock, Users, Calendar, Plus, ChevronDown, ChevronRight, TrendingUp, History } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Users, Calendar, Plus, ChevronDown, ChevronRight, TrendingUp, History, Trophy, Target, Award, Filter } from 'lucide-react';
 
 interface Player {
   id: number;
@@ -23,9 +24,14 @@ interface Training {
 }
 
 type ViewMode = 'future' | 'past' | 'historic';
+type HistoricFilter = 'all' | 'last-month' | 'last-3-months' | 'season';
+type PositionFilter = 'all' | 'Portero' | 'Defensa' | 'Centrocampista' | 'Delantero';
 
 const Attendance = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('future');
+  const [historicFilter, setHistoricFilter] = useState<HistoricFilter>('all');
+  const [positionFilter, setPositionFilter] = useState<PositionFilter>('all');
+  
   const [trainings, setTrainings] = useState<Training[]>([
     {
       id: 1,
@@ -139,10 +145,36 @@ const Attendance = () => {
     return [];
   };
 
-  const getHistoricData = () => {
-    const playerStats: { [key: number]: { name: string; position: string; number: number; present: number; absent: number; justified: number; total: number } } = {};
+  const getFilteredHistoricData = () => {
+    const playerStats: { [key: number]: { name: string; position: string; number: number; present: number; absent: number; justified: number; total: number; lastAbsence?: string; consecutivePresent: number } } = {};
     
-    trainings.forEach(training => {
+    let filteredTrainings = trainings.filter(training => training.status === 'completed');
+    
+    if (historicFilter !== 'all') {
+      const today = new Date();
+      let filterDate = new Date();
+      
+      switch (historicFilter) {
+        case 'last-month':
+          filterDate.setMonth(today.getMonth() - 1);
+          break;
+        case 'last-3-months':
+          filterDate.setMonth(today.getMonth() - 3);
+          break;
+        case 'season':
+          filterDate.setMonth(8);
+          if (today.getMonth() < 8) {
+            filterDate.setFullYear(today.getFullYear() - 1);
+          }
+          break;
+      }
+      
+      filteredTrainings = filteredTrainings.filter(training => 
+        new Date(training.date) >= filterDate
+      );
+    }
+    
+    filteredTrainings.forEach(training => {
       training.players.forEach(player => {
         if (!playerStats[player.id]) {
           playerStats[player.id] = {
@@ -152,22 +184,45 @@ const Attendance = () => {
             present: 0,
             absent: 0,
             justified: 0,
-            total: 0
+            total: 0,
+            consecutivePresent: 0
           };
         }
         
         if (player.attendance !== 'pending') {
           playerStats[player.id].total++;
-          if (player.attendance === 'present') playerStats[player.id].present++;
-          if (player.attendance === 'absent') playerStats[player.id].absent++;
-          if (player.attendance === 'justified') playerStats[player.id].justified++;
+          if (player.attendance === 'present') {
+            playerStats[player.id].present++;
+            playerStats[player.id].consecutivePresent++;
+          } else {
+            playerStats[player.id].consecutivePresent = 0;
+            if (player.attendance === 'absent') {
+              playerStats[player.id].absent++;
+              playerStats[player.id].lastAbsence = training.date;
+            }
+            if (player.attendance === 'justified') {
+              playerStats[player.id].justified++;
+            }
+          }
         }
       });
     });
     
-    return Object.values(playerStats)
-      .filter(player => player.total > 0)
-      .sort((a, b) => (b.present / b.total) - (a.present / a.total));
+    let filteredStats = Object.values(playerStats).filter(player => player.total > 0);
+    
+    if (positionFilter !== 'all') {
+      filteredStats = filteredStats.filter(player => player.position === positionFilter);
+    }
+    
+    return filteredStats.sort((a, b) => (b.present / b.total) - (a.present / a.total));
+  };
+
+  const getTeamAverageAttendance = () => {
+    const historicData = getFilteredHistoricData();
+    if (historicData.length === 0) return 0;
+    
+    const totalPercentage = historicData.reduce((sum, player) => sum + (player.present / player.total), 0);
+    return Math.round((totalPercentage / historicData.length) * 100);
   };
 
   const getStatusIcon = (status: string) => {
@@ -242,12 +297,56 @@ const Attendance = () => {
     }
   };
 
-  const renderHistoricView = () => {
-    const historicData = getHistoricData();
+  const renderEnhancedHistoricView = () => {
+    const historicData = getFilteredHistoricData();
+    const teamAverage = getTeamAverageAttendance();
+    const topPerformer = historicData[0];
     
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card className="bg-blue-50 border-l-4 border-l-blue-500">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">Filtros:</span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-blue-700">Período:</span>
+                <Select value={historicFilter} onValueChange={(value: HistoricFilter) => setHistoricFilter(value)}>
+                  <SelectTrigger className="w-40 h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los entrenamientos</SelectItem>
+                    <SelectItem value="last-month">Último mes</SelectItem>
+                    <SelectItem value="last-3-months">Últimos 3 meses</SelectItem>
+                    <SelectItem value="season">Temporada actual</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-blue-700">Posición:</span>
+                <Select value={positionFilter} onValueChange={(value: PositionFilter) => setPositionFilter(value)}>
+                  <SelectTrigger className="w-40 h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas las posiciones</SelectItem>
+                    <SelectItem value="Portero">Portero</SelectItem>
+                    <SelectItem value="Defensa">Defensa</SelectItem>
+                    <SelectItem value="Centrocampista">Centrocampista</SelectItem>
+                    <SelectItem value="Delantero">Delantero</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="bg-blue-50 border-l-4 border-l-blue-500">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -264,12 +363,25 @@ const Attendance = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600">Mejor Asistencia</p>
-                  <p className="text-2xl font-bold text-green-900">
-                    {historicData.length > 0 ? `${Math.round((historicData[0].present / historicData[0].total) * 100)}%` : '0%'}
-                  </p>
+                  <p className="text-sm font-medium text-green-600">Media del Equipo</p>
+                  <p className="text-2xl font-bold text-green-900">{teamAverage}%</p>
                 </div>
-                <TrendingUp className="h-8 w-8 text-green-500" />
+                <Target className="h-8 w-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-yellow-50 border-l-4 border-l-yellow-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-yellow-600">Mejor Jugador</p>
+                  <p className="text-lg font-bold text-yellow-900">
+                    {topPerformer ? `${Math.round((topPerformer.present / topPerformer.total) * 100)}%` : '0%'}
+                  </p>
+                  <p className="text-xs text-yellow-700">{topPerformer?.name || 'N/A'}</p>
+                </div>
+                <Trophy className="h-8 w-8 text-yellow-500" />
               </div>
             </CardContent>
           </Card>
@@ -279,7 +391,9 @@ const Attendance = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-purple-600">Entrenamientos</p>
-                  <p className="text-2xl font-bold text-purple-900">{trainings.length}</p>
+                  <p className="text-2xl font-bold text-purple-900">
+                    {trainings.filter(t => t.status === 'completed').length}
+                  </p>
                 </div>
                 <History className="h-8 w-8 text-purple-500" />
               </div>
@@ -289,18 +403,51 @@ const Attendance = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Ranking de Asistencia</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Award className="h-5 w-5 text-yellow-500" />
+              Top 5 - Mejor Asistencia
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {historicData.slice(0, 5).map((player, index) => {
+                const percentage = Math.round((player.present / player.total) * 100);
+                const medalColors = ['bg-yellow-100 text-yellow-800', 'bg-gray-100 text-gray-800', 'bg-orange-100 text-orange-800', 'bg-blue-100 text-blue-800', 'bg-green-100 text-green-800'];
+                
+                return (
+                  <div key={player.name} className={`p-4 rounded-lg border-2 border-dashed ${index === 0 ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-gray-50'}`}>
+                    <div className="text-center">
+                      <div className={`w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center font-bold text-lg ${medalColors[index] || 'bg-gray-100 text-gray-800'}`}>
+                        {index + 1}
+                      </div>
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600 mx-auto mb-2">
+                        {player.number}
+                      </div>
+                      <p className="font-medium text-gray-900 text-sm">{player.name}</p>
+                      <p className="text-xs text-gray-500 mb-2">{player.position}</p>
+                      <p className="text-xl font-bold text-gray-900">{percentage}%</p>
+                      <p className="text-xs text-gray-500">
+                        {player.present}/{player.total} entrenos
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Estadísticas Detalladas por Jugador</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {historicData.map((player, index) => {
+              {historicData.map((player) => {
                 const percentage = Math.round((player.present / player.total) * 100);
                 return (
                   <div key={player.name} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex items-center space-x-4">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600 text-sm">
-                        {index + 1}
-                      </div>
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
                         {player.number}
                       </div>
@@ -309,11 +456,39 @@ const Attendance = () => {
                         <p className="text-sm text-gray-500">{player.position}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-gray-900">{percentage}%</p>
-                      <p className="text-sm text-gray-500">
-                        {player.present}P / {player.absent}A / {player.justified}J
-                      </p>
+                    
+                    <div className="flex items-center space-x-6">
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-gray-900">{percentage}%</p>
+                        <p className="text-xs text-gray-500">Asistencia</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-green-600">{player.present}</p>
+                        <p className="text-xs text-gray-500">Presentes</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-red-600">{player.absent}</p>
+                        <p className="text-xs text-gray-500">Ausentes</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-yellow-600">{player.justified}</p>
+                        <p className="text-xs text-gray-500">Justificados</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-purple-600">{player.consecutivePresent}</p>
+                        <p className="text-xs text-gray-500">Consecutivos</p>
+                      </div>
+                      
+                      {player.lastAbsence && (
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-gray-600">{formatDate(player.lastAbsence)}</p>
+                          <p className="text-xs text-gray-500">Última ausencia</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -338,7 +513,6 @@ const Attendance = () => {
           )}
         </div>
 
-        {/* Navigation Buttons */}
         <div className="flex space-x-4">
           <Button 
             variant={viewMode === 'future' ? 'default' : 'outline'}
@@ -366,9 +540,8 @@ const Attendance = () => {
           </Button>
         </div>
 
-        {/* Content based on view mode */}
         {viewMode === 'historic' ? (
-          renderHistoricView()
+          renderEnhancedHistoricView()
         ) : (
           <div className="space-y-4">
             {filterTrainings().map((training) => {
@@ -418,7 +591,6 @@ const Attendance = () => {
                     
                     <CollapsibleContent>
                       <CardContent className="pt-0">
-                        {/* Stats Cards */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                           <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-l-blue-500">
                             <div className="flex items-center justify-between">
@@ -461,7 +633,6 @@ const Attendance = () => {
                           </div>
                         </div>
 
-                        {/* Players List */}
                         <div className="space-y-4">
                           <h3 className="text-lg font-semibold text-gray-900">Lista de Jugadores</h3>
                           {training.players.map((player) => (
