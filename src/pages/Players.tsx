@@ -204,11 +204,11 @@ const Players = () => {
           </Button>
         </div>
 
-        {/* Main Layout: Following exact 4-card structure from reference */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-200px)]">
+        {/* Main Layout: Following exact reference structure */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
           
           {/* LEFT: Player Card (Tall, reaches bottom) */}
-          <div className="lg:col-span-4 h-full">
+          <div className="h-full">
             <Card className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full">
               <div className="flex flex-col space-y-6 h-full">
                 {/* Player Photo */}
@@ -257,72 +257,70 @@ const Players = () => {
             </Card>
           </div>
 
-          {/* RIGHT SIDE: Two rows */}
-          <div className="lg:col-span-8 h-full flex flex-col gap-6">
-            
-            {/* TOP RIGHT: Performance Chart (Wide) */}
-            <div className="h-1/2">
-              <Card className="p-6 h-full">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold">Performance</h3>
-                  <div className="flex space-x-2">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">
-                      Todo
-                    </button>
-                    <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
-                      En casa
-                    </button>
-                    <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
-                      Fuera
-                    </button>
-                  </div>
+          {/* MIDDLE: Performance Chart */}
+          <div className="h-full">
+            <Card className="p-6 h-full">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">Performance</h3>
+                <div className="flex space-x-2">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">
+                    Todo
+                  </button>
+                  <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
+                    En casa
+                  </button>
+                  <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
+                    Fuera
+                  </button>
                 </div>
-                
-                <ResponsiveContainer width="100%" height="calc(100% - 80px)">
-                  <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="date" 
-                      tick={{ fontSize: 12 }}
-                      interval={0}
-                      angle={-45}
-                      textAnchor="end"
-                      height={80}
-                    />
-                    <YAxis 
-                      domain={[0, 100]}
-                      tick={{ fontSize: 12 }}
-                    />
-                    <Tooltip 
-                      formatter={(value) => [`${value} pts`, 'Puntuación']}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload[0]) {
-                          const data = payload[0].payload;
-                          return `${data.rival} - ${data.date}`;
-                        }
-                        return label;
-                      }}
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: 'none',
-                        borderRadius: '8px',
-                        color: 'white'
-                      }}
-                    />
-                    <Bar 
-                      dataKey="score" 
-                      fill="#10b981"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card>
-            </div>
-
-            {/* BOTTOM RIGHT: Two cards side by side */}
-            <div className="h-1/2 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              </div>
               
-              {/* BOTTOM LEFT: Statistics */}
+              <ResponsiveContainer width="100%" height="calc(100% - 80px)">
+                <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis 
+                    domain={[0, 100]}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Tooltip 
+                    formatter={(value) => [`${value} pts`, 'Puntuación']}
+                    labelFormatter={(label, payload) => {
+                      if (payload && payload[0]) {
+                        const data = payload[0].payload;
+                        return `${data.rival} - ${data.date}`;
+                      }
+                      return label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: 'white'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="score" 
+                    fill="#10b981"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+
+          {/* RIGHT: Two rows - Statistics (top) and Shot Map (bottom) */}
+          <div className="h-full flex flex-col gap-6">
+            
+            {/* Statistics */}
+            <div className="h-1/2">
               <Card className="p-6 h-full overflow-y-auto">
                 <h3 className="text-2xl font-bold mb-6">Estadísticas</h3>
                 
@@ -438,28 +436,28 @@ const Players = () => {
                   </div>
                 )}
               </Card>
+            </div>
 
-              {/* BOTTOM RIGHT: Shot Map */}
-              {selectedPlayer.shotMap && (
-                <Card className="p-6 h-full">
-                  <h3 className="text-xl font-bold mb-4 text-center">Mapa de Disparos</h3>
-                  <div className="flex justify-center h-full items-center">
-                    <div className="grid grid-cols-3 gap-2 w-full max-w-[280px] aspect-square bg-gradient-to-b from-green-100 to-green-200 border-4 border-gray-700 rounded-xl p-4 shadow-lg">
-                      {['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].map((zone, index) => (
-                        <div
-                          key={zone}
-                          className="bg-white/80 backdrop-blur-sm border-2 border-gray-400 rounded-lg flex items-center justify-center text-xl font-bold text-gray-800 hover:bg-white hover:scale-105 transition-all duration-200 shadow-md"
-                        >
-                          {selectedPlayer.shotMap?.[zone] || 0}
-                        </div>
-                      ))}
+            {/* Shot Map */}
+            <div className="h-1/2">
+              <Card className="p-6 h-full bg-blue-50">
+                <h3 className="text-2xl font-bold mb-6">Mapa de Disparos</h3>
+                
+                <div className="grid grid-cols-3 gap-2 h-32 w-full max-w-xs mx-auto">
+                  {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
+                    <div
+                      key={zone}
+                      className="border-2 border-blue-300 bg-blue-100 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-200 transition-colors"
+                    >
+                      {goals}
                     </div>
-                  </div>
-                  <p className="text-center text-gray-600 mt-4 text-sm">
-                    Goles por zona de la portería
-                  </p>
-                </Card>
-              )}
+                  ))}
+                </div>
+                
+                <p className="text-center text-sm text-gray-600 mt-4">
+                  Goles por zona de la portería
+                </p>
+              </Card>
             </div>
           </div>
         </div>
