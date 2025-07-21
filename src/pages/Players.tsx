@@ -225,7 +225,7 @@ const Players = () => {
     ];
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Button
@@ -238,234 +238,247 @@ const Players = () => {
           </Button>
         </div>
 
-        {/* Main Layout: Exact mockup structure */}
-        <div className="grid grid-cols-12 gap-4 h-[600px]">
+        {/* Main Layout: Corrected structure as per mockup */}
+        <div className="grid grid-cols-12 gap-6 h-[700px]">
           
-          {/* LEFT: Player Card (Full height, column span 3) */}
+          {/* LEFT: Player Card (Full height, spans 3 columns) */}
           <div className="col-span-3 h-full">
             <Card 
-              className="p-4 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+              className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative flex flex-col"
               onClick={() => setModalCard('player')}
             >
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Maximize2 className="w-4 h-4 text-white/80" />
               </div>
-              <div className="flex flex-col space-y-4 h-full">
-                {/* Player Photo */}
-                <div className="relative mx-auto">
-                  {selectedPlayer.photo ? (
-                    <img 
-                      src={selectedPlayer.photo} 
-                      alt={selectedPlayer.name}
-                      className="w-24 h-24 rounded-xl object-cover border-4 border-white/20"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20">
-                      {selectedPlayer.number}
-                    </div>
-                  )}
-                  <button className="absolute -bottom-2 -right-2 w-6 h-6 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
-                    <Camera className="w-3 h-3 text-white" />
-                  </button>
-                </div>
-
-                {/* Player Name & Position */}
-                <div className="text-center space-y-2">
-                  <h1 className="text-xl font-bold">{selectedPlayer.name}</h1>
-                  <div className="flex items-center justify-center space-x-2 text-white/80">
-                    <span className="text-xs">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-                    <span className="text-xs font-medium">{selectedPlayer.position}</span>
-                  </div>
-                </div>
-
-                {/* Key Stats */}
-                <div className="space-y-3 pt-3 border-t border-white/20 flex-1">
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70 text-xs">Posición</span>
-                    <span className="font-bold text-sm">{selectedPlayer.position}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70 text-xs">Partidos jugados</span>
-                    <span className="font-bold text-sm">{selectedPlayer.games}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70 text-xs">Goles</span>
-                    <span className="font-bold text-sm text-green-400">{selectedPlayer.goals}</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* TOP RIGHT: Performance Chart (column span 9) */}
-          <div className="col-span-9 h-1/2">
-            <Card 
-              className="p-4 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
-              onClick={() => setModalCard('performance')}
-            >
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Maximize2 className="w-4 h-4 text-gray-600" />
-              </div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold">Performance</h3>
-                <div className="flex space-x-1">
-                  <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium">
-                    All
-                  </button>
-                  <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
-                    At home
-                  </button>
-                  <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
-                    Away
-                  </button>
-                </div>
-              </div>
               
-              <div className="h-[calc(100%-60px)]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={performanceData} margin={{ top: 10, right: 10, left: 10, bottom: 40 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="date" 
-                      tick={{ fontSize: 10 }}
-                      interval={0}
-                      angle={-45}
-                      textAnchor="end"
-                      height={40}
-                    />
-                    <YAxis 
-                      domain={[0, 100]}
-                      tick={{ fontSize: 10 }}
-                    />
-                    <Tooltip 
-                      formatter={(value) => [`${value} pts`, 'Puntuación']}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload[0]) {
-                          const data = payload[0].payload;
-                          return `${data.rival} - ${data.date}`;
-                        }
-                        return label;
-                      }}
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: 'none',
-                        borderRadius: '8px',
-                        color: 'white'
-                      }}
-                    />
-                    <Bar 
-                      dataKey="score" 
-                      fill="#10b981"
-                      radius={[2, 2, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+              {/* Player Photo */}
+              <div className="relative mx-auto mb-6">
+                {selectedPlayer.photo ? (
+                  <img 
+                    src={selectedPlayer.photo} 
+                    alt={selectedPlayer.name}
+                    className="w-32 h-32 rounded-xl object-cover border-4 border-white/20"
+                  />
+                ) : (
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-3xl font-bold border-4 border-white/20">
+                    {selectedPlayer.number}
+                  </div>
+                )}
+                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
+                  <Camera className="w-4 h-4 text-white" />
+                </button>
+              </div>
+
+              {/* Player Name & Position */}
+              <div className="text-center space-y-3 mb-6">
+                <h1 className="text-2xl font-bold">{selectedPlayer.name}</h1>
+                <div className="flex items-center justify-center space-x-2 text-white/80">
+                  <span className="text-sm">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                  <span className="text-sm font-medium">{selectedPlayer.position}</span>
+                </div>
+              </div>
+
+              {/* Key Stats */}
+              <div className="space-y-4 pt-4 border-t border-white/20 flex-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70 text-sm">Posición</span>
+                  <span className="font-bold">{selectedPlayer.position}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70 text-sm">Partidos jugados</span>
+                  <span className="font-bold">{selectedPlayer.games}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70 text-sm">Goles</span>
+                  <span className="font-bold text-green-400">{selectedPlayer.goals}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70 text-sm">Asistencias</span>
+                  <span className="font-bold text-blue-400">{selectedPlayer.assists}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70 text-sm">Minutos</span>
+                  <span className="font-bold">{selectedPlayer.minutes}</span>
+                </div>
               </div>
             </Card>
           </div>
 
-          {/* BOTTOM LEFT: Shot Map (under Performance, column span 4) */}
-          <div className="col-span-4 h-1/2 col-start-4">
-            <Card 
-              className="p-4 h-full bg-blue-50 cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
-              onClick={() => setModalCard('shotMap')}
-            >
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Maximize2 className="w-4 h-4 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-bold mb-4 text-blue-900">Mapa de Disparos</h3>
-                
-              <div className="grid grid-cols-3 gap-2 h-32 w-full max-w-xs mx-auto">
-                {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
-                  <div
-                    key={zone}
-                    className="border-2 border-blue-300 bg-blue-100 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-200 transition-colors"
-                  >
-                    {goals}
-                  </div>
-                ))}
-              </div>
-                
-              <p className="text-center text-xs text-blue-600 mt-3">
-                Goles por zona de la portería
-              </p>
-            </Card>
-          </div>
-
-          {/* BOTTOM RIGHT: Statistics (column span 5) */}
-          <div className="col-span-5 h-1/2">
-            <Card 
-              className="p-4 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
-              onClick={() => setModalCard('stats')}
-            >
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Maximize2 className="w-4 h-4 text-gray-600" />
-              </div>
-              <h3 className="text-lg font-bold mb-4">Estadísticas</h3>
-                
-              {/* Main 3 Stats only (to fit the space) */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Clock className="w-3 h-3 text-blue-600" />
-                    </div>
-                    <span className="text-gray-600 text-sm">Minutos jugados</span>
-                  </div>
-                  <span className="font-bold text-lg">{selectedPlayer.minutes}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Target className="w-3 h-3 text-green-600" />
-                    </div>
-                    <span className="text-gray-600 text-sm">Tiros a portería</span>
-                  </div>
-                  <span className="font-bold text-lg">{selectedPlayer.shotsOnTarget}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
-                      <Target className="w-3 h-3 text-red-600" />
-                    </div>
-                    <span className="text-gray-600 text-sm">Tiros fuera</span>
-                  </div>
-                  <span className="font-bold text-lg">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
-                </div>
-              </div>
-
-              {/* Show More Button */}
-              <Button
-                variant="outline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowMoreStats(!showMoreStats);
-                }}
-                className="w-full mt-4 border-gray-300 hover:bg-gray-50 text-xs"
+          {/* RIGHT SIDE: Two rows */}
+          <div className="col-span-9 h-full flex flex-col gap-6">
+            
+            {/* TOP ROW: Performance Chart (full width) */}
+            <div className="h-1/2">
+              <Card 
+                className="p-6 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative"
+                onClick={() => setModalCard('performance')}
               >
-                {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
-              </Button>
-
-              {/* Additional Stats (Collapsible) */}
-              {showMoreStats && (
-                <div className="mt-4 pt-4 border-t space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Precisión de pases</span>
-                    <span className="font-bold">{selectedPlayer.passAccuracy}%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Faltas cometidas</span>
-                    <span className="font-bold">{selectedPlayer.foulsCommitted}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Faltas recibidas</span>
-                    <span className="font-bold">{selectedPlayer.foulsReceived}</span>
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Maximize2 className="w-4 h-4 text-gray-600" />
+                </div>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold">Performance</h3>
+                  <div className="flex space-x-1">
+                    <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium">
+                      All
+                    </button>
+                    <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
+                      At home
+                    </button>
+                    <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
+                      Away
+                    </button>
                   </div>
                 </div>
-              )}
-            </Card>
+                
+                <div className="h-[calc(100%-80px)]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={performanceData} margin={{ top: 10, right: 10, left: 10, bottom: 40 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis 
+                        dataKey="date" 
+                        tick={{ fontSize: 10 }}
+                        interval={0}
+                        angle={-45}
+                        textAnchor="end"
+                        height={40}
+                      />
+                      <YAxis 
+                        domain={[0, 100]}
+                        tick={{ fontSize: 10 }}
+                      />
+                      <Tooltip 
+                        formatter={(value) => [`${value} pts`, 'Puntuación']}
+                        labelFormatter={(label, payload) => {
+                          if (payload && payload[0]) {
+                            const data = payload[0].payload;
+                            return `${data.rival} - ${data.date}`;
+                          }
+                          return label;
+                        }}
+                        contentStyle={{
+                          backgroundColor: '#1f2937',
+                          border: 'none',
+                          borderRadius: '8px',
+                          color: 'white'
+                        }}
+                      />
+                      <Bar 
+                        dataKey="score" 
+                        fill="#10b981"
+                        radius={[2, 2, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+            </div>
+
+            {/* BOTTOM ROW: Shot Map and Statistics side by side */}
+            <div className="h-1/2 grid grid-cols-2 gap-6">
+              
+              {/* Shot Map (left) */}
+              <Card 
+                className="p-6 bg-blue-50 cursor-pointer hover:shadow-xl transition-all duration-300 group relative h-full"
+                onClick={() => setModalCard('shotMap')}
+              >
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Maximize2 className="w-4 h-4 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-6 text-blue-900">Mapa de Disparos</h3>
+                  
+                <div className="flex justify-center mb-4">
+                  <div className="grid grid-cols-3 gap-2 w-48 h-32">
+                    {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
+                      <div
+                        key={zone}
+                        className="border-2 border-blue-300 bg-blue-100 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-200 transition-colors"
+                      >
+                        {goals}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                  
+                <p className="text-center text-xs text-blue-600">
+                  Goles por zona de la portería
+                </p>
+              </Card>
+
+              {/* Statistics (right) */}
+              <Card 
+                className="p-6 cursor-pointer hover:shadow-xl transition-all duration-300 group relative h-full flex flex-col"
+                onClick={() => setModalCard('stats')}
+              >
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Maximize2 className="w-4 h-4 text-gray-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-6">Estadísticas</h3>
+                  
+                {/* Main Stats */}
+                <div className="space-y-4 flex-1">
+                  <div className="flex justify-between items-center py-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Clock className="w-3 h-3 text-blue-600" />
+                      </div>
+                      <span className="text-gray-600 text-sm">Minutos jugados</span>
+                    </div>
+                    <span className="font-bold text-lg">{selectedPlayer.minutes}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Target className="w-3 h-3 text-green-600" />
+                      </div>
+                      <span className="text-gray-600 text-sm">Tiros a portería</span>
+                    </div>
+                    <span className="font-bold text-lg">{selectedPlayer.shotsOnTarget}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center py-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Target className="w-3 h-3 text-red-600" />
+                      </div>
+                      <span className="text-gray-600 text-sm">Tiros fuera</span>
+                    </div>
+                    <span className="font-bold text-lg">{selectedPlayer.shots - selectedPlayer.shotsOnTarget}</span>
+                  </div>
+                </div>
+
+                {/* Show More Button */}
+                <Button
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowMoreStats(!showMoreStats);
+                  }}
+                  className="w-full mt-4 border-gray-300 hover:bg-gray-50 text-xs"
+                >
+                  {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
+                </Button>
+
+                {/* Additional Stats (Collapsible) */}
+                {showMoreStats && (
+                  <div className="mt-4 pt-4 border-t space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Precisión de pases</span>
+                      <span className="font-bold">{selectedPlayer.passAccuracy}%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Faltas cometidas</span>
+                      <span className="font-bold">{selectedPlayer.foulsCommitted}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Faltas recibidas</span>
+                      <span className="font-bold">{selectedPlayer.foulsReceived}</span>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </div>
           </div>
         </div>
 
