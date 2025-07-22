@@ -164,7 +164,7 @@ const CommandTable = () => {
 
   return (
     <Layout>
-      <div className="p-4 max-w-7xl mx-auto">
+      <div className="p-4 w-full min-h-screen">
         {/* Botón de pantalla completa */}
         <div className="flex justify-end mb-4">
           <Button
@@ -187,62 +187,61 @@ const CommandTable = () => {
           </Button>
         </div>
 
-        {/* Header centrado - Cronómetro y Marcador (más pequeño) */}
-        <div className="flex justify-center mb-6">
-          <Card className="p-4 max-w-lg w-full">
-            <div className="text-center space-y-3">
-              {/* Timer */}
-              <div className="text-4xl font-mono font-bold text-gray-900">
-                {formatTime(time)}
+        {/* Header ocupando toda la pantalla - Cronómetro y Marcador */}
+        <div className="w-full mb-6">
+          <div className="w-full bg-white p-6 rounded-lg shadow-sm border">
+            <div className="flex items-center justify-between">
+              {/* CD Statsor */}
+              <div className="flex flex-col items-center">
+                <div className="w-20 h-20 bg-blue-500 rounded-lg mb-2"></div>
+                <span className="text-lg font-semibold text-gray-800">CD Statsor</span>
+                <div className="flex gap-1 mt-1">
+                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                </div>
               </div>
-              
-              {/* Teams and Score */}
-              <div className="flex items-center justify-center gap-4 text-lg font-semibold">
-                <span className="text-gray-800">CD Statsor</span>
-                <div className="text-2xl font-bold text-gray-900">1 - 0</div>
-                <span className="text-gray-800">Rival</span>
+
+              {/* Timer y controles centrales */}
+              <div className="flex flex-col items-center">
+                <div className="text-6xl font-mono font-bold text-gray-900 mb-4">
+                  {formatTime(time)}
+                </div>
+                <div className="flex items-center gap-4 mb-4">
+                  <Button
+                    onClick={startTimer}
+                    disabled={isRunning}
+                    size="sm"
+                    className="bg-green-500 hover:bg-green-600"
+                  >
+                    <Play className="h-3 w-3 mr-1" />
+                    Iniciar
+                  </Button>
+                  <Button
+                    onClick={resetTimer}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <RotateCcw className="h-3 w-3 mr-1" />
+                    Reiniciar
+                  </Button>
+                </div>
               </div>
-              
-              {/* Controls */}
-              <div className="flex justify-center space-x-2">
-                <Button
-                  onClick={startTimer}
-                  disabled={isRunning}
-                  size="sm"
-                  className="bg-green-500 hover:bg-green-600"
-                >
-                  <Play className="h-3 w-3 mr-1" />
-                  Iniciar
-                </Button>
-                <Button
-                  onClick={pauseTimer}
-                  disabled={!isRunning}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Pause className="h-3 w-3 mr-1" />
-                  Pausar
-                </Button>
-                <Button
-                  onClick={resetTimer}
-                  variant="outline"
-                  size="sm"
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Reiniciar
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="text-red-600 border-red-200 hover:bg-red-50"
-                >
-                  <Square className="h-3 w-3 mr-1" />
-                  Finalizar
-                </Button>
+
+              {/* Rival */}
+              <div className="flex flex-col items-center">
+                <div className="w-20 h-20 bg-yellow-500 rounded-lg mb-2"></div>
+                <span className="text-lg font-semibold text-gray-800">Equipo</span>
+                <div className="flex gap-1 mt-1">
+                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                  <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                </div>
               </div>
-              <div className="text-xs text-gray-600">1ª parte</div>
             </div>
-          </Card>
+          </div>
         </div>
 
         {/* Selector de parte del partido */}
@@ -383,42 +382,29 @@ const CommandTable = () => {
 
           {/* Columna derecha - Jugadores */}
           <div className="lg:col-span-1">
-            <Card className="p-4 h-fit">
-              <div className="mb-4">
-                <h3 className="font-semibold text-lg text-center bg-green-100 py-2 rounded-md flex items-center justify-center gap-2">
-                  <Users className="h-5 w-5 text-green-600" />
-                  JUGADORES
-                </h3>
-                <div className="text-center mt-2">
-                  <Badge variant="outline" className="text-xs">
-                    {selectedPlayer ? `#${players.find(p => p.id === selectedPlayer)?.number} - ${players.find(p => p.id === selectedPlayer)?.name}` : 'Ninguno seleccionado'}
-                  </Badge>
-                </div>
-              </div>
-              
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {players.map((player) => (
-                  <Button
-                    key={player.id}
-                    onClick={() => setSelectedPlayer(player.id)}
-                    variant={selectedPlayer === player.id ? "default" : "outline"}
-                    className={`w-full h-14 justify-start text-left font-semibold ${
-                      selectedPlayer === player.id 
-                        ? 'bg-green-500 hover:bg-green-600 text-white' 
-                        : 'hover:bg-green-50 hover:border-green-300'
-                    }`}
-                  >
-                    <div className="w-8 h-8 bg-white text-gray-700 rounded-full flex items-center justify-center mr-3 font-bold text-sm">
-                      {player.number}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold">{player.name}</div>
-                      <div className="text-xs opacity-75">{player.position}</div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </Card>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Jugadores</h2>
+            
+            {/* Jugadores en grid de 2 columnas */}
+            <div className="grid grid-cols-2 gap-3">
+              {players.map((player) => (
+                <Button
+                  key={player.id}
+                  onClick={() => setSelectedPlayer(player.id)}
+                  className={`h-16 text-sm font-semibold ${
+                    selectedPlayer === player.id 
+                      ? 'bg-green-500 hover:bg-green-600 text-white' 
+                      : 'bg-green-500 hover:bg-green-600 text-white'
+                  }`}
+                >
+                  <div className="w-8 h-8 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-sm">
+                    {player.number}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="font-semibold">{player.name.split(' ')[0]}</div>
+                  </div>
+                </Button>
+              ))}
+            </div>
 
             {/* Live Actions */}
             {liveActions.length > 0 && (
