@@ -45,9 +45,10 @@ interface Player {
 const Players = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [isAddPlayerFormOpen, setIsAddPlayerFormOpen] = useState(false);
-
   const [showMoreStats, setShowMoreStats] = useState(false);
   const [modalCard, setModalCard] = useState<'player' | 'performance' | 'stats' | 'shotMap' | null>(null);
+  const [performanceFilter, setPerformanceFilter] = useState<'all' | 'home' | 'away'>('all');
+  const [showStatsOverlay, setShowStatsOverlay] = useState(false);
 
   const [players, setPlayers] = useState<Player[]>([
     {
@@ -241,14 +242,14 @@ const Players = () => {
         {/* Main Layout: Corrected structure as per mockup */}
         <div className="grid grid-cols-12 gap-6 h-[700px]">
           
-          {/* LEFT: Player Card (Full height, spans 3 columns) */}
+          {/* LEFT: Player Card (Full height, spans 3 columns) - NOW WHITE WITH GREEN BORDER */}
           <div className="col-span-3 h-full">
             <Card 
-              className="p-6 bg-gradient-to-b from-gray-900 to-gray-800 text-white h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative flex flex-col"
+              className="p-6 bg-white border-2 border-green-500 text-gray-900 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative flex flex-col"
               onClick={() => setModalCard('player')}
             >
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Maximize2 className="w-4 h-4 text-white/80" />
+                <Maximize2 className="w-4 h-4 text-gray-600" />
               </div>
               
               {/* Player Photo */}
@@ -257,48 +258,48 @@ const Players = () => {
                   <img 
                     src={selectedPlayer.photo} 
                     alt={selectedPlayer.name}
-                    className="w-32 h-32 rounded-xl object-cover border-4 border-white/20"
+                    className="w-32 h-32 rounded-xl object-cover border-4 border-green-200"
                   />
                 ) : (
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-3xl font-bold border-4 border-white/20">
+                  <div className="w-32 h-32 bg-gradient-to-br from-green-600 to-green-800 rounded-xl flex items-center justify-center text-white text-3xl font-bold border-4 border-green-200">
                     {selectedPlayer.number}
                   </div>
                 )}
-                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center hover:bg-blue-700 shadow-lg transition-colors">
+                <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-600 rounded-full border-2 border-white flex items-center justify-center hover:bg-green-700 shadow-lg transition-colors">
                   <Camera className="w-4 h-4 text-white" />
                 </button>
               </div>
 
               {/* Player Name & Position */}
               <div className="text-center space-y-3 mb-6">
-                <h1 className="text-2xl font-bold">{selectedPlayer.name}</h1>
-                <div className="flex items-center justify-center space-x-2 text-white/80">
-                  <span className="text-sm">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                <h1 className="text-2xl font-bold text-gray-900">{selectedPlayer.name}</h1>
+                <div className="flex items-center justify-center space-x-2 text-gray-600">
+                  <span className="text-sm">🏴</span>
                   <span className="text-sm font-medium">{selectedPlayer.position}</span>
                 </div>
               </div>
 
               {/* Key Stats */}
-              <div className="space-y-4 pt-4 border-t border-white/20 flex-1">
+              <div className="space-y-4 pt-4 border-t border-gray-200 flex-1">
                 <div className="flex justify-between items-center">
-                  <span className="text-white/70 text-sm">Posición</span>
-                  <span className="font-bold">{selectedPlayer.position}</span>
+                  <span className="text-gray-500 text-sm">Posición</span>
+                  <span className="font-bold text-gray-900">{selectedPlayer.position}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white/70 text-sm">Partidos jugados</span>
-                  <span className="font-bold">{selectedPlayer.games}</span>
+                  <span className="text-gray-500 text-sm">Partidos jugados</span>
+                  <span className="font-bold text-gray-900">{selectedPlayer.games}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white/70 text-sm">Goles</span>
-                  <span className="font-bold text-green-400">{selectedPlayer.goals}</span>
+                  <span className="text-gray-500 text-sm">Goles</span>
+                  <span className="font-bold text-green-600">{selectedPlayer.goals}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white/70 text-sm">Asistencias</span>
-                  <span className="font-bold text-blue-400">{selectedPlayer.assists}</span>
+                  <span className="text-gray-500 text-sm">Asistencias</span>
+                  <span className="font-bold text-blue-600">{selectedPlayer.assists}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white/70 text-sm">Minutos</span>
-                  <span className="font-bold">{selectedPlayer.minutes}</span>
+                  <span className="text-gray-500 text-sm">Minutos</span>
+                  <span className="font-bold text-gray-900">{selectedPlayer.minutes}</span>
                 </div>
               </div>
             </Card>
@@ -319,13 +320,43 @@ const Players = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold">Performance</h3>
                   <div className="flex space-x-1">
-                    <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium">
+                    <button 
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        performanceFilter === 'all' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPerformanceFilter('all');
+                      }}
+                    >
                       All
                     </button>
-                    <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
+                    <button 
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        performanceFilter === 'home' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPerformanceFilter('home');
+                      }}
+                    >
                       At home
                     </button>
-                    <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200">
+                    <button 
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        performanceFilter === 'away' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPerformanceFilter('away');
+                      }}
+                    >
                       Away
                     </button>
                   </div>
@@ -366,7 +397,8 @@ const Players = () => {
                       <Bar 
                         dataKey="score" 
                         fill="#10b981"
-                        radius={[2, 2, 0, 0]}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={20}
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -388,15 +420,23 @@ const Players = () => {
                 <h3 className="text-lg font-bold mb-6 text-blue-900">Mapa de Disparos</h3>
                   
                 <div className="flex justify-center mb-4">
-                  <div className="grid grid-cols-3 gap-2 w-48 h-32">
-                    {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
-                      <div
-                        key={zone}
-                        className="border-2 border-blue-300 bg-blue-100 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-200 transition-colors"
-                      >
-                        {goals}
+                  <div className="relative">
+                    {/* Goal frame */}
+                    <div className="border-4 border-blue-600 rounded-lg p-2 bg-blue-100">
+                      <div className="grid grid-cols-3 gap-2 w-48 h-32">
+                        {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
+                          <div
+                            key={zone}
+                            className="border-2 border-blue-400 bg-blue-200 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-300 transition-colors"
+                          >
+                            {goals}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                    {/* Goal posts */}
+                    <div className="absolute -left-2 top-0 w-2 h-full bg-blue-600 rounded-l-lg"></div>
+                    <div className="absolute -right-2 top-0 w-2 h-full bg-blue-600 rounded-r-lg"></div>
                   </div>
                 </div>
                   
@@ -415,7 +455,7 @@ const Players = () => {
                 </div>
                 <h3 className="text-lg font-bold mb-6">Estadísticas</h3>
                   
-                {/* Main Stats */}
+                {/* Only 3 Main Stats */}
                 <div className="space-y-4 flex-1">
                   <div className="flex justify-between items-center py-2">
                     <div className="flex items-center space-x-2">
@@ -448,39 +488,110 @@ const Players = () => {
                   </div>
                 </div>
 
-                {/* Show More Button */}
+                {/* Show More Button - Opens Overlay */}
                 <Button
                   variant="outline"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowMoreStats(!showMoreStats);
+                    setShowStatsOverlay(true);
                   }}
                   className="w-full mt-4 border-gray-300 hover:bg-gray-50 text-xs"
                 >
-                  {showMoreStats ? 'Mostrar menos estadísticas' : 'Ver más estadísticas'}
+                  Ver más estadísticas
                 </Button>
-
-                {/* Additional Stats (Collapsible) */}
-                {showMoreStats && (
-                  <div className="mt-4 pt-4 border-t space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Precisión de pases</span>
-                      <span className="font-bold">{selectedPlayer.passAccuracy}%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Faltas cometidas</span>
-                      <span className="font-bold">{selectedPlayer.foulsCommitted}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Faltas recibidas</span>
-                      <span className="font-bold">{selectedPlayer.foulsReceived}</span>
-                    </div>
-                  </div>
-                )}
               </Card>
             </div>
           </div>
         </div>
+
+        {/* Stats Overlay - Large square overlay for all stats */}
+        {showStatsOverlay && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg p-8 max-w-4xl w-full max-h-[80vh] overflow-y-auto relative">
+              <button 
+                onClick={() => setShowStatsOverlay(false)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <h2 className="text-3xl font-bold mb-8">Estadísticas Completas - {selectedPlayer.name}</h2>
+              <div className="grid grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-blue-600">Estadísticas Ofensivas</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Goles</span>
+                      <span className="font-bold text-green-600">{selectedPlayer.goals}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Asistencias</span>
+                      <span className="font-bold text-blue-600">{selectedPlayer.assists}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Tiros</span>
+                      <span className="font-bold">{selectedPlayer.shots}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Tiros a portería</span>
+                      <span className="font-bold">{selectedPlayer.shotsOnTarget}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Centros</span>
+                      <span className="font-bold">{selectedPlayer.crosses}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-purple-600">Estadísticas Defensivas</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Duelos ganados</span>
+                      <span className="font-bold">{selectedPlayer.duelsWon}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Duelos perdidos</span>
+                      <span className="font-bold">{selectedPlayer.duelsLost}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Balones recuperados</span>
+                      <span className="font-bold">{selectedPlayer.ballsRecovered}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Balones perdidos</span>
+                      <span className="font-bold">{selectedPlayer.ballsLost}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Precisión de pases</span>
+                      <span className="font-bold">{selectedPlayer.passAccuracy}%</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-2 space-y-6">
+                  <h3 className="text-xl font-bold text-orange-600">Disciplina</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Tarjetas amarillas</span>
+                      <span className="font-bold text-yellow-600">{selectedPlayer.yellowCards}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Tarjetas rojas</span>
+                      <span className="font-bold text-red-600">{selectedPlayer.redCards}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Faltas cometidas</span>
+                      <span className="font-bold">{selectedPlayer.foulsCommitted}</span>
+                    </div>
+                    <div className="flex justify-between p-4 bg-gray-50 rounded-lg">
+                      <span>Faltas recibidas</span>
+                      <span className="font-bold">{selectedPlayer.foulsReceived}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modals for expanded views */}
         <Dialog open={modalCard !== null} onOpenChange={() => setModalCard(null)}>
