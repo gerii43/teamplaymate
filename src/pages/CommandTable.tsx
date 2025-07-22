@@ -183,9 +183,9 @@ const CommandTable = () => {
       <div className="p-2 w-full min-h-screen">
         {/* Header ocupando toda la pantalla - Cronómetro y Marcador */}
         <div className="w-full mb-4">
-          <div className="w-full bg-white p-4 rounded-lg shadow-lg border">
+          <div className="w-full bg-white p-2 rounded-lg shadow-lg border">
             {/* Cronómetro central con equipos pegados */}
-            <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center justify-center mb-3">
               {/* CD Statsor - Equipo local (izquierda) */}
               <div className="flex flex-col items-center mr-8">
                 <div className="w-16 h-16 bg-blue-500 rounded-lg mb-2 shadow-md"></div>
@@ -296,14 +296,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('foul_against', 'FALTA CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 FALTA CONTRA
               </Button>
               <Button
                 onClick={() => registerQuickAction('foul_favor', 'FALTA A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 FALTA A FAVOR
               </Button>
@@ -312,14 +312,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('penalty_favor', 'PENALTI A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PENALTI A FAVOR
               </Button>
               <Button
                 onClick={() => registerQuickAction('penalty_against', 'PENALTI EN CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PENALTI EN CONTRA
               </Button>
@@ -328,14 +328,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('ball_lost', 'BALÓN PERDIDO')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 BALÓN PERDIDO
               </Button>
               <Button
                 onClick={() => registerQuickAction('ball_recovered', 'BALÓN RECUPERADO')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 BALÓN RECUPERADO
               </Button>
@@ -344,14 +344,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('duel_won', 'DUELO GANADO')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 DUELO GANADO
               </Button>
               <Button
                 onClick={() => registerQuickAction('duel_lost', 'DUELO PERDIDO')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-black hover:bg-gray-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-black hover:bg-gray-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 DUELO PERDIDO
               </Button>
@@ -360,14 +360,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('goal_favor', 'GOL A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 GOL A FAVOR
               </Button>
               <Button
                 onClick={() => registerQuickAction('goal_against', 'GOL EN CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 GOL EN CONTRA
               </Button>
@@ -376,14 +376,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('assist', 'ASISTENCIA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 ASISTENCIA
               </Button>
               <Button
                 onClick={() => registerQuickAction('save', 'PARADA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PARADA
               </Button>
@@ -392,14 +392,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('shot_goal', 'TIRO A PUERTA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 TIRO A PUERTA
               </Button>
               <Button
                 onClick={() => registerQuickAction('shot_out', 'TIRO FUERA')}
                 disabled={!selectedPlayer}
-                className={`h-12 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 TIRO FUERA
               </Button>
@@ -416,7 +416,7 @@ const CommandTable = () => {
                 <Button
                   key={player.id}
                   onClick={() => setSelectedPlayer(player.id)}
-                  className={`h-10 text-xs font-semibold transition-all ${
+                  className={`h-12 text-xs font-semibold transition-all ${
                     selectedPlayer === player.id 
                       ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
                       : 'bg-green-500 hover:bg-green-600 text-white'
