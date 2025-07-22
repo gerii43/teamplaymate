@@ -211,19 +211,23 @@ const Players = () => {
     if (!selectedPlayer) return null;
 
     // Datos de performance simulados por partido (últimos partidos)
-    const performanceData = [
-      { match: 'vs Real', date: '12 Dic', score: 55, rival: 'Real Madrid' },
-      { match: 'vs Arsenal', date: '17 Dic', score: 85, rival: 'Arsenal' },
-      { match: 'vs Wolves', date: '25 Dic', score: 95, rival: 'Wolverhampton' },
-      { match: 'vs West Ham', date: '29 Dic', score: 68, rival: 'West Ham' },
-      { match: 'vs Aston Villa', date: '4 Ene', score: 78, rival: 'Aston Villa' },
-      { match: 'vs Brighton', date: '8 Ene', score: 85, rival: 'Brighton' },
-      { match: 'vs Fulham', date: '15 Ene', score: 65, rival: 'Fulham' },
-      { match: 'vs Man City', date: '29 Ene', score: 55, rival: 'Manchester City' },
-      { match: 'vs Everton', date: '6 Feb', score: 65, rival: 'Everton' },
-      { match: 'vs Sheffield', date: '17 Feb', score: 95, rival: 'Sheffield United' },
-      { match: 'vs Chelsea', date: '24 Feb', score: 68, rival: 'Chelsea' }
+    const allPerformanceData = [
+      { match: 'vs Real', date: '12 Dic', score: 5.5, rival: 'Real Madrid', location: 'away' },
+      { match: 'vs Arsenal', date: '17 Dic', score: 8.5, rival: 'Arsenal', location: 'home' },
+      { match: 'vs Wolves', date: '25 Dic', score: 9.5, rival: 'Wolverhampton', location: 'away' },
+      { match: 'vs West Ham', date: '29 Dic', score: 6.8, rival: 'West Ham', location: 'home' },
+      { match: 'vs Aston Villa', date: '4 Ene', score: 7.8, rival: 'Aston Villa', location: 'away' },
+      { match: 'vs Brighton', date: '8 Ene', score: 8.5, rival: 'Brighton', location: 'home' },
+      { match: 'vs Fulham', date: '15 Ene', score: 6.5, rival: 'Fulham', location: 'away' },
+      { match: 'vs Man City', date: '29 Ene', score: 5.5, rival: 'Manchester City', location: 'home' },
+      { match: 'vs Everton', date: '6 Feb', score: 6.5, rival: 'Everton', location: 'away' },
+      { match: 'vs Sheffield', date: '17 Feb', score: 9.5, rival: 'Sheffield United', location: 'home' },
+      { match: 'vs Chelsea', date: '24 Feb', score: 6.8, rival: 'Chelsea', location: 'away' }
     ];
+
+    const performanceData = performanceFilter === 'all' 
+      ? allPerformanceData 
+      : allPerformanceData.filter(match => match.location === performanceFilter);
 
     return (
       <div className="space-y-6">
@@ -242,10 +246,10 @@ const Players = () => {
         {/* Main Layout: Corrected structure as per mockup */}
         <div className="grid grid-cols-12 gap-6 h-[700px]">
           
-          {/* LEFT: Player Card (Full height, spans 3 columns) - NOW WHITE WITH GREEN BORDER */}
+          {/* LEFT: Player Card (Full height, spans 3 columns) */}
           <div className="col-span-3 h-full">
             <Card 
-              className="p-6 bg-white border-2 border-green-500 text-gray-900 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative flex flex-col"
+              className="p-6 bg-white text-gray-900 h-full cursor-pointer hover:shadow-xl transition-all duration-300 group relative flex flex-col"
               onClick={() => setModalCard('player')}
             >
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -375,11 +379,11 @@ const Players = () => {
                         height={40}
                       />
                       <YAxis 
-                        domain={[0, 100]}
+                        domain={[0, 10]}
                         tick={{ fontSize: 10 }}
                       />
                       <Tooltip 
-                        formatter={(value) => [`${value} pts`, 'Puntuación']}
+                        formatter={(value) => [`${value}/10`, 'Nota']}
                         labelFormatter={(label, payload) => {
                           if (payload && payload[0]) {
                             const data = payload[0].payload;
@@ -396,9 +400,9 @@ const Players = () => {
                       />
                       <Bar 
                         dataKey="score" 
-                        fill="#10b981"
-                        radius={[6, 6, 0, 0]}
-                        maxBarSize={20}
+                        fill="#f97316"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={15}
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -420,23 +424,17 @@ const Players = () => {
                 <h3 className="text-lg font-bold mb-6 text-blue-900">Mapa de Disparos</h3>
                   
                 <div className="flex justify-center mb-4">
-                  <div className="relative">
-                    {/* Goal frame */}
-                    <div className="border-4 border-blue-600 rounded-lg p-2 bg-blue-100">
-                      <div className="grid grid-cols-3 gap-2 w-48 h-32">
-                        {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
-                          <div
-                            key={zone}
-                            className="border-2 border-blue-400 bg-blue-200 rounded-lg flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-300 transition-colors"
-                          >
-                            {goals}
-                          </div>
-                        ))}
-                      </div>
+                  <div className="border border-blue-400 rounded-lg p-4 bg-white">
+                    <div className="grid grid-cols-3 gap-2 w-48 h-32">
+                      {Object.entries(selectedPlayer.shotMap || {}).map(([zone, goals]) => (
+                        <div
+                          key={zone}
+                          className="bg-white border border-blue-400 rounded flex items-center justify-center text-lg font-bold text-blue-700 hover:bg-blue-50 transition-colors"
+                        >
+                          {goals}
+                        </div>
+                      ))}
                     </div>
-                    {/* Goal posts */}
-                    <div className="absolute -left-2 top-0 w-2 h-full bg-blue-600 rounded-l-lg"></div>
-                    <div className="absolute -right-2 top-0 w-2 h-full bg-blue-600 rounded-r-lg"></div>
                   </div>
                 </div>
                   
