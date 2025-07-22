@@ -2,8 +2,10 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Trophy, Target, TrendingUp, Users } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EnhancedDashboard = () => {
+  const { t } = useLanguage();
   // Mock data for performance charts
   const performanceData = [
     { name: 'Partido 1', puntos: 3, golesF: 2, golesC: 1, victorias: 100 },
@@ -104,7 +106,7 @@ const EnhancedDashboard = () => {
         <Card className="p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100">Puntos</p>
+              <p className="text-blue-100">{t('dashboard.points')}</p>
               <p className="text-3xl font-bold">24</p>
               <p className="text-sm text-blue-100">Temporada actual</p>
             </div>
@@ -126,7 +128,7 @@ const EnhancedDashboard = () => {
         <Card className="p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-100">% Victorias</p>
+              <p className="text-purple-100">% {t('dashboard.victories')}</p>
               <p className="text-3xl font-bold">66.7%</p>
               <p className="text-sm text-purple-100">8 de 12 partidos</p>
             </div>
@@ -150,35 +152,35 @@ const EnhancedDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column - Team Evolution Chart */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Evolución del Equipo</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('dashboard.team.evolution')}</h3>
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={performanceData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="puntos" stroke="#3b82f6" name="Puntos por partido" strokeWidth={2} />
-              <Line type="monotone" dataKey="golesF" stroke="#10b981" name="Goles a favor" strokeWidth={2} />
-              <Line type="monotone" dataKey="golesC" stroke="#ef4444" name="Goles en contra" strokeWidth={2} />
-              <Line type="monotone" dataKey="victorias" stroke="#8b5cf6" name="% Victorias" strokeWidth={2} />
+              <Line type="monotone" dataKey="puntos" stroke="#3b82f6" name={t('dashboard.points')} strokeWidth={2} />
+              <Line type="monotone" dataKey="golesF" stroke="#10b981" name={t('dashboard.goals.for')} strokeWidth={2} />
+              <Line type="monotone" dataKey="golesC" stroke="#ef4444" name={t('dashboard.goals.against')} strokeWidth={2} />
+              <Line type="monotone" dataKey="victorias" stroke="#8b5cf6" name={`% ${t('dashboard.victories')}`} strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Right Column - Top 5 Players */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">TOP 5 Jugadores</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('dashboard.top.players')}</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2">Jugador</th>
+                  <th className="text-left p-2">{t('dashboard.player')}</th>
                   <th className="text-left p-2">Pos</th>
                   <th className="text-left p-2">Min</th>
-                  <th className="text-left p-2">Gol</th>
-                  <th className="text-left p-2">Ast</th>
+                  <th className="text-left p-2">{t('players.goals')}</th>
+                  <th className="text-left p-2">{t('players.assists')}</th>
                   <th className="text-left p-2">Flt</th>
-                  <th className="text-left p-2">Tiros</th>
+                  <th className="text-left p-2">{t('dashboard.shots')}</th>
                   <th className="text-left p-2">Tarj</th>
                   <th className="text-left p-2">Flt Com</th>
                 </tr>

@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload, X, Maximize2, Plus } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AddPlayerForm from '@/components/AddPlayerForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Player {
   id: string;
@@ -43,6 +44,7 @@ interface Player {
 }
 
 const Players = () => {
+  const { t } = useLanguage();
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [isAddPlayerFormOpen, setIsAddPlayerFormOpen] = useState(false);
   const [showMoreStats, setShowMoreStats] = useState(false);
@@ -239,7 +241,7 @@ const Players = () => {
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Volver al equipo</span>
+            <span>{t('players.back')}</span>
           </Button>
         </div>
 
@@ -286,23 +288,23 @@ const Players = () => {
               {/* Key Stats */}
               <div className="space-y-4 pt-4 border-t border-gray-200 flex-1">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Posición</span>
+                  <span className="text-gray-500 text-sm">{t('players.position')}</span>
                   <span className="font-bold text-gray-900">{selectedPlayer.position}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Partidos jugados</span>
+                  <span className="text-gray-500 text-sm">{t('players.games')}</span>
                   <span className="font-bold text-gray-900">{selectedPlayer.games}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Goles</span>
+                  <span className="text-gray-500 text-sm">{t('players.goals')}</span>
                   <span className="font-bold text-green-600">{selectedPlayer.goals}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Asistencias</span>
+                  <span className="text-gray-500 text-sm">{t('players.assists')}</span>
                   <span className="font-bold text-blue-600">{selectedPlayer.assists}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm">Minutos</span>
+                  <span className="text-gray-500 text-sm">{t('players.minutes')}</span>
                   <span className="font-bold text-gray-900">{selectedPlayer.minutes}</span>
                 </div>
               </div>
@@ -322,7 +324,7 @@ const Players = () => {
                   <Maximize2 className="w-4 h-4 text-gray-600" />
                 </div>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold">Performance</h3>
+                  <h3 className="text-xl font-bold">{t('players.performance')}</h3>
                   <div className="flex space-x-1">
                     <button 
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
@@ -421,7 +423,7 @@ const Players = () => {
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Maximize2 className="w-4 h-4 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-bold mb-6 text-blue-900">Mapa de Disparos</h3>
+                <h3 className="text-lg font-bold mb-6 text-blue-900">{t('players.shot.map')}</h3>
                   
                 <div className="flex justify-center mb-4">
                   <div className="border border-blue-400 rounded-lg p-4 bg-white">
@@ -451,7 +453,7 @@ const Players = () => {
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Maximize2 className="w-4 h-4 text-gray-600" />
                 </div>
-                <h3 className="text-lg font-bold mb-6">Estadísticas</h3>
+                <h3 className="text-lg font-bold mb-6">{t('players.general.stats')}</h3>
                   
                 {/* Only 3 Main Stats */}
                 <div className="space-y-4 flex-1">
@@ -495,7 +497,7 @@ const Players = () => {
                   }}
                   className="w-full mt-4 border-gray-300 hover:bg-gray-50 text-xs"
                 >
-                  Ver más estadísticas
+                  {t('players.more.stats')}
                 </Button>
               </Card>
             </div>
@@ -763,13 +765,13 @@ const Players = () => {
   const renderPlayersList = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Jugadores</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('players.title')}</h1>
         <Button
           onClick={() => setIsAddPlayerFormOpen(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
         >
           <Plus className="w-4 h-4" />
-          <span>Añadir Jugador</span>
+          <span>{t('players.add')}</span>
         </Button>
       </div>
 
@@ -808,15 +810,15 @@ const Players = () => {
             <div className="mt-4 grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="text-lg font-bold text-green-600">{player.goals}</div>
-                <div className="text-xs text-gray-600">Goles</div>
+                <div className="text-xs text-gray-600">{t('players.goals')}</div>
               </div>
               <div>
                 <div className="text-lg font-bold text-blue-600">{player.assists}</div>
-                <div className="text-xs text-gray-600">Asistencias</div>
+                <div className="text-xs text-gray-600">{t('players.assists')}</div>
               </div>
               <div>
                 <div className="text-lg font-bold text-gray-600">{player.games}</div>
-                <div className="text-xs text-gray-600">Partidos</div>
+                <div className="text-xs text-gray-600">{t('players.games')}</div>
               </div>
             </div>
           </Card>

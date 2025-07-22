@@ -3,6 +3,7 @@ import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Calendar, MapPin, Download, Copy, Trophy, Target, Award } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Match {
   id: string;
@@ -57,6 +58,7 @@ interface MatchPlayer {
 }
 
 const Matches = () => {
+  const { t } = useLanguage();
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   
@@ -223,7 +225,7 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Volver a Partidos</span>
+            <span>{t('players.back')}</span>
           </Button>
           
           <Button
@@ -342,16 +344,16 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
           {/* Primera Parte */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-blue-600">Primera Parte</CardTitle>
+              <CardTitle className="text-blue-600">{t('matches.first.half')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span>Goles</span>
+                  <span>{t('players.goals')}</span>
                   <span className="font-semibold">{mockMatchStats.firstHalf.goals}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Asistencias</span>
+                  <span>{t('players.assists')}</span>
                   <span className="font-semibold">{mockMatchStats.firstHalf.assists}</span>
                 </div>
                 <div className="flex justify-between">
@@ -397,7 +399,7 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
           {/* Segunda Parte */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-green-600">Segunda Parte</CardTitle>
+              <CardTitle className="text-green-600">{t('matches.second.half')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -455,7 +457,7 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
 
   const renderMatchList = () => (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Partidos</h1>
+      <h1 className="text-2xl font-bold text-gray-900">{t('matches.title')}</h1>
       
       <div className="space-y-4">
         {matches.map((match) => (
@@ -481,7 +483,7 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
                     ? 'bg-green-100 text-green-800' 
                     : 'bg-blue-100 text-blue-800'
                 }`}>
-                  {match.status === 'completed' ? 'Finalizado' : 'Próximo'}
+                  {match.status === 'completed' ? t('matches.completed') : t('matches.upcoming')}
                 </div>
               </div>
               

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { CheckCircle, XCircle, Clock, Users, Calendar, Plus, ChevronDown, ChevronRight, TrendingUp, History, Trophy, Target, Award, Filter } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 interface Player {
   id: number;
   name: string;
@@ -24,6 +25,7 @@ type ViewMode = 'future' | 'past' | 'historic';
 type HistoricFilter = 'all' | 'last-month' | 'last-3-months' | 'season';
 type PositionFilter = 'all' | 'Portero' | 'Defensa' | 'Centrocampista' | 'Delantero';
 const Attendance = () => {
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('future');
   const [historicFilter, setHistoricFilter] = useState<HistoricFilter>('all');
   const [positionFilter, setPositionFilter] = useState<PositionFilter>('all');
@@ -646,7 +648,7 @@ const Attendance = () => {
           </Button>
           <Button variant={viewMode === 'historic' ? 'default' : 'outline'} onClick={() => setViewMode('historic')} className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
-            Histórico
+            {t('attendance.historic')}
           </Button>
         </div>
 
