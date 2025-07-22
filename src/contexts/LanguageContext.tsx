@@ -148,6 +148,49 @@ const translations = {
     'dashboard.discipline': 'Disciplina',
     'dashboard.add.player': 'Añadir Jugador',
     'dashboard.no.order': 'Sin ordenar',
+
+    // Command Table
+    'command.table.title': 'Tabla de Comandos',
+    'command.actions': 'Acciones',
+    'command.players': 'Jugadores',
+    'command.start': 'Iniciar',
+    'command.pause': 'Pausar',
+    'command.restart': 'Reiniciar',
+    'command.first.half': 'Primera Parte',
+    'command.second.half': 'Segunda Parte',
+    'command.select.player': 'Selecciona un jugador primero',
+    'command.home.team': 'CD Statsor',
+    'command.away.team': 'Equipo',
+    
+    // Actions
+    'action.foul.against': 'FALTA CONTRA',
+    'action.foul.favor': 'FALTA A FAVOR',
+    'action.penalty.favor': 'PENALTI A FAVOR',
+    'action.penalty.against': 'PENALTI EN CONTRA',
+    'action.ball.lost': 'BALÓN PERDIDO',
+    'action.ball.recovered': 'BALÓN RECUPERADO',
+    'action.duel.won': 'DUELO GANADO',
+    'action.duel.lost': 'DUELO PERDIDO',
+    'action.goal.favor': 'GOL A FAVOR',
+    'action.goal.against': 'GOL EN CONTRA',
+    'action.assist': 'ASISTENCIA',
+    'action.save': 'PARADA',
+    'action.shot.goal': 'TIRO A PUERTA',
+    'action.shot.out': 'TIRO FUERA',
+    'action.corner.favor': 'CÓRNER A FAVOR',
+    'action.corner.against': 'CÓRNER EN CONTRA',
+    
+    // Registered Actions
+    'command.registered.actions': 'Acciones Registradas',
+    'command.last.action': 'ÚLTIMA ACCIÓN',
+    'command.no.actions': 'No hay acciones registradas',
+    'command.remove': 'Eliminar',
+    'command.edit': 'Editar',
+    
+    // Goal Zone Modal
+    'goal.zone.title': 'Selecciona la zona del gol',
+    'goal.zone.instructions': 'Elige la zona donde se marcó el gol',
+    'goal.zone.cancel': 'Cancelar',
   },
   en: {
     // Navigation
@@ -278,6 +321,49 @@ const translations = {
     'dashboard.discipline': 'Discipline',
     'dashboard.add.player': 'Add Player',
     'dashboard.no.order': 'No order',
+
+    // Command Table
+    'command.table.title': 'Command Table',
+    'command.actions': 'Actions',
+    'command.players': 'Players',
+    'command.start': 'Start',
+    'command.pause': 'Pause',
+    'command.restart': 'Restart',
+    'command.first.half': 'First Half',
+    'command.second.half': 'Second Half',
+    'command.select.player': 'Select a player first',
+    'command.home.team': 'CD Statsor',
+    'command.away.team': 'Team',
+    
+    // Actions
+    'action.foul.against': 'FOUL AGAINST',
+    'action.foul.favor': 'FOUL IN FAVOR',
+    'action.penalty.favor': 'PENALTY IN FAVOR',
+    'action.penalty.against': 'PENALTY AGAINST',
+    'action.ball.lost': 'BALL LOST',
+    'action.ball.recovered': 'BALL RECOVERED',
+    'action.duel.won': 'DUEL WON',
+    'action.duel.lost': 'DUEL LOST',
+    'action.goal.favor': 'GOAL IN FAVOR',
+    'action.goal.against': 'GOAL AGAINST',
+    'action.assist': 'ASSIST',
+    'action.save': 'SAVE',
+    'action.shot.goal': 'SHOT ON GOAL',
+    'action.shot.out': 'SHOT OFF TARGET',
+    'action.corner.favor': 'CORNER IN FAVOR',
+    'action.corner.against': 'CORNER AGAINST',
+    
+    // Registered Actions
+    'command.registered.actions': 'Registered Actions',
+    'command.last.action': 'LAST ACTION',
+    'command.no.actions': 'No actions registered',
+    'command.remove': 'Remove',
+    'command.edit': 'Edit',
+    
+    // Goal Zone Modal
+    'goal.zone.title': 'Select goal zone',
+    'goal.zone.instructions': 'Choose the zone where the goal was scored',
+    'goal.zone.cancel': 'Cancel',
   }
 };
 

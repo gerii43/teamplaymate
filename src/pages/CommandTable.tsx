@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   Play, 
   Pause, 
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 
 const CommandTable = () => {
+  const { t } = useLanguage();
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
@@ -96,7 +98,7 @@ const CommandTable = () => {
 
   const registerQuickAction = (actionId: string, actionName: string) => {
     if (!selectedPlayer) {
-      alert('Selecciona un jugador primero');
+      alert(t('command.select.player'));
       return;
     }
 
@@ -114,7 +116,7 @@ const CommandTable = () => {
     }
 
     const player = players.find(p => p.id === selectedPlayer);
-    const halfText = selectedHalf === 'first' ? 'Primera Parte' : 'Segunda Parte';
+    const halfText = selectedHalf === 'first' ? t('command.first.half') : t('command.second.half');
     const newAction = {
       id: Date.now(),
       playerId: selectedPlayer,
@@ -189,7 +191,7 @@ const CommandTable = () => {
               {/* CD Statsor - Equipo local (izquierda) */}
               <div className="flex flex-col items-center mr-8">
                 <div className="w-16 h-16 bg-blue-500 rounded-lg mb-2 shadow-md"></div>
-                <span className="text-sm font-semibold text-gray-800">CD Statsor</span>
+                <span className="text-sm font-semibold text-gray-800">{t('command.home.team')}</span>
                 <div className="flex gap-1 mt-2">
                   {[...Array(5)].map((_, i) => (
                     <button
@@ -216,7 +218,7 @@ const CommandTable = () => {
                     className="bg-green-500 hover:bg-green-600 text-white text-xs px-2 py-1"
                   >
                     <Play className="h-3 w-3 mr-1" />
-                    Iniciar
+                    {t('command.start')}
                   </Button>
                   <Button
                     onClick={pauseTimer}
@@ -225,7 +227,7 @@ const CommandTable = () => {
                     className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
                   >
                     <Pause className="h-3 w-3 mr-1" />
-                    Pausar
+                    {t('command.pause')}
                   </Button>
                   <Button
                     onClick={resetTimer}
@@ -234,7 +236,7 @@ const CommandTable = () => {
                     className="text-xs px-2 py-1"
                   >
                     <RotateCcw className="h-3 w-3 mr-1" />
-                    Reiniciar
+                    {t('command.restart')}
                   </Button>
                 </div>
                 
@@ -266,7 +268,7 @@ const CommandTable = () => {
               {/* Equipo visitante (derecha) */}
               <div className="flex flex-col items-center ml-8">
                 <div className="w-16 h-16 bg-yellow-500 rounded-lg mb-2 shadow-md"></div>
-                <span className="text-sm font-semibold text-gray-800">Equipo</span>
+                <span className="text-sm font-semibold text-gray-800">{t('command.away.team')}</span>
                 <div className="flex gap-1 mt-2">
                   {[...Array(5)].map((_, i) => (
                     <button
@@ -288,127 +290,127 @@ const CommandTable = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
           {/* Columna izquierda - Acciones */}
           <div className="lg:col-span-2">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">Acciones</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.actions')}</h2>
             
             {/* Grid de acciones replicando exactamente la imagen */}
             <div className="grid grid-cols-2 gap-1 shadow-lg rounded-lg bg-white p-3">
               {/* Fila 1 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('foul_against', 'FALTA CONTRA')}
+                onClick={() => registerQuickAction('foul_against', t('action.foul.against'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                FALTA CONTRA
+                {t('action.foul.against')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('foul_favor', 'FALTA A FAVOR')}
+                onClick={() => registerQuickAction('foul_favor', t('action.foul.favor'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                FALTA A FAVOR
+                {t('action.foul.favor')}
               </Button>
 
               {/* Fila 2 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('penalty_favor', 'PENALTI A FAVOR')}
+                onClick={() => registerQuickAction('penalty_favor', t('action.penalty.favor'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                PENALTI A FAVOR
+                {t('action.penalty.favor')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('penalty_against', 'PENALTI EN CONTRA')}
+                onClick={() => registerQuickAction('penalty_against', t('action.penalty.against'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                PENALTI EN CONTRA
+                {t('action.penalty.against')}
               </Button>
 
               {/* Fila 3 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('ball_lost', 'BALÓN PERDIDO')}
+                onClick={() => registerQuickAction('ball_lost', t('action.ball.lost'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                BALÓN PERDIDO
+                {t('action.ball.lost')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('ball_recovered', 'BALÓN RECUPERADO')}
+                onClick={() => registerQuickAction('ball_recovered', t('action.ball.recovered'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                BALÓN RECUPERADO
+                {t('action.ball.recovered')}
               </Button>
 
               {/* Fila 4 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('duel_won', 'DUELO GANADO')}
+                onClick={() => registerQuickAction('duel_won', t('action.duel.won'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                DUELO GANADO
+                {t('action.duel.won')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('duel_lost', 'DUELO PERDIDO')}
+                onClick={() => registerQuickAction('duel_lost', t('action.duel.lost'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-black hover:bg-gray-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                DUELO PERDIDO
+                {t('action.duel.lost')}
               </Button>
 
               {/* Fila 5 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('goal_favor', 'GOL A FAVOR')}
+                onClick={() => registerQuickAction('goal_favor', t('action.goal.favor'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                GOL A FAVOR
+                {t('action.goal.favor')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('goal_against', 'GOL EN CONTRA')}
+                onClick={() => registerQuickAction('goal_against', t('action.goal.against'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                GOL EN CONTRA
+                {t('action.goal.against')}
               </Button>
 
               {/* Fila 6 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('assist', 'ASISTENCIA')}
+                onClick={() => registerQuickAction('assist', t('action.assist'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                ASISTENCIA
+                {t('action.assist')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('save', 'PARADA')}
+                onClick={() => registerQuickAction('save', t('action.save'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                PARADA
+                {t('action.save')}
               </Button>
 
               {/* Fila 7 - según imagen */}
               <Button
-                onClick={() => registerQuickAction('shot_goal', 'TIRO A PUERTA')}
+                onClick={() => registerQuickAction('shot_goal', t('action.shot.goal'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                TIRO A PUERTA
+                {t('action.shot.goal')}
               </Button>
               <Button
-                onClick={() => registerQuickAction('shot_out', 'TIRO FUERA')}
+                onClick={() => registerQuickAction('shot_out', t('action.shot.out'))}
                 disabled={!selectedPlayer}
                 className={`h-8 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                TIRO FUERA
+                {t('action.shot.out')}
               </Button>
             </div>
           </div>
 
           {/* Columna derecha - Jugadores */}
           <div className="lg:col-span-1">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">Jugadores</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.players')}</h2>
             
             {/* Jugadores en grid de 2 columnas con sombra */}
             <div className="grid grid-cols-2 gap-2 shadow-lg rounded-lg bg-white p-3">
@@ -435,7 +437,7 @@ const CommandTable = () => {
             {/* Confirmación de acción - Visible inmediatamente */}
             {liveActions.length > 0 && (
               <div className="mt-3 p-3 bg-white rounded-lg shadow-lg border">
-                <h3 className="font-semibold text-sm mb-2 text-center bg-gray-100 py-1 rounded-md">ÚLTIMA ACCIÓN</h3>
+                <h3 className="font-semibold text-sm mb-2 text-center bg-gray-100 py-1 rounded-md">{t('command.last.action')}</h3>
                 <div className="text-sm text-gray-700 text-center p-2 bg-green-50 rounded border">
                   <span className="font-medium">{liveActions[0].action}</span>
                   <div className="text-xs text-gray-500 mt-1">{liveActions[0].time}</div>
@@ -446,19 +448,19 @@ const CommandTable = () => {
 
           {/* Columna derecha - Acciones registradas */}
           <div className="lg:col-span-1">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">Acciones Registradas</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.registered.actions')}</h2>
             
             {/* Lista de acciones registradas */}
             <div className="shadow-lg rounded-lg bg-white p-3 max-h-96 overflow-y-auto">
               {liveActions.length === 0 ? (
-                <div className="text-center text-gray-500 text-sm">No hay acciones registradas</div>
+                <div className="text-center text-gray-500 text-sm">{t('command.no.actions')}</div>
               ) : (
                 liveActions.map((action, index) => (
                   <div key={action.id} className="mb-2 p-2 bg-gray-50 rounded border hover:bg-gray-100 transition-colors">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="text-xs font-medium text-gray-800">{action.action}</div>
-                        <div className="text-xs text-gray-500">{action.time} - {action.half === 'first' ? 'Primera' : 'Segunda'} Parte</div>
+                        <div className="text-xs text-gray-500">{action.time} - {action.half === 'first' ? t('command.first.half') : t('command.second.half')}</div>
                       </div>
                       <Button
                         onClick={() => {
@@ -483,7 +485,7 @@ const CommandTable = () => {
         <Dialog open={showGoalZoneModal} onOpenChange={setShowGoalZoneModal}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-center">Selecciona la zona del gol</DialogTitle>
+              <DialogTitle className="text-center">{t('goal.zone.title')}</DialogTitle>
             </DialogHeader>
             <div className="p-4">
               <div className="grid grid-cols-3 gap-2 w-full max-w-xs mx-auto">
@@ -504,7 +506,7 @@ const CommandTable = () => {
                   variant="outline"
                   size="sm"
                 >
-                  Cancelar
+                  {t('goal.zone.cancel')}
                 </Button>
               </div>
             </div>
