@@ -285,25 +285,25 @@ const CommandTable = () => {
 
 
         {/* Contenido principal - Acciones (izq) y Jugadores (der) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
           {/* Columna izquierda - Acciones */}
           <div className="lg:col-span-2">
             <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">Acciones</h2>
             
             {/* Grid de acciones replicando exactamente la imagen */}
-            <div className="grid grid-cols-2 gap-2 shadow-lg rounded-lg bg-white p-3">
+            <div className="grid grid-cols-2 gap-1 shadow-lg rounded-lg bg-white p-3">
               {/* Fila 1 - según imagen */}
               <Button
                 onClick={() => registerQuickAction('foul_against', 'FALTA CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 FALTA CONTRA
               </Button>
               <Button
                 onClick={() => registerQuickAction('foul_favor', 'FALTA A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 FALTA A FAVOR
               </Button>
@@ -312,14 +312,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('penalty_favor', 'PENALTI A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PENALTI A FAVOR
               </Button>
               <Button
                 onClick={() => registerQuickAction('penalty_against', 'PENALTI EN CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PENALTI EN CONTRA
               </Button>
@@ -328,14 +328,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('ball_lost', 'BALÓN PERDIDO')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 BALÓN PERDIDO
               </Button>
               <Button
                 onClick={() => registerQuickAction('ball_recovered', 'BALÓN RECUPERADO')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 BALÓN RECUPERADO
               </Button>
@@ -344,14 +344,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('duel_won', 'DUELO GANADO')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 DUELO GANADO
               </Button>
               <Button
                 onClick={() => registerQuickAction('duel_lost', 'DUELO PERDIDO')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-black hover:bg-gray-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-black hover:bg-gray-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 DUELO PERDIDO
               </Button>
@@ -360,14 +360,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('goal_favor', 'GOL A FAVOR')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 GOL A FAVOR
               </Button>
               <Button
                 onClick={() => registerQuickAction('goal_against', 'GOL EN CONTRA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 GOL EN CONTRA
               </Button>
@@ -376,14 +376,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('assist', 'ASISTENCIA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 ASISTENCIA
               </Button>
               <Button
                 onClick={() => registerQuickAction('save', 'PARADA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 PARADA
               </Button>
@@ -392,14 +392,14 @@ const CommandTable = () => {
               <Button
                 onClick={() => registerQuickAction('shot_goal', 'TIRO A PUERTA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 TIRO A PUERTA
               </Button>
               <Button
                 onClick={() => registerQuickAction('shot_out', 'TIRO FUERA')}
                 disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`h-8 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 TIRO FUERA
               </Button>
@@ -442,6 +442,40 @@ const CommandTable = () => {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Columna derecha - Acciones registradas */}
+          <div className="lg:col-span-1">
+            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">Acciones Registradas</h2>
+            
+            {/* Lista de acciones registradas */}
+            <div className="shadow-lg rounded-lg bg-white p-3 max-h-96 overflow-y-auto">
+              {liveActions.length === 0 ? (
+                <div className="text-center text-gray-500 text-sm">No hay acciones registradas</div>
+              ) : (
+                liveActions.map((action, index) => (
+                  <div key={action.id} className="mb-2 p-2 bg-gray-50 rounded border hover:bg-gray-100 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="text-xs font-medium text-gray-800">{action.action}</div>
+                        <div className="text-xs text-gray-500">{action.time} - {action.half === 'first' ? 'Primera' : 'Segunda'} Parte</div>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          const updatedActions = liveActions.filter(a => a.id !== action.id);
+                          setLiveActions(updatedActions);
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="ml-2 h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
