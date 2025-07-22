@@ -218,202 +218,198 @@ const CommandTable = () => {
         </div>
 
         {/* Contenido principal - Acciones (izq) y Jugadores (der) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Columna izquierda - Acciones */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Acciones rápidas principales */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Columna izquierda - Acciones por categorías */}
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* ATAQUE */}
             <Card className="p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-yellow-500" />
-                Acciones Rápidas
+              <h3 className="font-semibold text-gray-800 mb-4 text-center bg-orange-100 py-2 rounded-md flex items-center justify-center gap-2">
+                <Target className="h-5 w-5 text-orange-600" />
+                ATAQUE
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={() => registerQuickAction('goal_favor', 'GOL FAVOR')}
                   disabled={!selectedPlayer}
-                  className={`h-14 text-sm bg-green-500 hover:bg-green-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-green-500 hover:bg-green-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Target className="h-4 w-4 mr-2" />
+                  <Target className="h-5 w-5 mr-2" />
                   GOL FAVOR
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('assist', 'ASISTENCIA')}
                   disabled={!selectedPlayer}
-                  className={`h-14 text-sm bg-yellow-200 hover:bg-yellow-300 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <TrendingUp className="h-4 w-4 mr-2" />
+                  <TrendingUp className="h-5 w-5 mr-2" />
                   ASISTENCIA
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('shot_goal', 'TIRO PUERTA')}
                   disabled={!selectedPlayer}
-                  className={`h-14 text-sm bg-purple-500 hover:bg-purple-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-purple-500 hover:bg-purple-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Target className="h-4 w-4 mr-2" />
+                  <Target className="h-5 w-5 mr-2" />
                   TIRO PUERTA
-                </Button>
-                <Button
-                  onClick={() => registerQuickAction('ball_recovered', 'BALÓN RECUPERADO')}
-                  disabled={!selectedPlayer}
-                  className={`h-14 text-sm bg-gray-500 hover:bg-gray-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Shield className="h-4 w-4 mr-2" />
-                  BALÓN REC.
-                </Button>
-              </div>
-            </Card>
-
-            {/* Ataque */}
-            <Card className="p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Target className="h-4 w-4 text-orange-500" />
-                Ataque
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  onClick={() => registerQuickAction('goal_against', 'GOL CONTRA')}
-                  disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-red-800 hover:bg-red-900 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Target className="h-3 w-3 mr-1" />
-                  GOL CONTRA
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('shot_out', 'TIRO FUERA')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-gray-400 hover:bg-gray-500 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-green-200 hover:bg-green-300 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  <AlertTriangle className="h-5 w-5 mr-2" />
                   TIRO FUERA
                 </Button>
               </div>
             </Card>
 
-            {/* Defensa / Transiciones */}
+            {/* DEFENSA */}
             <Card className="p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Shield className="h-4 w-4 text-green-500" />
-                Defensa / Transiciones
+              <h3 className="font-semibold text-gray-800 mb-4 text-center bg-blue-100 py-2 rounded-md flex items-center justify-center gap-2">
+                <Shield className="h-5 w-5 text-blue-600" />
+                DEFENSA
               </h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => registerQuickAction('ball_recovered', 'BALÓN RECUPERADO')}
+                  disabled={!selectedPlayer}
+                  className={`h-16 text-sm font-semibold bg-gray-500 hover:bg-gray-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Shield className="h-5 w-5 mr-2" />
+                  BALÓN RECUPERADO
+                </Button>
                 <Button
                   onClick={() => registerQuickAction('ball_lost', 'BALÓN PERDIDO')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-yellow-500 hover:bg-yellow-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-yellow-500 hover:bg-yellow-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  <AlertTriangle className="h-5 w-5 mr-2" />
                   BALÓN PERDIDO
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('duel_won', 'DUELO GANADO')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-pink-500 hover:bg-pink-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-pink-500 hover:bg-pink-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Trophy className="h-3 w-3 mr-1" />
+                  <Trophy className="h-5 w-5 mr-2" />
                   DUELO GANADO
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('duel_lost', 'DUELO PERDIDO')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-black hover:bg-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-black hover:bg-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Trophy className="h-3 w-3 mr-1" />
+                  <Trophy className="h-5 w-5 mr-2" />
                   DUELO PERDIDO
-                </Button>
-                <Button
-                  onClick={() => registerQuickAction('save', 'PARADA')}
-                  disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-blue-300 hover:bg-blue-400 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Shield className="h-3 w-3 mr-1" />
-                  PARADA
                 </Button>
               </div>
             </Card>
 
-            {/* Disciplinarias */}
+            {/* FALTAS */}
             <Card className="p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-500" />
-                Disciplinarias
+              <h3 className="font-semibold text-gray-800 mb-4 text-center bg-red-100 py-2 rounded-md flex items-center justify-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-red-600" />
+                FALTAS
               </h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={() => registerQuickAction('foul_favor', 'FALTA A FAVOR')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-green-500 hover:bg-green-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-green-500 hover:bg-green-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  <AlertTriangle className="h-5 w-5 mr-2" />
                   FALTA A FAVOR
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('foul_against', 'FALTA CONTRA')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-red-500 hover:bg-red-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-red-500 hover:bg-red-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  <AlertTriangle className="h-5 w-5 mr-2" />
                   FALTA CONTRA
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('penalty_favor', 'PENALTI FAVOR')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-blue-500 hover:bg-blue-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-blue-500 hover:bg-blue-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Activity className="h-3 w-3 mr-1" />
+                  <Activity className="h-5 w-5 mr-2" />
                   PENALTI FAVOR
                 </Button>
                 <Button
                   onClick={() => registerQuickAction('penalty_against', 'PENALTI CONTRA')}
                   disabled={!selectedPlayer}
-                  className={`h-12 text-xs bg-orange-500 hover:bg-orange-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`h-16 text-sm font-semibold bg-orange-500 hover:bg-orange-600 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Activity className="h-3 w-3 mr-1" />
+                  <Activity className="h-5 w-5 mr-2" />
                   PENALTI CONTRA
+                </Button>
+              </div>
+            </Card>
+
+            {/* PORTERÍA */}
+            <Card className="p-4">
+              <h3 className="font-semibold text-gray-800 mb-4 text-center bg-cyan-100 py-2 rounded-md flex items-center justify-center gap-2">
+                <Shield className="h-5 w-5 text-cyan-600" />
+                PORTERÍA
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => registerQuickAction('save', 'PARADA')}
+                  disabled={!selectedPlayer}
+                  className={`h-16 text-sm font-semibold bg-blue-300 hover:bg-blue-400 text-gray-800 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Shield className="h-5 w-5 mr-2" />
+                  PARADA
+                </Button>
+                <Button
+                  onClick={() => registerQuickAction('goal_against', 'GOL CONTRA')}
+                  disabled={!selectedPlayer}
+                  className={`h-16 text-sm font-semibold bg-red-800 hover:bg-red-900 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <Target className="h-5 w-5 mr-2" />
+                  GOL CONTRA
                 </Button>
               </div>
             </Card>
           </div>
 
           {/* Columna derecha - Jugadores */}
-          <div className="lg:col-span-7">
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg">Jugadores</h3>
-                <Badge variant="outline" className="text-xs">
-                  {selectedPlayer ? `Seleccionado: #${players.find(p => p.id === selectedPlayer)?.number}` : 'Ninguno seleccionado'}
-                </Badge>
+          <div className="lg:col-span-1">
+            <Card className="p-4 h-fit">
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg text-center bg-green-100 py-2 rounded-md flex items-center justify-center gap-2">
+                  <Users className="h-5 w-5 text-green-600" />
+                  JUGADORES
+                </h3>
+                <div className="text-center mt-2">
+                  <Badge variant="outline" className="text-xs">
+                    {selectedPlayer ? `#${players.find(p => p.id === selectedPlayer)?.number} - ${players.find(p => p.id === selectedPlayer)?.name}` : 'Ninguno seleccionado'}
+                  </Badge>
+                </div>
               </div>
               
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-96 overflow-y-auto">
                 {players.map((player) => (
-                  <div
+                  <Button
                     key={player.id}
                     onClick={() => setSelectedPlayer(player.id)}
-                    className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${
+                    variant={selectedPlayer === player.id ? "default" : "outline"}
+                    className={`w-full h-14 justify-start text-left font-semibold ${
                       selectedPlayer === player.id 
-                        ? 'border-blue-500 bg-blue-50' 
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        ? 'bg-green-500 hover:bg-green-600 text-white' 
+                        : 'hover:bg-green-50 hover:border-green-300'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="font-bold text-gray-700">#{player.number}</span>
-                      </div>
-                      <div>
-                        <div className="font-semibold text-gray-900">{player.name}</div>
-                        <div className="text-sm text-gray-600">{player.position}</div>
-                      </div>
+                    <div className="w-8 h-8 bg-white text-gray-700 rounded-full flex items-center justify-center mr-3 font-bold text-sm">
+                      {player.number}
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-gray-900">{player.number}</div>
-                      <Badge 
-                        variant={player.status === 'active' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {player.status === 'active' ? 'Activo' : 'Suplente'}
-                      </Badge>
+                    <div className="flex-1">
+                      <div className="font-semibold">{player.name}</div>
+                      <div className="text-xs opacity-75">{player.position}</div>
                     </div>
-                  </div>
+                  </Button>
                 ))}
               </div>
             </Card>
@@ -421,12 +417,12 @@ const CommandTable = () => {
             {/* Live Actions */}
             {liveActions.length > 0 && (
               <Card className="p-4 mt-4">
-                <h3 className="font-semibold text-lg mb-3">Últimas acciones</h3>
+                <h3 className="font-semibold text-sm mb-3 text-center bg-gray-100 py-2 rounded-md">ÚLTIMAS ACCIONES</h3>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {liveActions.slice(0, 5).map((action) => (
-                    <div key={action.id} className="text-sm text-gray-700 flex justify-between">
-                      <span>{action.action} - {action.playerName}</span>
-                      <span className="font-mono">Min {action.time}</span>
+                    <div key={action.id} className="text-xs text-gray-700 flex justify-between p-2 bg-gray-50 rounded">
+                      <span className="font-medium">{action.action}</span>
+                      <span className="font-mono text-gray-500">{action.time}</span>
                     </div>
                   ))}
                 </div>
