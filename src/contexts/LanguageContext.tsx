@@ -369,7 +369,11 @@ const translations = {
     'manual.actions.na': 'N/A',
 
     // General text
+    'general.season': 'Temporada',
     'general.in.development': 'En desarrollo',
+    
+    // Stats page
+    'stats.title': 'Estadísticas Generales',
   },
   en: {
     // Navigation
@@ -715,7 +719,11 @@ const translations = {
     'manual.actions.na': 'N/A',
 
     // General text
+    'general.season': 'Season',
     'general.in.development': 'In development',
+    
+    // Stats page
+    'stats.title': 'General Statistics',
   }
 };
 
