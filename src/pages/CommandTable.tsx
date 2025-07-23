@@ -71,7 +71,7 @@ const SortableActionButton = ({ action, onAction, selectedPlayer, disabled }: an
       <Button
         onClick={() => onAction(action.id, action.name)}
         disabled={disabled}
-        className={`h-8 text-xs font-semibold ${action.color} mx-4 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} relative`}
+        className={`h-12 text-xs font-semibold ${action.color} w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''} relative`}
         {...attributes}
         {...listeners}
       >
@@ -103,7 +103,7 @@ const SortablePlayerButton = ({ player, onSelect, selectedPlayer }: any) => {
     <div ref={setNodeRef} style={style}>
       <Button
         onClick={() => onSelect(player.id)}
-        className={`h-12 text-xs font-semibold transition-all relative ${
+        className={`h-12 text-xs font-semibold transition-all relative w-full ${
           selectedPlayer === player.id 
             ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
             : 'bg-green-500 hover:bg-green-600 text-white'
@@ -141,6 +141,7 @@ const CommandTable = () => {
   const [customPlayers, setCustomPlayers] = useState<any[]>([]);
   const [actionVisibility, setActionVisibility] = useState<Record<string, boolean>>({});
   const [playerVisibility, setPlayerVisibility] = useState<Record<string, boolean>>({});
+  const [playersOnField, setPlayersOnField] = useState<string[]>([]);
 
   // Timer effect
   useEffect(() => {
@@ -162,38 +163,40 @@ const CommandTable = () => {
 
   // Mock players data - 14 players with goalkeeper first
   const players = [
-    { id: '1', name: 'Alejandro', number: 1, position: 'POR', status: 'active' },
-    { id: '2', name: 'Juan', number: 9, position: 'DEL', status: 'active' },
-    { id: '3', name: 'Miguel', number: 8, position: 'CC', status: 'active' },
-    { id: '4', name: 'Carlos', number: 4, position: 'DEF', status: 'active' },
-    { id: '5', name: 'Fernando', number: 7, position: 'DEL', status: 'active' },
-    { id: '6', name: 'David', number: 2, position: 'DEF', status: 'active' },
-    { id: '7', name: 'Antonio', number: 3, position: 'DEF', status: 'active' },
-    { id: '8', name: 'Pablo', number: 10, position: 'CC', status: 'active' },
-    { id: '9', name: 'Javier', number: 6, position: 'CC', status: 'active' },
-    { id: '10', name: 'Roberto', number: 5, position: 'DEF', status: 'active' },
-    { id: '11', name: 'Luis', number: 11, position: 'DEL', status: 'active' },
-    { id: '12', name: 'Manuel', number: 14, position: 'CC', status: 'active' },
-    { id: '13', name: 'Pedro', number: 15, position: 'DEF', status: 'active' },
-    { id: '14', name: 'Francisco', number: 16, position: 'DEL', status: 'active' },
+    { id: '1', name: 'Juan', number: 1, position: 'POR', status: 'active' },
+    { id: '2', name: 'Pablo', number: 9, position: 'DEL', status: 'active' },
+    { id: '3', name: 'Izan', number: 4, position: 'DEF', status: 'active' },
+    { id: '4', name: 'Jordi', number: 8, position: 'CC', status: 'active' },
+    { id: '5', name: 'Nil', number: 15, position: 'DEF', status: 'active' },
+    { id: '6', name: 'Mateo', number: 2, position: 'DEF', status: 'active' },
+    { id: '7', name: 'Adrián', number: 15, position: 'DEF', status: 'active' },
+    { id: '8', name: 'Julio', number: 43, position: 'CC', status: 'active' },
+    { id: '9', name: 'Roberto', number: 67, position: 'CC', status: 'active' },
+    { id: '10', name: 'Luis', number: 91, position: 'DEF', status: 'active' },
+    { id: '11', name: 'Pol', number: 23, position: 'DEL', status: 'active' },
+    { id: '12', name: 'Roger', number: 90, position: 'CC', status: 'active' },
+    { id: '13', name: 'Pedro', number: 16, position: 'DEF', status: 'active' },
+    { id: '14', name: 'Francisco', number: 17, position: 'DEL', status: 'active' },
   ];
 
   // Default actions with translations
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-green-400 hover:bg-green-500' },
-    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-400 hover:bg-red-500' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-700 hover:bg-red-800' },
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-400 hover:bg-lime-500 text-gray-800' },
+    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-400 hover:bg-red-500 text-white' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-700 hover:bg-red-800 text-white' },
     { id: 'assist', name: t('action.assist'), color: 'bg-yellow-400 hover:bg-yellow-500 text-gray-800' },
-    { id: 'save', name: t('action.save'), color: 'bg-cyan-400 hover:bg-cyan-500' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600' },
+    { id: 'save', name: t('action.save'), color: 'bg-cyan-400 hover:bg-cyan-500 text-gray-800' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white' },
     { id: 'shot_out', name: t('action.shot.out'), color: 'bg-green-300 hover:bg-green-400 text-gray-800' },
+    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-blue-400 hover:bg-blue-500 text-white' },
+    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-red-600 hover:bg-red-700 text-white' },
   ];
 
   // Load saved configuration or use defaults
@@ -234,6 +237,16 @@ const CommandTable = () => {
       });
       setPlayerVisibility(defaultVisibility);
     }
+
+    // Load players on field (default: goalkeeper + first 10 field players)
+    const savedPlayersOnField = localStorage.getItem('commandTablePlayersOnField');
+    if (savedPlayersOnField) {
+      setPlayersOnField(JSON.parse(savedPlayersOnField));
+    } else {
+      const defaultOnField = players.slice(0, 11).map(p => p.id); // Goalkeeper + 10 field players
+      setPlayersOnField(defaultOnField);
+      localStorage.setItem('commandTablePlayersOnField', JSON.stringify(defaultOnField));
+    }
   }, []);
 
   // Save configuration when changed
@@ -242,6 +255,18 @@ const CommandTable = () => {
     localStorage.setItem('commandTablePlayers', JSON.stringify(customPlayers));
     localStorage.setItem('commandTableActionVisibility', JSON.stringify(actionVisibility));
     localStorage.setItem('commandTablePlayerVisibility', JSON.stringify(playerVisibility));
+    localStorage.setItem('commandTablePlayersOnField', JSON.stringify(playersOnField));
+  };
+
+  // Toggle player on/off field
+  const togglePlayerOnField = (playerId: string) => {
+    setPlayersOnField(prev => {
+      const newList = prev.includes(playerId) 
+        ? prev.filter(id => id !== playerId)
+        : [...prev, playerId];
+      localStorage.setItem('commandTablePlayersOnField', JSON.stringify(newList));
+      return newList;
+    });
   };
 
   // Reset to default configuration
@@ -249,6 +274,7 @@ const CommandTable = () => {
     const defaultActions = getDefaultActions();
     const defaultActionVisibility: Record<string, boolean> = {};
     const defaultPlayerVisibility: Record<string, boolean> = {};
+    const defaultOnField = players.slice(0, 11).map(p => p.id);
     
     defaultActions.forEach(action => {
       defaultActionVisibility[action.id] = true;
@@ -262,11 +288,13 @@ const CommandTable = () => {
     setCustomPlayers(players);
     setActionVisibility(defaultActionVisibility);
     setPlayerVisibility(defaultPlayerVisibility);
+    setPlayersOnField(defaultOnField);
 
     localStorage.setItem('commandTableActions', JSON.stringify(defaultActions));
     localStorage.setItem('commandTablePlayers', JSON.stringify(players));
     localStorage.setItem('commandTableActionVisibility', JSON.stringify(defaultActionVisibility));
     localStorage.setItem('commandTablePlayerVisibility', JSON.stringify(defaultPlayerVisibility));
+    localStorage.setItem('commandTablePlayersOnField', JSON.stringify(defaultOnField));
   };
 
   // Drag and drop sensors
@@ -345,7 +373,7 @@ const CommandTable = () => {
       playerId: selectedPlayer,
       playerName: player?.name,
       playerNumber: player?.number,
-      action: `${actionName} ${player?.name} - ${halfText}`,
+      action: actionName,
       time: formatTime(time),
       half: selectedHalf,
       timestamp: Date.now(),
@@ -356,6 +384,7 @@ const CommandTable = () => {
 
   const handleGoalZoneSelect = (zone: number) => {
     const player = customPlayers.find(p => p.id === selectedPlayer);
+    const halfText = selectedHalf === 'first' ? t('command.first.half') : t('command.second.half');
     const newAction = {
       id: Date.now(),
       playerId: selectedPlayer,
@@ -509,13 +538,12 @@ const CommandTable = () => {
           </div>
         </div>
 
-
-        {/* Contenido principal - Acciones (izq) y Jugadores (der) */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+        {/* Parte superior - Acciones (izq) y Jugadores (der) exactamente como en la imagen */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           {/* Columna izquierda - Acciones */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-bold text-gray-800">{t('command.actions')}</h2>
+              <h2 className="text-xl font-bold text-gray-800">{t('command.actions')}</h2>
               <div className="flex gap-2">
                 {isEditMode && (
                   <>
@@ -554,7 +582,7 @@ const CommandTable = () => {
             </div>
             
             {isEditMode ? (
-              <div className="shadow-lg rounded-lg bg-white p-3">
+              <div className="shadow-lg rounded-lg bg-white p-4">
                 <h3 className="text-sm font-semibold mb-3">{t('command.configure.actions')}</h3>
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
                   <SortableContext items={customActions.map(a => a.id)} strategy={rectSortingStrategy}>
@@ -582,7 +610,7 @@ const CommandTable = () => {
             ) : (
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
                 <SortableContext items={visibleActions.map(a => a.id)} strategy={rectSortingStrategy}>
-                  <div className="grid grid-cols-2 gap-1 shadow-lg rounded-lg bg-white p-3">
+                  <div className="grid grid-cols-4 gap-2 shadow-lg rounded-lg bg-white p-4">
                     {visibleActions.map((action) => (
                       <SortableActionButton
                         key={action.id}
@@ -598,12 +626,12 @@ const CommandTable = () => {
             )}
           </div>
 
-          {/* Columna derecha - Jugadores */}
-          <div className="lg:col-span-1">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.players')}</h2>
+          {/* Columna derecha - Jugadores con portero arriba centrado */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-3 text-center">{t('command.players')}</h2>
             
             {isEditMode ? (
-              <div className="shadow-lg rounded-lg bg-white p-3">
+              <div className="shadow-lg rounded-lg bg-white p-4">
                 <h3 className="text-sm font-semibold mb-3">{t('command.configure.players')}</h3>
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
                   <SortableContext items={customPlayers.map(p => p.id)} strategy={verticalListSortingStrategy}>
@@ -628,55 +656,131 @@ const CommandTable = () => {
                 </DndContext>
               </div>
             ) : (
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
-                <SortableContext items={visiblePlayers.map(p => p.id)} strategy={verticalListSortingStrategy}>
-                  <div className="grid grid-cols-2 gap-2 shadow-lg rounded-lg bg-white p-3">
-                    {visiblePlayers.map((player) => (
-                      <SortablePlayerButton
-                        key={player.id}
-                        player={player}
-                        onSelect={setSelectedPlayer}
-                        selectedPlayer={selectedPlayer}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            )}
-          </div>
-
-          {/* Columna derecha - Acciones registradas */}
-          <div className="lg:col-span-1">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.registered.actions')}</h2>
-            
-            {/* Lista de acciones registradas */}
-            <div className="shadow-lg rounded-lg bg-white p-3 max-h-96 overflow-y-auto">
-              {liveActions.length === 0 ? (
-                <div className="text-center text-gray-500 text-sm">{t('command.no.actions')}</div>
-              ) : (
-                liveActions.map((action, index) => (
-                  <div key={action.id} className="mb-2 p-2 bg-gray-50 rounded border hover:bg-gray-100 transition-colors">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="text-xs font-medium text-gray-800">{action.action}</div>
-                        <div className="text-xs text-gray-500">{action.time} - {action.half === 'first' ? t('command.first.half') : t('command.second.half')}</div>
-                      </div>
+              <div className="shadow-lg rounded-lg bg-white p-4">
+                {/* Portero centrado arriba */}
+                {visiblePlayers.filter(p => p.position === 'POR').map((goalkeeper) => (
+                  <div key={goalkeeper.id} className="flex justify-center mb-4">
+                    <div className="relative">
                       <Button
-                        onClick={() => {
-                          const updatedActions = liveActions.filter(a => a.id !== action.id);
-                          setLiveActions(updatedActions);
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className="ml-2 h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                        onClick={() => setSelectedPlayer(goalkeeper.id)}
+                        className={`h-12 text-xs font-semibold transition-all bg-green-500 hover:bg-green-600 text-white w-32 ${
+                          selectedPlayer === goalkeeper.id 
+                            ? 'ring-2 ring-green-300' 
+                            : ''
+                        }`}
                       >
-                        ×
+                        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                          {goalkeeper.number}
+                        </div>
+                        <div className="font-semibold text-xs">{goalkeeper.name}</div>
                       </Button>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+
+                {/* Sección de Jugadores en el Campo */}
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">{t('command.players.on.field')}</h3>
+                  <div className="border-2 border-green-200 bg-green-50 rounded-lg p-3">
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
+                      <SortableContext items={visiblePlayers.filter(p => p.position !== 'POR' && playersOnField.includes(p.id)).map(p => p.id)} strategy={rectSortingStrategy}>
+                        <div className="grid grid-cols-2 gap-2">
+                          {visiblePlayers
+                            .filter(p => p.position !== 'POR' && playersOnField.includes(p.id))
+                            .map((player) => (
+                            <div key={player.id} className="relative">
+                              <Button
+                                onClick={() => {
+                                  setSelectedPlayer(player.id);
+                                }}
+                                onDoubleClick={() => togglePlayerOnField(player.id)}
+                                className={`h-12 text-xs font-semibold transition-all w-full ${
+                                  selectedPlayer === player.id 
+                                    ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
+                                    : 'bg-green-500 hover:bg-green-600 text-white'
+                                }`}
+                              >
+                                <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                                  {player.number}
+                                </div>
+                                <div className="font-semibold text-xs">{player.name}</div>
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
+                  </div>
+                </div>
+
+                {/* Resto de jugadores (fuera del campo) */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">{t('command.players.bench')}</h3>
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
+                    <SortableContext items={visiblePlayers.filter(p => p.position !== 'POR' && !playersOnField.includes(p.id)).map(p => p.id)} strategy={rectSortingStrategy}>
+                      <div className="grid grid-cols-2 gap-2">
+                        {visiblePlayers
+                          .filter(p => p.position !== 'POR' && !playersOnField.includes(p.id))
+                          .map((player) => (
+                          <div key={player.id} className="relative">
+                            <Button
+                              onClick={() => {
+                                setSelectedPlayer(player.id);
+                              }}
+                              onDoubleClick={() => togglePlayerOnField(player.id)}
+                              className={`h-12 text-xs font-semibold transition-all w-full opacity-70 ${
+                                selectedPlayer === player.id 
+                                  ? 'bg-gray-600 hover:bg-gray-700 text-white ring-2 ring-gray-300' 
+                                  : 'bg-gray-500 hover:bg-gray-600 text-white'
+                              }`}
+                            >
+                              <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                                {player.number}
+                              </div>
+                              <div className="font-semibold text-xs">{player.name}</div>
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Parte inferior - Acciones registradas */}
+        <div>
+          <h2 className="text-xl font-bold text-gray-800 mb-3">{t('command.registered.actions')}</h2>
+          <div className="shadow-lg rounded-lg bg-white p-4 max-h-64 overflow-y-auto">
+            {liveActions.length === 0 ? (
+              <div className="text-center text-gray-500 text-sm py-8">{t('command.no.actions')}</div>
+            ) : (
+              <div className="space-y-2">
+                {liveActions.map((action, index) => (
+                  <div key={action.id} className="flex justify-between items-center p-3 bg-gray-50 rounded border hover:bg-gray-100 transition-colors">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-800">
+                        {action.action} – {action.playerName} – {action.half === 'first' ? t('command.first.half') : t('command.second.half')}
+                      </div>
+                      <div className="text-xs text-gray-500">{action.time}</div>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        const updatedActions = liveActions.filter(a => a.id !== action.id);
+                        setLiveActions(updatedActions);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="ml-2 h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                    >
+                      ×
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

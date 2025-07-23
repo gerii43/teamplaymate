@@ -190,6 +190,8 @@ const translations = {
     'command.reset.default': 'Restablecer',
     'command.configure.actions': 'Configurar Acciones',
     'command.configure.players': 'Configurar Jugadores',
+    'command.players.on.field': 'Jugadores en el Campo',
+    'command.players.bench': 'Banquillo',
     
     // Goal Zone Modal
     'goal.zone.title': 'Selecciona la zona del gol',
@@ -484,6 +486,8 @@ const translations = {
     'command.reset.default': 'Reset Default',
     'command.configure.actions': 'Configure Actions',
     'command.configure.players': 'Configure Players',
+    'command.players.on.field': 'Players on Field',
+    'command.players.bench': 'Bench',
     
     // Goal Zone Modal
     'goal.zone.title': 'Select goal zone',
