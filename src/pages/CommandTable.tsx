@@ -860,7 +860,7 @@ const CommandTable = () => {
                    const actionColorClass = actionConfig?.color?.split(' ')[0] || 'bg-gray-100'; // Extract background color
                    
                    return (
-                     <div key={action.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border-4 shadow-2xl hover:shadow-3xl transition-all duration-200 border-gray-700">
+                     <div key={action.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border shadow-sm hover:shadow transition-all duration-200 border-gray-200">
                        <div className="flex-1">
                          <div className="text-sm font-medium">
                            <span className="bg-red-100 text-red-600 px-3 py-1 rounded-md font-bold shadow-md border-2 border-red-500">{action.time}'</span>
