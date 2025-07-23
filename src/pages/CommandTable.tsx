@@ -112,10 +112,10 @@ const SortablePlayerButton = ({ player, onSelect, selectedPlayer, isEditMode }: 
         {...(isEditMode ? listeners : {})}
       >
         {isEditMode && <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />}
-        <div className={`w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center ${isEditMode ? 'ml-4 mr-1' : 'mr-1'} font-bold text-xs`}>
-          {player.number}
-        </div>
-        <div className="flex-1 text-left">
+        <div className="flex items-center justify-start w-full">
+          <div className={`w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center ${isEditMode ? 'ml-4 mr-2' : 'mr-2'} font-bold text-xs`}>
+            {player.number}
+          </div>
           <div className="font-semibold text-xs">{player.name}</div>
         </div>
       </Button>
@@ -794,10 +794,12 @@ const CommandTable = () => {
                             : ''
                         }`}
                       >
-                        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                          {goalkeeper.number}
+                        <div className="flex items-center justify-start w-full">
+                          <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                            {goalkeeper.number}
+                          </div>
+                          <div className="font-semibold text-xs">{goalkeeper.name}</div>
                         </div>
-                        <div className="font-semibold text-xs">{goalkeeper.name}</div>
                       </Button>
                     </div>
                   </div>
@@ -825,10 +827,12 @@ const CommandTable = () => {
                                     : 'bg-green-500 hover:bg-green-600 text-white'
                                 }`}
                               >
-                                <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                                  {player.number}
+                                <div className="flex items-center justify-start w-full">
+                                  <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                                    {player.number}
+                                  </div>
+                                  <div className="font-semibold text-xs">{player.name}</div>
                                 </div>
-                                <div className="font-semibold text-xs">{player.name}</div>
                               </Button>
                             </div>
                           ))}
@@ -845,7 +849,7 @@ const CommandTable = () => {
         {/* Parte inferior - Acciones registradas */}
         <div>
           <h2 className="text-xl font-bold text-gray-800 mb-3">{t('command.registered.actions')}</h2>
-          <div className="shadow-lg rounded-lg bg-white p-4 max-h-64 overflow-y-auto">
+          <div className="shadow-sm rounded-lg bg-white p-4 max-h-64 overflow-y-auto border border-gray-100">
             {liveActions.length === 0 ? (
               <div className="text-center text-gray-500 text-sm py-8">{t('command.no.actions')}</div>
             ) : (
