@@ -192,6 +192,10 @@ const translations = {
     'command.configure.players': 'Configurar Jugadores',
     'command.players.on.field': 'Jugadores en el Campo',
     'command.players.bench': 'Banquillo',
+    'command.active.players.before.match': 'Jugadores Activos',
+    'goal.origin.favor.title': 'Origen del gol a favor',
+    'goal.origin.against.title': 'Origen del gol en contra',
+    'goal.origin.cancel': 'Cancelar',
     
     // Goal Zone Modal
     'goal.zone.title': 'Selecciona la zona del gol',
@@ -488,6 +492,10 @@ const translations = {
     'command.configure.players': 'Configure Players',
     'command.players.on.field': 'Players on Field',
     'command.players.bench': 'Bench',
+    'command.active.players.before.match': 'Active Players',
+    'goal.origin.favor.title': 'Goal origin in favor',
+    'goal.origin.against.title': 'Goal origin against',
+    'goal.origin.cancel': 'Cancel',
     
     // Goal Zone Modal
     'goal.zone.title': 'Select goal zone',

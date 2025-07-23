@@ -142,6 +142,10 @@ const CommandTable = () => {
   const [actionVisibility, setActionVisibility] = useState<Record<string, boolean>>({});
   const [playerVisibility, setPlayerVisibility] = useState<Record<string, boolean>>({});
   const [playersOnField, setPlayersOnField] = useState<string[]>([]);
+  const [activePlayersBeforeMatch, setActivePlayersBeforeMatch] = useState<Record<string, boolean>>({});
+  const [showGoalOriginModal, setShowGoalOriginModal] = useState(false);
+  const [currentGoalAction, setCurrentGoalAction] = useState<any>(null);
+  const [registeredActions, setRegisteredActions] = useState<any[]>([]);
 
   // Timer effect
   useEffect(() => {
@@ -247,6 +251,25 @@ const CommandTable = () => {
       setPlayersOnField(defaultOnField);
       localStorage.setItem('commandTablePlayersOnField', JSON.stringify(defaultOnField));
     }
+
+    // Load active players before match (default: all active)
+    const savedActiveBeforeMatch = localStorage.getItem('commandTableActiveBeforeMatch');
+    if (savedActiveBeforeMatch) {
+      setActivePlayersBeforeMatch(JSON.parse(savedActiveBeforeMatch));
+    } else {
+      const defaultActive: Record<string, boolean> = {};
+      players.forEach(player => {
+        defaultActive[player.id] = true;
+      });
+      setActivePlayersBeforeMatch(defaultActive);
+      localStorage.setItem('commandTableActiveBeforeMatch', JSON.stringify(defaultActive));
+    }
+
+    // Load registered actions
+    const savedRegisteredActions = localStorage.getItem('commandTableRegisteredActions');
+    if (savedRegisteredActions) {
+      setRegisteredActions(JSON.parse(savedRegisteredActions));
+    }
   }, []);
 
   // Save configuration when changed
@@ -256,6 +279,17 @@ const CommandTable = () => {
     localStorage.setItem('commandTableActionVisibility', JSON.stringify(actionVisibility));
     localStorage.setItem('commandTablePlayerVisibility', JSON.stringify(playerVisibility));
     localStorage.setItem('commandTablePlayersOnField', JSON.stringify(playersOnField));
+    localStorage.setItem('commandTableActiveBeforeMatch', JSON.stringify(activePlayersBeforeMatch));
+    localStorage.setItem('commandTableRegisteredActions', JSON.stringify(registeredActions));
+  };
+
+  // Toggle player active status before match
+  const togglePlayerActiveBeforeMatch = (playerId: string) => {
+    setActivePlayersBeforeMatch(prev => {
+      const newStatus = { ...prev, [playerId]: !prev[playerId] };
+      localStorage.setItem('commandTableActiveBeforeMatch', JSON.stringify(newStatus));
+      return newStatus;
+    });
   };
 
   // Toggle player on/off field
@@ -360,9 +394,20 @@ const CommandTable = () => {
       setHomeTeamFouls(prev => Math.min(prev + 1, 5));
     }
 
-    // Special handling for goal in favor
-    if (actionId === 'goal_favor') {
-      setShowGoalZoneModal(true);
+    // Special handling for goals - show origin modal
+    if (actionId === 'goal_favor' || actionId === 'goal_against') {
+      const player = customPlayers.find(p => p.id === selectedPlayer);
+      setCurrentGoalAction({
+        playerId: selectedPlayer,
+        playerName: player?.name,
+        playerNumber: player?.number,
+        action: actionName,
+        actionId: actionId,
+        time: formatTime(time),
+        half: selectedHalf,
+        timestamp: Date.now(),
+      });
+      setShowGoalOriginModal(true);
       return;
     }
 
@@ -380,6 +425,11 @@ const CommandTable = () => {
     };
 
     setLiveActions(prev => [newAction, ...prev]);
+    setRegisteredActions(prev => {
+      const updated = [newAction, ...prev];
+      localStorage.setItem('commandTableRegisteredActions', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleGoalZoneSelect = (zone: number) => {
@@ -398,7 +448,31 @@ const CommandTable = () => {
     };
 
     setLiveActions(prev => [newAction, ...prev]);
+    setRegisteredActions(prev => {
+      const updated = [newAction, ...prev];
+      localStorage.setItem('commandTableRegisteredActions', JSON.stringify(updated));
+      return updated;
+    });
     setShowGoalZoneModal(false);
+  };
+
+  // Handle goal origin selection
+  const handleGoalOriginSelect = (origin: string) => {
+    if (currentGoalAction) {
+      const newAction = {
+        ...currentGoalAction,
+        goalOrigin: origin,
+      };
+
+      setLiveActions(prev => [newAction, ...prev]);
+      setRegisteredActions(prev => {
+        const updated = [newAction, ...prev];
+        localStorage.setItem('commandTableRegisteredActions', JSON.stringify(updated));
+        return updated;
+      });
+    }
+    setShowGoalOriginModal(false);
+    setCurrentGoalAction(null);
   };
 
   const startTimer = () => setIsRunning(true);
@@ -407,6 +481,8 @@ const CommandTable = () => {
     setIsRunning(false);
     setTime(0);
     setLiveActions([]);
+    setRegisteredActions([]);
+    localStorage.removeItem('commandTableRegisteredActions');
   };
 
   const toggleFullscreen = () => {
@@ -432,6 +508,30 @@ const CommandTable = () => {
   // Get visible actions and players
   const visibleActions = customActions.filter(action => actionVisibility[action.id]);
   const visiblePlayers = customPlayers.filter(player => playerVisibility[player.id]);
+  const activeVisiblePlayers = visiblePlayers.filter(player => activePlayersBeforeMatch[player.id]);
+
+  // Goal origin options
+  const goalOriginOptions = {
+    favor: [
+      'Jugada ensayada',
+      'Transición rápida', 
+      'Recuperación alta',
+      'Tiro exterior',
+      'Estrategia (córner, falta, saque de banda)',
+      '1 vs 1 ganado',
+      'Error rival'
+    ],
+    against: [
+      'Pérdida en salida de balón',
+      'Pérdida en zona peligrosa',
+      'Error defensivo (individual)',
+      'Falta de marca / Ganaron la espalda',
+      'Transición rival rápida',
+      'Superioridad numérica rival',
+      'Gol de estrategia (córner, falta, etc.)',
+      'Gol de portero-jugador (en futsal)'
+    ]
+  };
 
   return (
     <Layout>
@@ -657,93 +757,65 @@ const CommandTable = () => {
               </div>
             ) : (
               <div className="shadow-lg rounded-lg bg-white p-4">
-                {/* Portero centrado arriba */}
+                {/* Lista única de jugadores con toggle antes del partido */}
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">{t('command.active.players.before.match')}</h3>
+                
+                {/* Portero primero */}
                 {visiblePlayers.filter(p => p.position === 'POR').map((goalkeeper) => (
-                  <div key={goalkeeper.id} className="flex justify-center mb-4">
-                    <div className="relative">
-                      <Button
-                        onClick={() => setSelectedPlayer(goalkeeper.id)}
-                        className={`h-12 text-xs font-semibold transition-all bg-green-500 hover:bg-green-600 text-white w-32 ${
-                          selectedPlayer === goalkeeper.id 
-                            ? 'ring-2 ring-green-300' 
-                            : ''
-                        }`}
-                      >
-                        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                          {goalkeeper.number}
-                        </div>
-                        <div className="font-semibold text-xs">{goalkeeper.name}</div>
-                      </Button>
-                    </div>
+                  <div key={goalkeeper.id} className="flex items-center gap-2 mb-2">
+                    <Button
+                      onClick={() => togglePlayerActiveBeforeMatch(goalkeeper.id)}
+                      variant="outline"
+                      size="sm"
+                      className={`w-6 h-6 p-0 ${activePlayersBeforeMatch[goalkeeper.id] ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                    >
+                      {activePlayersBeforeMatch[goalkeeper.id] ? '✓' : '✖'}
+                    </Button>
+                    <Button
+                      onClick={() => setSelectedPlayer(goalkeeper.id)}
+                      className={`h-10 text-xs font-semibold transition-all flex-1 ${
+                        selectedPlayer === goalkeeper.id 
+                          ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
+                          : 'bg-green-500 hover:bg-green-600 text-white'
+                      } ${!activePlayersBeforeMatch[goalkeeper.id] ? 'opacity-50' : ''}`}
+                      disabled={!activePlayersBeforeMatch[goalkeeper.id]}
+                    >
+                      <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                        {goalkeeper.number}
+                      </div>
+                      <div className="font-semibold text-xs">{goalkeeper.name}</div>
+                    </Button>
                   </div>
                 ))}
 
-                {/* Sección de Jugadores en el Campo */}
-                <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">{t('command.players.on.field')}</h3>
-                  <div className="border-2 border-green-200 bg-green-50 rounded-lg p-3">
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
-                      <SortableContext items={visiblePlayers.filter(p => p.position !== 'POR' && playersOnField.includes(p.id)).map(p => p.id)} strategy={rectSortingStrategy}>
-                        <div className="grid grid-cols-2 gap-2">
-                          {visiblePlayers
-                            .filter(p => p.position !== 'POR' && playersOnField.includes(p.id))
-                            .map((player) => (
-                            <div key={player.id} className="relative">
-                              <Button
-                                onClick={() => {
-                                  setSelectedPlayer(player.id);
-                                }}
-                                onDoubleClick={() => togglePlayerOnField(player.id)}
-                                className={`h-12 text-xs font-semibold transition-all w-full ${
-                                  selectedPlayer === player.id 
-                                    ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
-                                    : 'bg-green-500 hover:bg-green-600 text-white'
-                                }`}
-                              >
-                                <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                                  {player.number}
-                                </div>
-                                <div className="font-semibold text-xs">{player.name}</div>
-                              </Button>
-                            </div>
-                          ))}
+                {/* Resto de jugadores */}
+                <div className="grid grid-cols-1 gap-2">
+                  {visiblePlayers.filter(p => p.position !== 'POR').map((player) => (
+                    <div key={player.id} className="flex items-center gap-2">
+                      <Button
+                        onClick={() => togglePlayerActiveBeforeMatch(player.id)}
+                        variant="outline"
+                        size="sm"
+                        className={`w-6 h-6 p-0 ${activePlayersBeforeMatch[player.id] ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                      >
+                        {activePlayersBeforeMatch[player.id] ? '✓' : '✖'}
+                      </Button>
+                      <Button
+                        onClick={() => setSelectedPlayer(player.id)}
+                        className={`h-10 text-xs font-semibold transition-all flex-1 ${
+                          selectedPlayer === player.id 
+                            ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
+                            : 'bg-green-500 hover:bg-green-600 text-white'
+                        } ${!activePlayersBeforeMatch[player.id] ? 'opacity-50' : ''}`}
+                        disabled={!activePlayersBeforeMatch[player.id]}
+                      >
+                        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
+                          {player.number}
                         </div>
-                      </SortableContext>
-                    </DndContext>
-                  </div>
-                </div>
-
-                {/* Resto de jugadores (fuera del campo) */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">{t('command.players.bench')}</h3>
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
-                    <SortableContext items={visiblePlayers.filter(p => p.position !== 'POR' && !playersOnField.includes(p.id)).map(p => p.id)} strategy={rectSortingStrategy}>
-                      <div className="grid grid-cols-2 gap-2">
-                        {visiblePlayers
-                          .filter(p => p.position !== 'POR' && !playersOnField.includes(p.id))
-                          .map((player) => (
-                          <div key={player.id} className="relative">
-                            <Button
-                              onClick={() => {
-                                setSelectedPlayer(player.id);
-                              }}
-                              onDoubleClick={() => togglePlayerOnField(player.id)}
-                              className={`h-12 text-xs font-semibold transition-all w-full opacity-70 ${
-                                selectedPlayer === player.id 
-                                  ? 'bg-gray-600 hover:bg-gray-700 text-white ring-2 ring-gray-300' 
-                                  : 'bg-gray-500 hover:bg-gray-600 text-white'
-                              }`}
-                            >
-                              <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                                {player.number}
-                              </div>
-                              <div className="font-semibold text-xs">{player.name}</div>
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
+                        <div className="font-semibold text-xs">{player.name}</div>
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -754,22 +826,26 @@ const CommandTable = () => {
         <div>
           <h2 className="text-xl font-bold text-gray-800 mb-3">{t('command.registered.actions')}</h2>
           <div className="shadow-lg rounded-lg bg-white p-4 max-h-64 overflow-y-auto">
-            {liveActions.length === 0 ? (
+            {registeredActions.length === 0 ? (
               <div className="text-center text-gray-500 text-sm py-8">{t('command.no.actions')}</div>
             ) : (
               <div className="space-y-2">
-                {liveActions.map((action, index) => (
+                {registeredActions.map((action, index) => (
                   <div key={action.id} className="flex justify-between items-center p-3 bg-gray-50 rounded border hover:bg-gray-100 transition-colors">
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800">
-                        {action.action} – {action.playerName} – {action.half === 'first' ? t('command.first.half') : t('command.second.half')}
+                        {action.time}' | {action.action} | {action.playerName}
+                        {action.goalOrigin && ` | ${action.goalOrigin}`}
                       </div>
-                      <div className="text-xs text-gray-500">{action.time}</div>
+                      <div className="text-xs text-gray-500">
+                        {action.half === 'first' ? t('command.first.half') : t('command.second.half')}
+                      </div>
                     </div>
                     <Button
                       onClick={() => {
-                        const updatedActions = liveActions.filter(a => a.id !== action.id);
-                        setLiveActions(updatedActions);
+                        const updatedActions = registeredActions.filter(a => a.id !== action.id);
+                        setRegisteredActions(updatedActions);
+                        localStorage.setItem('commandTableRegisteredActions', JSON.stringify(updatedActions));
                       }}
                       variant="outline"
                       size="sm"
@@ -783,6 +859,43 @@ const CommandTable = () => {
             )}
           </div>
         </div>
+
+        {/* Goal Origin Modal */}
+        <Dialog open={showGoalOriginModal} onOpenChange={setShowGoalOriginModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                {currentGoalAction?.actionId === 'goal_favor' ? t('goal.origin.favor.title') : t('goal.origin.against.title')}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {(currentGoalAction?.actionId === 'goal_favor' 
+                  ? goalOriginOptions.favor 
+                  : goalOriginOptions.against
+                ).map((origin, index) => (
+                  <Button
+                    key={index}
+                    onClick={() => handleGoalOriginSelect(origin)}
+                    variant="outline"
+                    className="w-full h-auto p-3 text-left text-sm hover:bg-blue-50 hover:border-blue-500"
+                  >
+                    {origin}
+                  </Button>
+                ))}
+              </div>
+              <div className="mt-4 text-center">
+                <Button
+                  onClick={() => setShowGoalOriginModal(false)}
+                  variant="outline"
+                  size="sm"
+                >
+                  {t('goal.origin.cancel')}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Goal Zone Modal */}
         <Dialog open={showGoalZoneModal} onOpenChange={setShowGoalZoneModal}>
