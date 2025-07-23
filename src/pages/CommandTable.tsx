@@ -188,22 +188,22 @@ const CommandTable = () => {
 
   // Default actions with translations
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-100 hover:bg-red-200 text-red-800 border border-red-300' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-100 hover:bg-orange-200 text-orange-800 border border-orange-300' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-300' },
     { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'assist', name: t('action.assist'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'save', name: t('action.save'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-teal-100 hover:bg-teal-200 text-teal-800 border border-teal-300' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-pink-100 hover:bg-pink-200 text-pink-800 border border-pink-300' },
+    { id: 'assist', name: t('action.assist'), color: 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border border-indigo-300' },
+    { id: 'save', name: t('action.save'), color: 'bg-cyan-100 hover:bg-cyan-200 text-cyan-800 border border-cyan-300' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-lime-100 hover:bg-lime-200 text-lime-800 border border-lime-300' },
+    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300' },
+    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-300' },
+    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300' },
   ];
 
   // Load saved configuration or use defaults
@@ -829,33 +829,44 @@ const CommandTable = () => {
               <div className="text-center text-gray-500 text-sm py-8">{t('command.no.actions')}</div>
             ) : (
               <div className="space-y-2">
-                {liveActions.map((action, index) => (
-                  <div key={action.id} className="flex justify-between items-center p-3 bg-blue-50 rounded border-2 border-blue-200 hover:bg-blue-100 transition-colors">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-blue-800">
-                        {action.time}' | {action.action} | {action.playerName} | {action.half === 'first' ? t('command.first.half') : t('command.second.half')}
-                        {action.goalZone && ` | Zona ${action.goalZone}`}
-                        {action.goalOrigin && ` | ${action.goalOrigin}`}
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => {
-                        const updatedActions = liveActions.filter(a => a.id !== action.id);
-                        setLiveActions(updatedActions);
-                        localStorage.setItem('commandTableLiveActions', JSON.stringify(updatedActions));
-                      }}
-                      variant="outline"
-                      size="sm"
-                      className="ml-2 h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                    >
-                      ×
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+                 {liveActions.map((action, index) => {
+                   // Find the action color from customActions
+                   const actionConfig = customActions.find(a => a.name === action.action);
+                   const actionColorClass = actionConfig?.color?.split(' ')[0] || 'bg-gray-100'; // Extract background color
+                   
+                   return (
+                   <div key={action.id} className="flex justify-between items-center p-3 bg-white rounded border-2 border-blue-200 hover:bg-blue-100 transition-colors">
+                     <div className="flex-1">
+                       <div className="text-sm font-medium">
+                         <span className="text-red-600 font-bold">{action.time}'</span>
+                         <span className="mx-1">|</span>
+                         <span className={`${actionColorClass} px-2 py-1 rounded text-xs font-semibold`}>{action.action}</span>
+                         <span className="mx-1">|</span>
+                         <span className="text-green-600 font-semibold">{action.playerName}</span>
+                         <span className="mx-1">|</span>
+                         <span className="text-yellow-600 font-semibold">{action.half === 'first' ? t('command.first.half') : t('command.second.half')}</span>
+                         {action.goalZone && <><span className="mx-1">|</span><span className="text-gray-600"> Zona {action.goalZone}</span></>}
+                         {action.goalOrigin && <><span className="mx-1">|</span><span className="text-gray-600"> {action.goalOrigin}</span></>}
+                       </div>
+                     </div>
+                     <Button
+                       onClick={() => {
+                         const updatedActions = liveActions.filter(a => a.id !== action.id);
+                         setLiveActions(updatedActions);
+                         localStorage.setItem('commandTableLiveActions', JSON.stringify(updatedActions));
+                       }}
+                       variant="outline"
+                       size="sm"
+                       className="ml-2 h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                     >
+                       ×
+                     </Button>
+                   </div>
+                 )})}
+               </div>
+             )}
+           </div>
+         </div>
 
         {/* Goal Origin Modal */}
         <Dialog open={showGoalOriginModal} onOpenChange={setShowGoalOriginModal}>
