@@ -50,7 +50,7 @@ import {
 } from 'lucide-react';
 
 // Sortable Action Button Component
-const SortableActionButton = ({ action, onAction, selectedPlayer, disabled }: any) => {
+const SortableActionButton = ({ action, onAction, selectedPlayer, disabled, isEditMode }: any) => {
   const {
     attributes,
     listeners,
@@ -58,7 +58,7 @@ const SortableActionButton = ({ action, onAction, selectedPlayer, disabled }: an
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: action.id });
+  } = useSortable({ id: action.id, disabled: !isEditMode });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -72,18 +72,18 @@ const SortableActionButton = ({ action, onAction, selectedPlayer, disabled }: an
         onClick={() => onAction(action.id, action.name)}
         disabled={disabled}
         className={`h-12 text-xs font-semibold ${action.color} w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''} relative`}
-        {...attributes}
-        {...listeners}
+        {...(isEditMode ? attributes : {})}
+        {...(isEditMode ? listeners : {})}
       >
-        <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />
-        <span className="ml-3">{action.name}</span>
+        {isEditMode && <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />}
+        <span className={isEditMode ? "ml-3" : ""}>{action.name}</span>
       </Button>
     </div>
   );
 };
 
 // Sortable Player Button Component
-const SortablePlayerButton = ({ player, onSelect, selectedPlayer }: any) => {
+const SortablePlayerButton = ({ player, onSelect, selectedPlayer, isEditMode }: any) => {
   const {
     attributes,
     listeners,
@@ -91,7 +91,7 @@ const SortablePlayerButton = ({ player, onSelect, selectedPlayer }: any) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: player.id });
+  } = useSortable({ id: player.id, disabled: !isEditMode });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -108,11 +108,11 @@ const SortablePlayerButton = ({ player, onSelect, selectedPlayer }: any) => {
             ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
             : 'bg-green-500 hover:bg-green-600 text-white'
         }`}
-        {...attributes}
-        {...listeners}
+        {...(isEditMode ? attributes : {})}
+        {...(isEditMode ? listeners : {})}
       >
-        <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />
-        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center ml-4 mr-1 font-bold text-xs">
+        {isEditMode && <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />}
+        <div className={`w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center ${isEditMode ? 'ml-4 mr-1' : 'mr-1'} font-bold text-xs`}>
           {player.number}
         </div>
         <div className="flex-1 text-left">
@@ -480,6 +480,8 @@ const CommandTable = () => {
     setIsRunning(false);
     setTime(0);
     setLiveActions([]);
+    // También limpiar de localStorage
+    localStorage.removeItem('commandTableLiveActions');
   };
 
   const toggleFullscreen = () => {
@@ -672,6 +674,7 @@ const CommandTable = () => {
                               onAction={() => {}}
                               selectedPlayer={true}
                               disabled={true}
+                              isEditMode={true}
                             />
                           </div>
                         </div>
@@ -681,21 +684,18 @@ const CommandTable = () => {
                 </DndContext>
               </div>
             ) : (
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
-                <SortableContext items={visibleActions.map(a => a.id)} strategy={rectSortingStrategy}>
-                  <div className="grid grid-cols-4 gap-2 shadow-lg rounded-lg bg-white p-4">
-                    {visibleActions.map((action) => (
-                      <SortableActionButton
-                        key={action.id}
-                        action={action}
-                        onAction={registerQuickAction}
-                        selectedPlayer={selectedPlayer}
-                        disabled={!selectedPlayer}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+              <div className="grid grid-cols-4 gap-2 shadow-lg rounded-lg bg-white p-4">
+                {visibleActions.map((action) => (
+                  <SortableActionButton
+                    key={action.id}
+                    action={action}
+                    onAction={registerQuickAction}
+                    selectedPlayer={selectedPlayer}
+                    disabled={!selectedPlayer}
+                    isEditMode={false}
+                  />
+                ))}
+              </div>
             )}
           </div>
 
@@ -875,6 +875,7 @@ const CommandTable = () => {
                       onClick={() => {
                         const updatedActions = liveActions.filter(a => a.id !== action.id);
                         setLiveActions(updatedActions);
+                        localStorage.setItem('commandTableLiveActions', JSON.stringify(updatedActions));
                       }}
                       variant="outline"
                       size="sm"
