@@ -25,7 +25,9 @@ type ViewMode = 'future' | 'past' | 'historic';
 type HistoricFilter = 'all' | 'last-month' | 'last-3-months' | 'season';
 type PositionFilter = 'all' | 'Portero' | 'Defensa' | 'Centrocampista' | 'Delantero';
 const Attendance = () => {
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('future');
   const [historicFilter, setHistoricFilter] = useState<HistoricFilter>('all');
   const [positionFilter, setPositionFilter] = useState<PositionFilter>('all');
@@ -657,113 +659,7 @@ const Attendance = () => {
           const stats = getTrainingStats(training.players);
           const isOpen = openTraining === training.id;
           return <Card key={training.id} className="w-full">
-                  <Collapsible open={isOpen} onOpenChange={open => setOpenTraining(open ? training.id : null)}>
-                    <CollapsibleTrigger asChild>
-                      <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <Calendar className="h-5 w-5 text-blue-500" />
-                            <div>
-                              <CardTitle className="text-lg">
-                                {formatDate(training.date)} - Entrenamiento
-                              </CardTitle>
-                              <p className="text-sm text-gray-500">Hora: {training.time}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(training.status)}
-                              <span className="text-sm font-medium">
-                                {getStatusText(training.status)}
-                              </span>
-                            </div>
-                            
-                            <div className="text-sm text-gray-600">
-                              {stats.present + stats.justified}/{stats.total} presentes
-                            </div>
-                            
-                            {isOpen ? <ChevronDown className="h-5 w-5 text-gray-400" /> : <ChevronRight className="h-5 w-5 text-gray-400" />}
-                          </div>
-                        </div>
-                      </CardHeader>
-                    </CollapsibleTrigger>
-                    
-                    <CollapsibleContent>
-                      <CardContent className="pt-0">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                          <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-l-blue-500">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-blue-600">Total</p>
-                                <p className="text-2xl font-bold text-blue-900">{stats.total}</p>
-                              </div>
-                              <Users className="h-8 w-8 text-blue-500" />
-                            </div>
-                          </div>
-
-                          <div className="bg-green-50 p-4 rounded-lg border-l-4 border-l-green-500">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-green-600">Presentes</p>
-                                <p className="text-2xl font-bold text-green-900">{stats.present}</p>
-                              </div>
-                              <CheckCircle className="h-8 w-8 text-green-500" />
-                            </div>
-                          </div>
-
-                          <div className="bg-red-50 p-4 rounded-lg border-l-4 border-l-red-500">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-red-600">Ausentes</p>
-                                <p className="text-2xl font-bold text-red-900">{stats.absent}</p>
-                              </div>
-                              <XCircle className="h-8 w-8 text-red-500" />
-                            </div>
-                          </div>
-
-                          <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-l-yellow-500">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm font-medium text-yellow-600">Justificados</p>
-                                <p className="text-2xl font-bold text-yellow-900">{stats.justified}</p>
-                              </div>
-                              <Clock className="h-8 w-8 text-yellow-500" />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-4">
-                          <h3 className="text-lg font-semibold text-gray-900">Lista de Jugadores</h3>
-                          {training.players.map(player => <div key={player.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                              <div className="flex items-center space-x-4">
-                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
-                                  {player.number}
-                                </div>
-                                <div>
-                                  <p className="font-medium text-gray-900">{player.name}</p>
-                                  <p className="text-sm text-gray-500">{player.position}</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center space-x-4">
-                                {getAttendanceBadge(player.attendance)}
-                                {viewMode === 'future' && <div className="flex space-x-2">
-                                    <Button size="sm" variant="outline" className="text-green-600 border-green-300 hover:bg-green-50" onClick={() => updatePlayerAttendance(training.id, player.id, 'present')}>
-                                      <CheckCircle className="h-4 w-4" />
-                                    </Button>
-                                    <Button size="sm" variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" onClick={() => updatePlayerAttendance(training.id, player.id, 'absent')}>
-                                      <XCircle className="h-4 w-4" />
-                                    </Button>
-                                    <Button size="sm" variant="outline" className="text-yellow-600 border-yellow-300 hover:bg-yellow-50" onClick={() => updatePlayerAttendance(training.id, player.id, 'justified')}>
-                                      <Clock className="h-4 w-4" />
-                                    </Button>
-                                  </div>}
-                              </div>
-                            </div>)}
-                        </div>
-                      </CardContent>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  
                 </Card>;
         })}
           </div>}
