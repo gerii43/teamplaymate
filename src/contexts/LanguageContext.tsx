@@ -182,10 +182,14 @@ const translations = {
     
     // Registered Actions
     'command.registered.actions': 'Acciones Registradas',
-    'command.last.action': 'ÚLTIMA ACCIÓN',
     'command.no.actions': 'No hay acciones registradas',
     'command.remove': 'Eliminar',
     'command.edit': 'Editar',
+    'command.save': 'Guardar',
+    'command.cancel.edit': 'Cancelar',
+    'command.reset.default': 'Restablecer',
+    'command.configure.actions': 'Configurar Acciones',
+    'command.configure.players': 'Configurar Jugadores',
     
     // Goal Zone Modal
     'goal.zone.title': 'Selecciona la zona del gol',
@@ -472,10 +476,14 @@ const translations = {
     
     // Registered Actions
     'command.registered.actions': 'Registered Actions',
-    'command.last.action': 'LAST ACTION',
     'command.no.actions': 'No actions registered',
     'command.remove': 'Remove',
     'command.edit': 'Edit',
+    'command.save': 'Save',
+    'command.cancel.edit': 'Cancel',
+    'command.reset.default': 'Reset Default',
+    'command.configure.actions': 'Configure Actions',
+    'command.configure.players': 'Configure Players',
     
     // Goal Zone Modal
     'goal.zone.title': 'Select goal zone',

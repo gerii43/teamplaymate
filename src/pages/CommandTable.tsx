@@ -4,7 +4,28 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { 
   Play, 
   Pause, 
@@ -21,8 +42,86 @@ import {
   Timer,
   Square,
   Maximize,
-  Minimize
+  Minimize,
+  Edit,
+  Save,
+  RotateCcw as ResetIcon,
+  GripVertical
 } from 'lucide-react';
+
+// Sortable Action Button Component
+const SortableActionButton = ({ action, onAction, selectedPlayer, disabled }: any) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: action.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative">
+      <Button
+        onClick={() => onAction(action.id, action.name)}
+        disabled={disabled}
+        className={`h-8 text-xs font-semibold ${action.color} mx-4 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} relative`}
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />
+        <span className="ml-3">{action.name}</span>
+      </Button>
+    </div>
+  );
+};
+
+// Sortable Player Button Component
+const SortablePlayerButton = ({ player, onSelect, selectedPlayer }: any) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: player.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Button
+        onClick={() => onSelect(player.id)}
+        className={`h-12 text-xs font-semibold transition-all relative ${
+          selectedPlayer === player.id 
+            ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
+            : 'bg-green-500 hover:bg-green-600 text-white'
+        }`}
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-3 w-3 absolute left-1 opacity-30" />
+        <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center ml-4 mr-1 font-bold text-xs">
+          {player.number}
+        </div>
+        <div className="flex-1 text-left">
+          <div className="font-semibold text-xs">{player.name}</div>
+        </div>
+      </Button>
+    </div>
+  );
+};
 
 const CommandTable = () => {
   const { t } = useLanguage();
@@ -35,6 +134,13 @@ const CommandTable = () => {
   const [showGoalZoneModal, setShowGoalZoneModal] = useState(false);
   const [homeTeamFouls, setHomeTeamFouls] = useState(0);
   const [awayTeamFouls, setAwayTeamFouls] = useState(0);
+  
+  // Edit mode state
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [customActions, setCustomActions] = useState<any[]>([]);
+  const [customPlayers, setCustomPlayers] = useState<any[]>([]);
+  const [actionVisibility, setActionVisibility] = useState<Record<string, boolean>>({});
+  const [playerVisibility, setPlayerVisibility] = useState<Record<string, boolean>>({});
 
   // Timer effect
   useEffect(() => {
@@ -72,29 +178,146 @@ const CommandTable = () => {
     { id: '14', name: 'Francisco', number: 16, position: 'DEL', status: 'active' },
   ];
 
-  // Actions organized by importance
-  const quickActions = [
-    { id: 'ball_lost', name: 'BALÓN PERDIDO', color: 'bg-yellow-500 hover:bg-yellow-600' },
-    { id: 'ball_recovered', name: 'BALÓN RECUPERADO', color: 'bg-gray-500 hover:bg-gray-600' },
-    { id: 'shot_goal', name: 'TIRO PUERTA', color: 'bg-purple-500 hover:bg-purple-600' },
-    { id: 'shot_out', name: 'TIRO FUERA', color: 'bg-green-200 hover:bg-green-300 text-gray-800' },
+  // Default actions with translations
+  const getDefaultActions = () => [
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-green-400 hover:bg-green-500' },
+    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-400 hover:bg-red-500' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-700 hover:bg-red-800' },
+    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-400 hover:bg-yellow-500 text-gray-800' },
+    { id: 'save', name: t('action.save'), color: 'bg-cyan-400 hover:bg-cyan-500' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600' },
+    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-green-300 hover:bg-green-400 text-gray-800' },
   ];
 
-  const intermediateActions = [
-    { id: 'foul_favor', name: 'FALTA A FAVOR', color: 'bg-green-500 hover:bg-green-600' },
-    { id: 'foul_against', name: 'FALTA CONTRA', color: 'bg-red-500 hover:bg-red-600' },
-  ];
+  // Load saved configuration or use defaults
+  useEffect(() => {
+    const savedActions = localStorage.getItem('commandTableActions');
+    const savedPlayers = localStorage.getItem('commandTablePlayers');
+    const savedActionVisibility = localStorage.getItem('commandTableActionVisibility');
+    const savedPlayerVisibility = localStorage.getItem('commandTablePlayerVisibility');
 
-  const specialActions = [
-    { id: 'goal_favor', name: 'GOL A FAVOR', color: 'bg-red-400 hover:bg-red-500' },
-    { id: 'goal_against', name: 'GOL EN CONTRA', color: 'bg-red-800 hover:bg-red-900' },
-    { id: 'assist', name: 'ASISTENCIA', color: 'bg-yellow-400 hover:bg-yellow-500 text-gray-800' },
-    { id: 'corner_favor', name: 'CÓRNER A FAVOR', color: 'bg-green-300 hover:bg-green-400 text-gray-800' },
-    { id: 'corner_against', name: 'CÓRNER EN CONTRA', color: 'bg-red-300 hover:bg-red-400 text-gray-800' },
-    { id: 'save', name: 'PARADA', color: 'bg-cyan-400 hover:bg-cyan-500' },
-    { id: 'penalty_favor', name: 'PENALTI A FAVOR', color: 'bg-blue-500 hover:bg-blue-600' },
-    { id: 'penalty_against', name: 'PENALTI EN CONTRA', color: 'bg-orange-500 hover:bg-orange-600' },
-  ];
+    if (savedActions) {
+      setCustomActions(JSON.parse(savedActions));
+    } else {
+      setCustomActions(getDefaultActions());
+    }
+
+    if (savedPlayers) {
+      setCustomPlayers(JSON.parse(savedPlayers));
+    } else {
+      setCustomPlayers(players);
+    }
+
+    if (savedActionVisibility) {
+      setActionVisibility(JSON.parse(savedActionVisibility));
+    } else {
+      const defaultVisibility: Record<string, boolean> = {};
+      getDefaultActions().forEach(action => {
+        defaultVisibility[action.id] = true;
+      });
+      setActionVisibility(defaultVisibility);
+    }
+
+    if (savedPlayerVisibility) {
+      setPlayerVisibility(JSON.parse(savedPlayerVisibility));
+    } else {
+      const defaultVisibility: Record<string, boolean> = {};
+      players.forEach(player => {
+        defaultVisibility[player.id] = true;
+      });
+      setPlayerVisibility(defaultVisibility);
+    }
+  }, []);
+
+  // Save configuration when changed
+  const saveConfiguration = () => {
+    localStorage.setItem('commandTableActions', JSON.stringify(customActions));
+    localStorage.setItem('commandTablePlayers', JSON.stringify(customPlayers));
+    localStorage.setItem('commandTableActionVisibility', JSON.stringify(actionVisibility));
+    localStorage.setItem('commandTablePlayerVisibility', JSON.stringify(playerVisibility));
+  };
+
+  // Reset to default configuration
+  const resetToDefault = () => {
+    const defaultActions = getDefaultActions();
+    const defaultActionVisibility: Record<string, boolean> = {};
+    const defaultPlayerVisibility: Record<string, boolean> = {};
+    
+    defaultActions.forEach(action => {
+      defaultActionVisibility[action.id] = true;
+    });
+    
+    players.forEach(player => {
+      defaultPlayerVisibility[player.id] = true;
+    });
+
+    setCustomActions(defaultActions);
+    setCustomPlayers(players);
+    setActionVisibility(defaultActionVisibility);
+    setPlayerVisibility(defaultPlayerVisibility);
+
+    localStorage.setItem('commandTableActions', JSON.stringify(defaultActions));
+    localStorage.setItem('commandTablePlayers', JSON.stringify(players));
+    localStorage.setItem('commandTableActionVisibility', JSON.stringify(defaultActionVisibility));
+    localStorage.setItem('commandTablePlayerVisibility', JSON.stringify(defaultPlayerVisibility));
+  };
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle action visibility toggle
+  const toggleActionVisibility = (actionId: string) => {
+    setActionVisibility(prev => ({
+      ...prev,
+      [actionId]: !prev[actionId]
+    }));
+  };
+
+  // Handle player visibility toggle
+  const togglePlayerVisibility = (playerId: string) => {
+    setPlayerVisibility(prev => ({
+      ...prev,
+      [playerId]: !prev[playerId]
+    }));
+  };
+
+  // Handle drag end for actions
+  const handleActionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setCustomActions((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over?.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  // Handle drag end for players
+  const handlePlayerDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setCustomPlayers((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over?.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const registerQuickAction = (actionId: string, actionName: string) => {
     if (!selectedPlayer) {
@@ -115,7 +338,7 @@ const CommandTable = () => {
       return;
     }
 
-    const player = players.find(p => p.id === selectedPlayer);
+    const player = customPlayers.find(p => p.id === selectedPlayer);
     const halfText = selectedHalf === 'first' ? t('command.first.half') : t('command.second.half');
     const newAction = {
       id: Date.now(),
@@ -132,13 +355,13 @@ const CommandTable = () => {
   };
 
   const handleGoalZoneSelect = (zone: number) => {
-    const player = players.find(p => p.id === selectedPlayer);
+    const player = customPlayers.find(p => p.id === selectedPlayer);
     const newAction = {
       id: Date.now(),
       playerId: selectedPlayer,
       playerName: player?.name,
       playerNumber: player?.number,
-      action: 'GOL A FAVOR',
+      action: t('action.goal.favor'),
       time: formatTime(time),
       half: selectedHalf,
       goalZone: zone,
@@ -177,8 +400,9 @@ const CommandTable = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const activePlayers = players.filter(p => p.status === 'active');
-  const benchPlayers = players.filter(p => p.status === 'bench');
+  // Get visible actions and players
+  const visibleActions = customActions.filter(action => actionVisibility[action.id]);
+  const visiblePlayers = customPlayers.filter(player => playerVisibility[player.id]);
 
   return (
     <Layout>
@@ -290,159 +514,134 @@ const CommandTable = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
           {/* Columna izquierda - Acciones */}
           <div className="lg:col-span-2">
-            <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.actions')}</h2>
-            
-            {/* Grid de acciones replicando exactamente la imagen */}
-            <div className="grid grid-cols-2 gap-1 shadow-lg rounded-lg bg-white p-3">
-              {/* Fila 1 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('foul_against', t('action.foul.against'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.foul.against')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('foul_favor', t('action.foul.favor'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-500 hover:bg-green-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.foul.favor')}
-              </Button>
-
-              {/* Fila 2 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('penalty_favor', t('action.penalty.favor'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.penalty.favor')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('penalty_against', t('action.penalty.against'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.penalty.against')}
-              </Button>
-
-              {/* Fila 3 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('ball_lost', t('action.ball.lost'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-400 hover:bg-green-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.ball.lost')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('ball_recovered', t('action.ball.recovered'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-gray-500 hover:bg-gray-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.ball.recovered')}
-              </Button>
-
-              {/* Fila 4 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('duel_won', t('action.duel.won'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-pink-500 hover:bg-pink-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.duel.won')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('duel_lost', t('action.duel.lost'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-black hover:bg-gray-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.duel.lost')}
-              </Button>
-
-              {/* Fila 5 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('goal_favor', t('action.goal.favor'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-400 hover:bg-red-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.goal.favor')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('goal_against', t('action.goal.against'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-red-700 hover:bg-red-800 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.goal.against')}
-              </Button>
-
-              {/* Fila 6 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('assist', t('action.assist'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.assist')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('save', t('action.save'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-cyan-400 hover:bg-cyan-500 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.save')}
-              </Button>
-
-              {/* Fila 7 - según imagen */}
-              <Button
-                onClick={() => registerQuickAction('shot_goal', t('action.shot.goal'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-purple-500 hover:bg-purple-600 text-white mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.shot.goal')}
-              </Button>
-              <Button
-                onClick={() => registerQuickAction('shot_out', t('action.shot.out'))}
-                disabled={!selectedPlayer}
-                className={`h-8 text-xs font-semibold bg-green-300 hover:bg-green-400 text-gray-800 mx-4 ${!selectedPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {t('action.shot.out')}
-              </Button>
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg font-bold text-gray-800">{t('command.actions')}</h2>
+              <div className="flex gap-2">
+                {isEditMode && (
+                  <>
+                    <Button
+                      onClick={resetToDefault}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      <ResetIcon className="h-3 w-3 mr-1" />
+                      {t('command.reset.default')}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        saveConfiguration();
+                        setIsEditMode(false);
+                      }}
+                      size="sm"
+                      className="text-xs bg-green-500 hover:bg-green-600"
+                    >
+                      <Save className="h-3 w-3 mr-1" />
+                      {t('command.save')}
+                    </Button>
+                  </>
+                )}
+                <Button
+                  onClick={() => setIsEditMode(!isEditMode)}
+                  size="sm"
+                  className="text-xs"
+                  variant={isEditMode ? "destructive" : "outline"}
+                >
+                  <Edit className="h-3 w-3 mr-1" />
+                  {isEditMode ? t('command.cancel.edit') : t('command.edit')}
+                </Button>
+              </div>
             </div>
+            
+            {isEditMode ? (
+              <div className="shadow-lg rounded-lg bg-white p-3">
+                <h3 className="text-sm font-semibold mb-3">{t('command.configure.actions')}</h3>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
+                  <SortableContext items={customActions.map(a => a.id)} strategy={rectSortingStrategy}>
+                    <div className="space-y-2">
+                      {customActions.map((action) => (
+                        <div key={action.id} className="flex items-center justify-between p-2 border rounded">
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={actionVisibility[action.id] || false}
+                              onCheckedChange={() => toggleActionVisibility(action.id)}
+                            />
+                            <SortableActionButton
+                              action={action}
+                              onAction={() => {}}
+                              selectedPlayer={true}
+                              disabled={true}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+            ) : (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
+                <SortableContext items={visibleActions.map(a => a.id)} strategy={rectSortingStrategy}>
+                  <div className="grid grid-cols-2 gap-1 shadow-lg rounded-lg bg-white p-3">
+                    {visibleActions.map((action) => (
+                      <SortableActionButton
+                        key={action.id}
+                        action={action}
+                        onAction={registerQuickAction}
+                        selectedPlayer={selectedPlayer}
+                        disabled={!selectedPlayer}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
           </div>
 
           {/* Columna derecha - Jugadores */}
           <div className="lg:col-span-1">
             <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">{t('command.players')}</h2>
             
-            {/* Jugadores en grid de 2 columnas con sombra */}
-            <div className="grid grid-cols-2 gap-2 shadow-lg rounded-lg bg-white p-3">
-              {players.map((player) => (
-                <Button
-                  key={player.id}
-                  onClick={() => setSelectedPlayer(player.id)}
-                  className={`h-12 text-xs font-semibold transition-all ${
-                    selectedPlayer === player.id 
-                      ? 'bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-300' 
-                      : 'bg-green-500 hover:bg-green-600 text-white'
-                  }`}
-                >
-                  <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-1 font-bold text-xs">
-                    {player.number}
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="font-semibold text-xs">{player.name}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-
-            {/* Confirmación de acción - Visible inmediatamente */}
-            {liveActions.length > 0 && (
-              <div className="mt-3 p-3 bg-white rounded-lg shadow-lg border">
-                <h3 className="font-semibold text-sm mb-2 text-center bg-gray-100 py-1 rounded-md">{t('command.last.action')}</h3>
-                <div className="text-sm text-gray-700 text-center p-2 bg-green-50 rounded border">
-                  <span className="font-medium">{liveActions[0].action}</span>
-                  <div className="text-xs text-gray-500 mt-1">{liveActions[0].time}</div>
-                </div>
+            {isEditMode ? (
+              <div className="shadow-lg rounded-lg bg-white p-3">
+                <h3 className="text-sm font-semibold mb-3">{t('command.configure.players')}</h3>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
+                  <SortableContext items={customPlayers.map(p => p.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-2">
+                      {customPlayers.map((player) => (
+                        <div key={player.id} className="flex items-center justify-between p-2 border rounded">
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={playerVisibility[player.id] || false}
+                              onCheckedChange={() => togglePlayerVisibility(player.id)}
+                            />
+                            <SortablePlayerButton
+                              player={player}
+                              onSelect={() => {}}
+                              selectedPlayer={null}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
+            ) : (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
+                <SortableContext items={visiblePlayers.map(p => p.id)} strategy={verticalListSortingStrategy}>
+                  <div className="grid grid-cols-2 gap-2 shadow-lg rounded-lg bg-white p-3">
+                    {visiblePlayers.map((player) => (
+                      <SortablePlayerButton
+                        key={player.id}
+                        player={player}
+                        onSelect={setSelectedPlayer}
+                        selectedPlayer={selectedPlayer}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
 
