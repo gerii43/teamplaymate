@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Trophy, Target, Users, Award, TrendingUp, Activity, ChevronDown, ChevronRight, Zap, Shield, AlertTriangle } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const GeneralStats = () => {
+  const { t } = useLanguage();
   const [openSections, setOpenSections] = useState({
     rendimiento: false,
     ataque: false,
@@ -52,8 +54,8 @@ const GeneralStats = () => {
     <Layout>
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Estadísticas Generales</h1>
-          <div className="text-sm text-gray-500">Temporada 2024/25</div>
+          <h1 className="text-3xl font-bold text-gray-900">{t('stats.title')}</h1>
+          <div className="text-sm text-gray-500">{t('general.season')} 2024/25</div>
         </div>
 
         {/* Estadísticas por Categorías Plegables */}
@@ -68,7 +70,7 @@ const GeneralStats = () => {
                       <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                         <TrendingUp className="h-5 w-5 text-purple-600" />
                       </div>
-                      <span className="text-lg font-semibold">Rendimiento</span>
+                      <span className="text-lg font-semibold">{t('stats.performance')}</span>
                     </div>
                     <ChevronRight className={`h-5 w-5 transition-transform ${openSections.rendimiento ? 'rotate-90' : ''}`} />
                   </CardTitle>
@@ -78,15 +80,15 @@ const GeneralStats = () => {
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-600 font-medium">Victorias</p>
+                      <p className="text-sm text-blue-600 font-medium">{t('stats.wins')}</p>
                       <p className="text-2xl font-bold text-blue-700">{teamStats.wins}</p>
                     </div>
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-600 font-medium">Empates</p>
+                      <p className="text-sm text-gray-600 font-medium">{t('stats.draws')}</p>
                       <p className="text-2xl font-bold text-gray-700">{teamStats.draws}</p>
                     </div>
                     <div className="text-center p-4 bg-red-50 rounded-lg">
-                      <p className="text-sm text-red-600 font-medium">Derrotas</p>
+                      <p className="text-sm text-red-600 font-medium">{t('stats.losses')}</p>
                       <p className="text-2xl font-bold text-red-700">{teamStats.losses}</p>
                     </div>
                   </div>
@@ -96,9 +98,9 @@ const GeneralStats = () => {
                       <XAxis dataKey="month" />
                       <YAxis />
                       <Tooltip />
-                      <Line type="monotone" dataKey="wins" stroke="#3b82f6" strokeWidth={3} name="Victorias" />
-                      <Line type="monotone" dataKey="goals" stroke="#10b981" strokeWidth={3} name="Goles" />
-                      <Line type="monotone" dataKey="assists" stroke="#8b5cf6" strokeWidth={3} name="Asistencias" />
+                      <Line type="monotone" dataKey="wins" stroke="#3b82f6" strokeWidth={3} name={t('stats.wins')} />
+                      <Line type="monotone" dataKey="goals" stroke="#10b981" strokeWidth={3} name={t('players.goals')} />
+                      <Line type="monotone" dataKey="assists" stroke="#8b5cf6" strokeWidth={3} name={t('players.assists')} />
                     </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -116,7 +118,7 @@ const GeneralStats = () => {
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                         <Target className="h-5 w-5 text-green-600" />
                       </div>
-                      <span className="text-lg font-semibold">Ataque</span>
+                      <span className="text-lg font-semibold">{t('stats.attack')}</span>
                     </div>
                     <ChevronRight className={`h-5 w-5 transition-transform ${openSections.ataque ? 'rotate-90' : ''}`} />
                   </CardTitle>
@@ -126,19 +128,19 @@ const GeneralStats = () => {
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <p className="text-sm text-green-600 font-medium">Goles a Favor</p>
+                      <p className="text-sm text-green-600 font-medium">{t('stats.goals.for')}</p>
                       <p className="text-2xl font-bold text-green-700">{teamStats.goalsFor}</p>
                     </div>
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-600 font-medium">Asistencias</p>
+                      <p className="text-sm text-blue-600 font-medium">{t('stats.assists.total')}</p>
                       <p className="text-2xl font-bold text-blue-700">{teamStats.totalAssists}</p>
                     </div>
                     <div className="text-center p-4 bg-purple-50 rounded-lg">
-                      <p className="text-sm text-purple-600 font-medium">Tiros a Portería</p>
+                      <p className="text-sm text-purple-600 font-medium">{t('stats.shots.goal')}</p>
                       <p className="text-2xl font-bold text-purple-700">124</p>
                     </div>
                     <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                      <p className="text-sm text-yellow-600 font-medium">Tiros Fuera</p>
+                      <p className="text-sm text-yellow-600 font-medium">{t('stats.shots.out')}</p>
                       <p className="text-2xl font-bold text-yellow-700">89</p>
                     </div>
                   </div>
@@ -148,8 +150,8 @@ const GeneralStats = () => {
                       <XAxis dataKey="position" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="goals" fill="#10b981" name="Goles" />
-                      <Bar dataKey="assists" fill="#3b82f6" name="Asistencias" />
+                      <Bar dataKey="goals" fill="#10b981" name={t('players.goals')} />
+                      <Bar dataKey="assists" fill="#3b82f6" name={t('players.assists')} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -167,7 +169,7 @@ const GeneralStats = () => {
                       <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                         <Shield className="h-5 w-5 text-blue-600" />
                       </div>
-                      <span className="text-lg font-semibold">Defensa</span>
+                      <span className="text-lg font-semibold">{t('stats.defense')}</span>
                     </div>
                     <ChevronRight className={`h-5 w-5 transition-transform ${openSections.defensa ? 'rotate-90' : ''}`} />
                   </CardTitle>
@@ -177,19 +179,19 @@ const GeneralStats = () => {
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="text-center p-4 bg-red-50 rounded-lg">
-                      <p className="text-sm text-red-600 font-medium">Goles en Contra</p>
+                      <p className="text-sm text-red-600 font-medium">{t('stats.goals.against')}</p>
                       <p className="text-2xl font-bold text-red-700">{teamStats.goalsAgainst}</p>
                     </div>
                     <div className="text-center p-4 bg-teal-50 rounded-lg">
-                      <p className="text-sm text-teal-600 font-medium">Balones Recuperados</p>
+                      <p className="text-sm text-teal-600 font-medium">{t('stats.balls.recovered')}</p>
                       <p className="text-2xl font-bold text-teal-700">156</p>
                     </div>
                     <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                      <p className="text-sm text-yellow-600 font-medium">Duelos Ganados</p>
+                      <p className="text-sm text-yellow-600 font-medium">{t('stats.duels.won')}</p>
                       <p className="text-2xl font-bold text-yellow-700">89</p>
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <p className="text-sm text-indigo-600 font-medium">Paradas</p>
+                      <p className="text-sm text-indigo-600 font-medium">{t('stats.saves')}</p>
                       <p className="text-2xl font-bold text-indigo-700">67</p>
                     </div>
                   </div>
@@ -208,7 +210,7 @@ const GeneralStats = () => {
                       <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                         <AlertTriangle className="h-5 w-5 text-red-600" />
                       </div>
-                      <span className="text-lg font-semibold">Disciplina</span>
+                      <span className="text-lg font-semibold">{t('stats.discipline')}</span>
                     </div>
                     <ChevronRight className={`h-5 w-5 transition-transform ${openSections.disciplina ? 'rotate-90' : ''}`} />
                   </CardTitle>
@@ -218,19 +220,19 @@ const GeneralStats = () => {
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="text-center p-4 bg-red-50 rounded-lg">
-                      <p className="text-sm text-red-600 font-medium">Faltas Cometidas</p>
+                      <p className="text-sm text-red-600 font-medium">{t('stats.fouls.committed')}</p>
                       <p className="text-2xl font-bold text-red-700">{teamStats.foulsCommitted}</p>
                     </div>
                     <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <p className="text-sm text-green-600 font-medium">Faltas Recibidas</p>
+                      <p className="text-sm text-green-600 font-medium">{t('stats.fouls.received')}</p>
                       <p className="text-2xl font-bold text-green-700">{teamStats.foulsReceived}</p>
                     </div>
                     <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                      <p className="text-sm text-yellow-600 font-medium">Tarjetas Amarillas</p>
+                      <p className="text-sm text-yellow-600 font-medium">{t('stats.yellow.cards')}</p>
                       <p className="text-2xl font-bold text-yellow-700">8</p>
                     </div>
                     <div className="text-center p-4 bg-red-50 rounded-lg">
-                      <p className="text-sm text-red-600 font-medium">Tarjetas Rojas</p>
+                      <p className="text-sm text-red-600 font-medium">{t('stats.red.cards')}</p>
                       <p className="text-2xl font-bold text-red-700">2</p>
                     </div>
                   </div>

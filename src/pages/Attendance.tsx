@@ -381,11 +381,11 @@ const Attendance = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'Completado';
+        return t('attendance.completed');
       case 'in-progress':
-        return 'En curso';
+        return t('attendance.in.progress');
       case 'pending':
-        return 'Pendiente';
+        return t('attendance.pending');
       default:
         return 'Sin estado';
     }
@@ -393,13 +393,13 @@ const Attendance = () => {
   const getAttendanceBadge = (status: string) => {
     switch (status) {
       case 'present':
-        return <Badge className="bg-green-100 text-green-800">Presente</Badge>;
+        return <Badge className="bg-green-100 text-green-800">{t('attendance.present')}</Badge>;
       case 'absent':
-        return <Badge className="bg-red-100 text-red-800">Ausente</Badge>;
+        return <Badge className="bg-red-100 text-red-800">{t('attendance.absent')}</Badge>;
       case 'justified':
-        return <Badge className="bg-yellow-100 text-yellow-800">Justificado</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800">{t('attendance.justified')}</Badge>;
       case 'pending':
-        return <Badge className="bg-gray-100 text-gray-800">Pendiente</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800">{t('attendance.pending')}</Badge>;
       default:
         return <Badge className="bg-gray-100 text-gray-800">Sin estado</Badge>;
     }
@@ -428,13 +428,13 @@ const Attendance = () => {
   const getViewTitle = () => {
     switch (viewMode) {
       case 'future':
-        return 'Entrenamientos Futuros';
+        return t('attendance.future.trainings');
       case 'past':
-        return 'Entrenamientos Anteriores';
+        return t('attendance.past.trainings');
       case 'historic':
-        return 'Histórico de Asistencia';
+        return t('attendance.historic');
       default:
-        return 'Control de Asistencia';
+        return t('attendance.title');
     }
   };
   const renderEnhancedHistoricView = () => {
@@ -447,36 +447,36 @@ const Attendance = () => {
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-800">Filtros:</span>
+                <span className="text-sm font-medium text-blue-800">{t('attendance.filters')}:</span>
               </div>
               
               <div className="flex items-center gap-2">
-                <span className="text-sm text-blue-700">Período:</span>
+                <span className="text-sm text-blue-700">{t('attendance.period')}:</span>
                 <Select value={historicFilter} onValueChange={(value: HistoricFilter) => setHistoricFilter(value)}>
                   <SelectTrigger className="w-40 h-8">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todos los entrenamientos</SelectItem>
-                    <SelectItem value="last-month">Último mes</SelectItem>
-                    <SelectItem value="last-3-months">Últimos 3 meses</SelectItem>
-                    <SelectItem value="season">Temporada actual</SelectItem>
+                    <SelectItem value="all">{t('attendance.all.trainings')}</SelectItem>
+                    <SelectItem value="last-month">{t('attendance.last.month')}</SelectItem>
+                    <SelectItem value="last-3-months">{t('attendance.last.3.months')}</SelectItem>
+                    <SelectItem value="season">{t('attendance.current.season')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-sm text-blue-700">Posición:</span>
+                <span className="text-sm text-blue-700">{t('players.position')}:</span>
                 <Select value={positionFilter} onValueChange={(value: PositionFilter) => setPositionFilter(value)}>
                   <SelectTrigger className="w-40 h-8">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todas las posiciones</SelectItem>
-                    <SelectItem value="Portero">Portero</SelectItem>
-                    <SelectItem value="Defensa">Defensa</SelectItem>
-                    <SelectItem value="Centrocampista">Centrocampista</SelectItem>
-                    <SelectItem value="Delantero">Delantero</SelectItem>
+                    <SelectItem value="all">{t('attendance.all.positions')}</SelectItem>
+                    <SelectItem value="Portero">{t('attendance.goalkeeper')}</SelectItem>
+                    <SelectItem value="Defensa">{t('attendance.defender')}</SelectItem>
+                    <SelectItem value="Centrocampista">{t('attendance.midfielder')}</SelectItem>
+                    <SelectItem value="Delantero">{t('attendance.forward')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -489,7 +489,7 @@ const Attendance = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-600">Total Jugadores</p>
+                  <p className="text-sm font-medium text-blue-600">{t('attendance.total.players')}</p>
                   <p className="text-2xl font-bold text-blue-900">{historicData.length}</p>
                 </div>
                 <Users className="h-8 w-8 text-blue-500" />
@@ -501,7 +501,7 @@ const Attendance = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600">Media del Equipo</p>
+                  <p className="text-sm font-medium text-green-600">{t('attendance.average.attendance')}</p>
                   <p className="text-2xl font-bold text-green-900">{teamAverage}%</p>
                 </div>
                 <Target className="h-8 w-8 text-green-500" />
@@ -513,7 +513,7 @@ const Attendance = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-yellow-600">Mejor Jugador</p>
+                  <p className="text-sm font-medium text-yellow-600">{t('attendance.best.attendance')}</p>
                   <p className="text-lg font-bold text-yellow-900">
                     {topPerformer ? `${Math.round(topPerformer.present / topPerformer.total * 100)}%` : '0%'}
                   </p>
@@ -635,18 +635,18 @@ const Attendance = () => {
           <h1 className="text-3xl font-bold text-gray-900">{getViewTitle()}</h1>
           {viewMode === 'future' && <Button onClick={addNewTraining} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Añadir Entrenamiento
+              {t('attendance.add.training')}
             </Button>}
         </div>
 
         <div className="flex space-x-4">
           <Button variant={viewMode === 'future' ? 'default' : 'outline'} onClick={() => setViewMode('future')} className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            Entrenamientos Futuros
+            {t('attendance.future.trainings')}
           </Button>
           <Button variant={viewMode === 'past' ? 'default' : 'outline'} onClick={() => setViewMode('past')} className="flex items-center gap-2">
             <History className="h-4 w-4" />
-            Entrenamientos Anteriores
+            {t('attendance.past.trainings')}
           </Button>
           <Button variant={viewMode === 'historic' ? 'default' : 'outline'} onClick={() => setViewMode('historic')} className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
