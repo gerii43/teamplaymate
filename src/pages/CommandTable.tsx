@@ -835,18 +835,18 @@ const CommandTable = () => {
                    const actionColorClass = actionConfig?.color?.split(' ')[0] || 'bg-gray-100'; // Extract background color
                    
                    return (
-                    <div key={action.id} className="flex justify-between items-center p-4 bg-white rounded-lg border-2 shadow-lg hover:shadow-xl transition-all duration-200 border-gray-200">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">
-                          <span className="bg-red-200 text-red-700 px-3 py-1 rounded-md font-bold shadow-sm border border-red-300">{action.time}'</span>
-                          <span className="mx-2">|</span>
-                          <span className={`${actionColorClass} px-3 py-1 rounded-md text-xs font-semibold shadow-sm border opacity-80`}>{action.action}</span>
-                          <span className="mx-2">|</span>
-                          <span className="bg-green-200 text-green-700 px-3 py-1 rounded-md font-semibold shadow-sm border border-green-300">{action.playerName}</span>
-                          <span className="mx-2">|</span>
-                          <span className="bg-yellow-200 text-yellow-700 px-3 py-1 rounded-md font-semibold shadow-sm border border-yellow-300">{action.half === 'first' ? t('command.first.half') : t('command.second.half')}</span>
-                          {action.goalZone && <><span className="mx-2">|</span><span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md shadow-sm border border-gray-300"> Zona {action.goalZone}</span></>}
-                          {action.goalOrigin && <><span className="mx-2">|</span><span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md shadow-sm border border-gray-300"> {action.goalOrigin}</span></>}
+                     <div key={action.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border-4 shadow-2xl hover:shadow-3xl transition-all duration-200 border-gray-700">
+                       <div className="flex-1">
+                         <div className="text-sm font-medium">
+                           <span className="bg-red-100 text-red-600 px-3 py-1 rounded-md font-bold shadow-md border-2 border-red-500">{action.time}'</span>
+                           <span className="mx-2">|</span>
+                           <span className={`${actionColorClass.replace('-500', '-100')} px-3 py-1 rounded-md text-xs font-semibold shadow-md border-2 opacity-90`}>{action.action}</span>
+                           <span className="mx-2">|</span>
+                           <span className="bg-green-100 text-green-600 px-3 py-1 rounded-md font-semibold shadow-md border-2 border-green-500">{action.playerName}</span>
+                           <span className="mx-2">|</span>
+                           <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-md font-semibold shadow-md border-2 border-yellow-500">{action.half === 'first' ? t('command.first.half') : t('command.second.half')}</span>
+                           {action.goalZone && <><span className="mx-2">|</span><span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md shadow-md border-2 border-gray-500"> Zona {action.goalZone}</span></>}
+                           {action.goalOrigin && <><span className="mx-2">|</span><span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-md shadow-md border-2 border-gray-500"> {action.goalOrigin}</span></>}
                        </div>
                      </div>
                      <Button
