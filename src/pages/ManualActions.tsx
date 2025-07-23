@@ -3,20 +3,23 @@ import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ManualActions = () => {
+  const { t } = useLanguage();
+  
   // Mock players data
   const players = [
-    { id: 1, name: 'Carlos Rodríguez', number: 7, position: 'Delantero' },
-    { id: 2, name: 'Miguel Ángel Torres', number: 10, position: 'Centrocampista' },
-    { id: 3, name: 'David López', number: 4, position: 'Defensa' },
-    { id: 4, name: 'Juan Martínez', number: 9, position: 'Delantero' },
-    { id: 5, name: 'Roberto García', number: 6, position: 'Centrocampista' },
-    { id: 6, name: 'Luis Sánchez', number: 3, position: 'Defensa' },
-    { id: 7, name: 'Antonio Pérez', number: 2, position: 'Defensa' },
-    { id: 8, name: 'Fernando Ruiz', number: 11, position: 'Delantero' },
-    { id: 9, name: 'Pablo Díaz', number: 8, position: 'Centrocampista' },
-    { id: 10, name: 'Javier Moreno', number: 1, position: 'Portero' },
+    { id: 1, name: 'Carlos Rodríguez', number: 7, position: t('position.forward') },
+    { id: 2, name: 'Miguel Ángel Torres', number: 10, position: t('position.midfielder') },
+    { id: 3, name: 'David López', number: 4, position: t('position.defender') },
+    { id: 4, name: 'Juan Martínez', number: 9, position: t('position.forward') },
+    { id: 5, name: 'Roberto García', number: 6, position: t('position.midfielder') },
+    { id: 6, name: 'Luis Sánchez', number: 3, position: t('position.defender') },
+    { id: 7, name: 'Antonio Pérez', number: 2, position: t('position.defender') },
+    { id: 8, name: 'Fernando Ruiz', number: 11, position: t('position.forward') },
+    { id: 9, name: 'Pablo Díaz', number: 8, position: t('position.midfielder') },
+    { id: 10, name: 'Javier Moreno', number: 1, position: t('position.goalkeeper') },
   ];
 
   // State para las estadísticas de cada jugador
@@ -76,32 +79,32 @@ const ManualActions = () => {
     <Layout>
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Tabla de Registro de Acciones</h1>
-          <div className="text-sm text-gray-500">Registro en tiempo real</div>
+          <h1 className="text-3xl font-bold text-gray-900">{t('manual.actions.title')}</h1>
+          <div className="text-sm text-gray-500">{t('manual.actions.realtime')}</div>
         </div>
 
         {/* Tabla de Registro de Acciones */}
         <Card>
           <CardHeader>
-            <CardTitle>Registro Manual de Estadísticas por Jugador</CardTitle>
+            <CardTitle>{t('manual.actions.subtitle')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-gray-50">
-                    <th className="text-left p-3 font-medium">Jugador</th>
-                    <th className="text-center p-3 font-medium">Goles</th>
-                    <th className="text-center p-3 font-medium">Asistencias</th>
-                    <th className="text-center p-3 font-medium">Balones Perdidos</th>
-                    <th className="text-center p-3 font-medium">Balones Recuperados</th>
-                    <th className="text-center p-3 font-medium">Duelos Ganados</th>
-                    <th className="text-center p-3 font-medium">Duelos Perdidos</th>
-                    <th className="text-center p-3 font-medium">Tiros a Portería</th>
-                    <th className="text-center p-3 font-medium">Tiros Fuera</th>
-                    <th className="text-center p-3 font-medium">Faltas Cometidas</th>
-                    <th className="text-center p-3 font-medium">Faltas Recibidas</th>
-                    <th className="text-center p-3 font-medium">Paradas</th>
+                    <th className="text-left p-3 font-medium">{t('manual.actions.player')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.goals')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.assists')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.balls.lost')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.balls.recovered')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.duels.won')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.duels.lost')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.shots.target')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.shots.off')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.fouls.committed')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.fouls.received')}</th>
+                    <th className="text-center p-3 font-medium">{t('manual.actions.saves')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -189,14 +192,14 @@ const ManualActions = () => {
                         />
                       </td>
                       <td className="p-3 text-center">
-                        {player.position === 'Portero' ? (
+                        {player.position === t('position.goalkeeper') ? (
                           <StatCounter
                             value={playerStats[player.id]?.paradas || 0}
                             onIncrement={() => updateStat(player.id, 'paradas', true)}
                             onDecrement={() => updateStat(player.id, 'paradas', false)}
                           />
                         ) : (
-                          <span className="text-gray-400 text-sm">N/A</span>
+                          <span className="text-gray-400 text-sm">{t('manual.actions.na')}</span>
                         )}
                       </td>
                     </tr>

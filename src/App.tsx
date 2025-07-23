@@ -24,6 +24,7 @@ import ManualActions from "./pages/ManualActions";
 import CommandTable from "./pages/CommandTable";
 import TacticalChat from "./pages/TacticalChat";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
+import DatabaseStatusPage from "./pages/DatabaseStatusPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -152,9 +153,7 @@ const App = () => (
                     path="/database-status" 
                     element={
                       <ProtectedRoute>
-                        <div className="min-h-screen">
-                          <DatabaseStatus />
-                        </div>
+                        <DatabaseStatusPage />
                       </ProtectedRoute>
                     } 
                   />

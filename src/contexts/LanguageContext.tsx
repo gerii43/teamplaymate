@@ -336,6 +336,40 @@ const translations = {
     'training.low': 'Baja',
     'training.medium': 'Media',
     'training.high': 'Alta',
+
+    // Sidebar navigation
+    'sidebar.home': 'Inicio',
+    'sidebar.players': 'Jugadores',
+    'sidebar.trainings': 'Entrenamientos',
+    'sidebar.matches': 'Partidos',
+    'sidebar.general.stats': 'Estadísticas Generales',
+    'sidebar.attendance': 'Asistencia',
+    'sidebar.manual.actions': 'Registro Manual de Acciones',
+    'sidebar.command.table': 'Tabla de Comandos',
+    'sidebar.tactical.chat': 'Chat con IA Táctica',
+    'sidebar.advanced.analytics': 'Analítica Avanzada',
+    'sidebar.database.status': 'Estado de la Base de Datos',
+
+    // Manual Actions page
+    'manual.actions.title': 'Tabla de Registro de Acciones',
+    'manual.actions.subtitle': 'Registro Manual de Estadísticas por Jugador',
+    'manual.actions.realtime': 'Registro en tiempo real',
+    'manual.actions.player': 'Jugador',
+    'manual.actions.goals': 'Goles',
+    'manual.actions.assists': 'Asistencias',
+    'manual.actions.balls.lost': 'Balones Perdidos',
+    'manual.actions.balls.recovered': 'Balones Recuperados',
+    'manual.actions.duels.won': 'Duelos Ganados',
+    'manual.actions.duels.lost': 'Duelos Perdidos',
+    'manual.actions.shots.target': 'Tiros a Portería',
+    'manual.actions.shots.off': 'Tiros Fuera',
+    'manual.actions.fouls.committed': 'Faltas Cometidas',
+    'manual.actions.fouls.received': 'Faltas Recibidas',
+    'manual.actions.saves': 'Paradas',
+    'manual.actions.na': 'N/A',
+
+    // General text
+    'general.in.development': 'En desarrollo',
   },
   en: {
     // Navigation
@@ -648,6 +682,40 @@ const translations = {
     'training.low': 'Low',
     'training.medium': 'Medium',
     'training.high': 'High',
+
+    // Sidebar navigation
+    'sidebar.home': 'Home',
+    'sidebar.players': 'Players',
+    'sidebar.trainings': 'Training',
+    'sidebar.matches': 'Matches',
+    'sidebar.general.stats': 'General Stats',
+    'sidebar.attendance': 'Attendance',
+    'sidebar.manual.actions': 'Actions Log',
+    'sidebar.command.table': 'Command Board',
+    'sidebar.tactical.chat': 'Tactical AI Chat',
+    'sidebar.advanced.analytics': 'Advanced Analytics',
+    'sidebar.database.status': 'Database Status',
+
+    // Manual Actions page
+    'manual.actions.title': 'Action Recording Table',
+    'manual.actions.subtitle': 'Manual Player Statistics Recording',
+    'manual.actions.realtime': 'Real-time recording',
+    'manual.actions.player': 'Player',
+    'manual.actions.goals': 'Goals',
+    'manual.actions.assists': 'Assists',
+    'manual.actions.balls.lost': 'Balls Lost',
+    'manual.actions.balls.recovered': 'Balls Recovered',
+    'manual.actions.duels.won': 'Duels Won',
+    'manual.actions.duels.lost': 'Duels Lost',
+    'manual.actions.shots.target': 'Shots on Target',
+    'manual.actions.shots.off': 'Shots Off Target',
+    'manual.actions.fouls.committed': 'Fouls Committed',
+    'manual.actions.fouls.received': 'Fouls Received',
+    'manual.actions.saves': 'Saves',
+    'manual.actions.na': 'N/A',
+
+    // General text
+    'general.in.development': 'In development',
   }
 };
 

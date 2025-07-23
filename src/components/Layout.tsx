@@ -36,17 +36,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const sidebarItems = [
-    { path: '/dashboard', icon: Home, label: 'Inicio' },
-    { path: '/players', icon: Users, label: 'Jugadores' },
-    { path: '/training', icon: Dumbbell, label: 'Entrenamientos' },
-    { path: '/matches', icon: Trophy, label: 'Partidos' },
-    { path: '/general-stats', icon: BarChart3, label: 'Estadísticas Generales' },
-    { path: '/attendance', icon: CheckCircle, label: 'Asistencia' },
-    { path: '/manual-actions', icon: Edit3, label: 'Registro de Acciones Manual' },
-    { path: '/command-table', icon: Sliders, label: 'Tabla de Comandos' },
-    { path: '/tactical-chat', icon: MessageCircle, label: 'Chat con IA Táctica' },
-    { path: '/advanced-analytics', icon: TrendingUp, label: 'Advanced Analytics' },
-    { path: '/database-status', icon: Database, label: 'Database Status' },
+    { path: '/dashboard', icon: Home, label: t('sidebar.home') },
+    { path: '/players', icon: Users, label: t('sidebar.players') },
+    { path: '/training', icon: Dumbbell, label: t('sidebar.trainings') },
+    { path: '/matches', icon: Trophy, label: t('sidebar.matches') },
+    { path: '/general-stats', icon: BarChart3, label: t('sidebar.general.stats') },
+    { path: '/attendance', icon: CheckCircle, label: t('sidebar.attendance') },
+    { path: '/manual-actions', icon: Edit3, label: t('sidebar.manual.actions') },
+    { path: '/command-table', icon: Sliders, label: t('sidebar.command.table') },
+    { path: '/tactical-chat', icon: MessageCircle, label: t('sidebar.tactical.chat') },
+    { path: '/advanced-analytics', icon: TrendingUp, label: t('sidebar.advanced.analytics') },
+    { path: '/database-status', icon: Database, label: t('sidebar.database.status') },
   ];
 
   const handleSignOut = async () => {
