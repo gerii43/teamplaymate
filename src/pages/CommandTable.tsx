@@ -188,22 +188,22 @@ const CommandTable = () => {
 
   // Default actions with translations
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-100 hover:bg-red-200 text-red-800 border border-red-300' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-100 hover:bg-orange-200 text-orange-800 border border-orange-300' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800 border border-yellow-300' },
-    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-green-100 hover:bg-green-200 text-green-800 border border-green-300' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-teal-100 hover:bg-teal-200 text-teal-800 border border-teal-300' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-pink-100 hover:bg-pink-200 text-pink-800 border border-pink-300' },
-    { id: 'assist', name: t('action.assist'), color: 'bg-indigo-100 hover:bg-indigo-200 text-indigo-800 border border-indigo-300' },
-    { id: 'save', name: t('action.save'), color: 'bg-cyan-100 hover:bg-cyan-200 text-cyan-800 border border-cyan-300' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-lime-100 hover:bg-lime-200 text-lime-800 border border-lime-300' },
-    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300' },
-    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-300' },
-    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300' },
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white border border-red-600' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white border border-green-600' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white border border-blue-600' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white border border-orange-600' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-500 hover:bg-lime-600 text-white border border-lime-600' },
+    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white border border-gray-600' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white border border-pink-600' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white border border-black' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-600 hover:bg-red-700 text-white border border-red-700' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-800 hover:bg-red-900 text-white border border-red-900' },
+    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-500 hover:bg-yellow-600 text-white border border-yellow-600' },
+    { id: 'save', name: t('action.save'), color: 'bg-cyan-500 hover:bg-cyan-600 text-white border border-cyan-600' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white border border-purple-600' },
+    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-600' },
+    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-indigo-500 hover:bg-indigo-600 text-white border border-indigo-600' },
+    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-amber-700 hover:bg-amber-800 text-white border border-amber-800' },
   ];
 
   // Load saved configuration or use defaults
@@ -824,7 +824,7 @@ const CommandTable = () => {
         {/* Parte inferior - Acciones registradas */}
         <div>
           <h2 className="text-xl font-bold text-gray-800 mb-3">{t('command.registered.actions')}</h2>
-          <div className="shadow-lg rounded-lg bg-blue-100 border-2 border-blue-300 p-4 max-h-64 overflow-y-auto">
+          <div className="shadow-lg rounded-lg bg-white p-4 max-h-64 overflow-y-auto">
             {liveActions.length === 0 ? (
               <div className="text-center text-gray-500 text-sm py-8">{t('command.no.actions')}</div>
             ) : (
@@ -835,7 +835,7 @@ const CommandTable = () => {
                    const actionColorClass = actionConfig?.color?.split(' ')[0] || 'bg-gray-100'; // Extract background color
                    
                    return (
-                   <div key={action.id} className="flex justify-between items-center p-3 bg-white rounded border-2 border-blue-200 hover:bg-blue-100 transition-colors">
+                   <div key={action.id} className="flex justify-between items-center p-3 bg-white rounded border shadow-sm hover:shadow-md transition-shadow">
                      <div className="flex-1">
                        <div className="text-sm font-medium">
                          <span className="text-red-600 font-bold">{action.time}'</span>
