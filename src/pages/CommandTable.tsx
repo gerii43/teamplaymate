@@ -133,13 +133,14 @@ const CommandTable = () => {
   const [selectedHalf, setSelectedHalf] = useState<'first' | 'second'>('first');
   const [showGoalZoneModal, setShowGoalZoneModal] = useState(false);
   const [showGoalOriginModal, setShowGoalOriginModal] = useState(false);
-  const [pendingGoalAction, setPendingGoalAction] = useState<{actionId: string, actionName: string} | null>(null);
+  const [pendingGoalAction, setPendingGoalAction] = useState<{actionId: string, actionName: string, zone?: number} | null>(null);
   const [homeTeamFouls, setHomeTeamFouls] = useState(0);
   const [awayTeamFouls, setAwayTeamFouls] = useState(0);
   
   // Player edit mode state
   const [isPlayerEditMode, setIsPlayerEditMode] = useState(false);
   const [activePlayerIds, setActivePlayerIds] = useState<string[]>([]);
+  const [tempActivePlayerIds, setTempActivePlayerIds] = useState<string[]>([]);
   
   // Edit mode state
   const [isEditMode, setIsEditMode] = useState(false);
@@ -297,15 +298,32 @@ const CommandTable = () => {
     });
   };
 
-  // Toggle player active/inactive
+  // Toggle player active/inactive (temporal)
   const togglePlayerActive = (playerId: string) => {
-    setActivePlayerIds(prev => {
-      const newList = prev.includes(playerId) 
+    setTempActivePlayerIds(prev => {
+      return prev.includes(playerId) 
         ? prev.filter(id => id !== playerId)
         : [...prev, playerId];
-      localStorage.setItem('commandTableActivePlayerIds', JSON.stringify(newList));
-      return newList;
     });
+  };
+
+  // Save player configuration
+  const savePlayerConfiguration = () => {
+    setActivePlayerIds(tempActivePlayerIds);
+    localStorage.setItem('commandTableActivePlayerIds', JSON.stringify(tempActivePlayerIds));
+    setIsPlayerEditMode(false);
+  };
+
+  // Cancel player configuration
+  const cancelPlayerConfiguration = () => {
+    setTempActivePlayerIds(activePlayerIds);
+    setIsPlayerEditMode(false);
+  };
+
+  // Start player edit mode
+  const startPlayerEditMode = () => {
+    setTempActivePlayerIds(activePlayerIds);
+    setIsPlayerEditMode(true);
   };
 
   // Reset to default configuration
@@ -401,10 +419,10 @@ const CommandTable = () => {
       setHomeTeamFouls(prev => Math.min(prev + 1, 5));
     }
 
-    // Special handling for goals - show origin modal
+    // Special handling for goals - show zone modal first
     if (actionId === 'goal_favor' || actionId === 'goal_against') {
       setPendingGoalAction({ actionId, actionName });
-      setShowGoalOriginModal(true);
+      setShowGoalZoneModal(true);
       return;
     }
 
@@ -437,6 +455,7 @@ const CommandTable = () => {
       action: pendingGoalAction.actionName,
       time: formatTime(time),
       half: selectedHalf,
+      goalZone: pendingGoalAction.zone,
       goalOrigin: origin,
       timestamp: Date.now(),
     };
@@ -447,22 +466,12 @@ const CommandTable = () => {
   };
 
   const handleGoalZoneSelect = (zone: number) => {
-    const player = customPlayers.find(p => p.id === selectedPlayer);
-    const halfText = selectedHalf === 'first' ? t('command.first.half') : t('command.second.half');
-    const newAction = {
-      id: Date.now(),
-      playerId: selectedPlayer,
-      playerName: player?.name,
-      playerNumber: player?.number,
-      action: t('action.goal.favor'),
-      time: formatTime(time),
-      half: selectedHalf,
-      goalZone: zone,
-      timestamp: Date.now(),
-    };
-
-    setLiveActions(prev => [newAction, ...prev]);
+    if (!pendingGoalAction) return;
+    
+    // Update pending action with zone and show origin modal
+    setPendingGoalAction(prev => prev ? { ...prev, zone } : null);
     setShowGoalZoneModal(false);
+    setShowGoalOriginModal(true);
   };
 
   const startTimer = () => setIsRunning(true);
@@ -694,26 +703,48 @@ const CommandTable = () => {
           <div>
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-bold text-gray-800">{t('command.players')}</h2>
-              <Button
-                onClick={() => setIsPlayerEditMode(!isPlayerEditMode)}
-                size="sm"
-                className="text-xs"
-                variant={isPlayerEditMode ? "destructive" : "outline"}
-              >
-                <Edit className="h-3 w-3 mr-1" />
-                {isPlayerEditMode ? t('command.cancel.edit') : t('command.edit')}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={startPlayerEditMode}
+                  size="sm"
+                  className="text-xs"
+                  variant="outline"
+                >
+                  <Edit className="h-3 w-3 mr-1" />
+                  {t('command.edit')}
+                </Button>
+              </div>
             </div>
             
             {isPlayerEditMode ? (
               <div className="shadow-lg rounded-lg bg-white p-4">
-                <h3 className="text-sm font-semibold mb-3">{t('command.players.active.inactive')}</h3>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-sm font-semibold">{t('command.players.active.inactive')}</h3>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={savePlayerConfiguration}
+                      size="sm"
+                      className="text-xs bg-green-500 hover:bg-green-600"
+                    >
+                      <Save className="h-3 w-3 mr-1" />
+                      {t('command.save')}
+                    </Button>
+                    <Button
+                      onClick={cancelPlayerConfiguration}
+                      size="sm"
+                      variant="outline"
+                      className="text-xs"
+                    >
+                      {t('command.cancel.edit')}
+                    </Button>
+                  </div>
+                </div>
                 <div className="space-y-2">
                   {customPlayers.map((player) => (
                     <div key={player.id} className="flex items-center justify-between p-2 border rounded">
                       <div className="flex items-center gap-2">
                         <Switch
-                          checked={activePlayerIds.includes(player.id)}
+                          checked={tempActivePlayerIds.includes(player.id)}
                           onCheckedChange={() => togglePlayerActive(player.id)}
                         />
                         <div className="flex items-center gap-2">
@@ -836,6 +867,7 @@ const CommandTable = () => {
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800">
                         {action.time}' | {action.action} | {action.playerName} | {action.half === 'first' ? t('command.first.half') : t('command.second.half')}
+                        {action.goalZone && ` | Zona ${action.goalZone}`}
                         {action.goalOrigin && ` | ${action.goalOrigin}`}
                       </div>
                     </div>
@@ -948,7 +980,10 @@ const CommandTable = () => {
               </div>
               <div className="mt-4 text-center">
                 <Button
-                  onClick={() => setShowGoalZoneModal(false)}
+                  onClick={() => {
+                    setShowGoalZoneModal(false);
+                    setPendingGoalAction(null);
+                  }}
                   variant="outline"
                   size="sm"
                 >

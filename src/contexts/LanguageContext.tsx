@@ -504,6 +504,22 @@ const translations = {
     'command.configure.players': 'Configure Players',
     'command.players.on.field': 'Players on Field',
     'command.players.bench': 'Bench',
+    'command.players.active.inactive': 'Activate/Deactivate Players',
+    
+    // Goal Origins
+    'goal.origin.title': 'Select goal origin',
+    'goal.origin.set.play': 'Set play',
+    'goal.origin.duality': 'Duality',
+    'goal.origin.fast.transition': 'Fast transition',
+    'goal.origin.high.recovery': 'High recovery',
+    'goal.origin.individual.action': 'Individual action',
+    'goal.origin.rival.error': 'Rival error',
+    'goal.origin.ball.loss.exit': 'Ball loss in exit',
+    'goal.origin.defensive.error': 'Defensive error',
+    'goal.origin.won.back': 'Won the back',
+    'goal.origin.fast.counter': 'Fast counterattack',
+    'goal.origin.rival.superiority': 'Rival numerical superiority',
+    'goal.origin.strategy.goal': 'Strategy goal',
     
     // Goal Zone Modal
     'goal.zone.title': 'Select goal zone',
