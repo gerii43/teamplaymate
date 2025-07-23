@@ -13,7 +13,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    // During development, provide a fallback to prevent crashes
+    console.warn('useLanguage called outside LanguageProvider - using fallback');
+    return {
+      language: 'es' as Language,
+      setLanguage: () => {},
+      t: (key: string) => key
+    };
   }
   return context;
 };
@@ -651,17 +657,27 @@ interface LanguageProviderProps {
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<Language>(() => {
-    // Check localStorage for saved language preference
-    const savedLanguage = localStorage.getItem('statsor_language');
-    return (savedLanguage as Language) || 'es'; // Default to Spanish
+    try {
+      // Check localStorage for saved language preference
+      const savedLanguage = localStorage.getItem('statsor_language');
+      return (savedLanguage as Language) || 'es'; // Default to Spanish
+    } catch (error) {
+      // Fallback if localStorage is not available
+      return 'es';
+    }
   });
 
   // Save language preference to localStorage when it changes
   React.useEffect(() => {
-    localStorage.setItem('statsor_language', language);
+    try {
+      localStorage.setItem('statsor_language', language);
+    } catch (error) {
+      // Ignore localStorage errors in case of SSR or restricted environments
+      console.warn('Failed to save language preference:', error);
+    }
   }, [language]);
 
-  const t = (key: string): string => {
+  const t = React.useCallback((key: string): string => {
     const translation = translations[language]?.[key];
     if (translation) {
       return translation;
@@ -674,10 +690,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     
     // Return the key itself if no translation found
     return key;
-  };
+  }, [language]);
+
+  const contextValue = React.useMemo(() => ({
+    language,
+    setLanguage,
+    t
+  }), [language, t]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
