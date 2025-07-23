@@ -186,24 +186,24 @@ const CommandTable = () => {
     { id: '14', name: 'Francisco', number: 17, position: 'DEL', status: 'active' },
   ];
 
-  // Default actions with translations
+  // Default actions with translations - reorganized in 5x3 grid
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white border border-red-600' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white border border-green-600' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white border border-blue-600' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white border border-orange-600' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-500 hover:bg-lime-600 text-white border border-lime-600' },
-    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white border border-gray-600' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white border border-pink-600' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white border border-black' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-600 hover:bg-red-700 text-white border border-red-700' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-800 hover:bg-red-900 text-white border border-red-900' },
-    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-500 hover:bg-yellow-600 text-white border border-yellow-600' },
-    { id: 'save', name: t('action.save'), color: 'bg-cyan-500 hover:bg-cyan-600 text-white border border-cyan-600' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white border border-purple-600' },
-    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-600' },
-    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-indigo-500 hover:bg-indigo-600 text-white border border-indigo-600' },
-    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-amber-700 hover:bg-amber-800 text-white border border-amber-800' },
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-500 hover:bg-lime-600 text-white' },
+    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-600 hover:bg-red-700 text-white' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-800 hover:bg-red-900 text-white' },
+    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-500 hover:bg-yellow-600 text-white' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white' },
+    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-emerald-500 hover:bg-emerald-600 text-white' },
+    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-indigo-500 hover:bg-indigo-600 text-white' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white' },
+    { id: 'save', name: t('action.save'), color: 'bg-cyan-500 hover:bg-cyan-600 text-white' },
+    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-amber-700 hover:bg-amber-800 text-white' },
   ];
 
   // Load saved configuration or use defaults
@@ -835,18 +835,18 @@ const CommandTable = () => {
                    const actionColorClass = actionConfig?.color?.split(' ')[0] || 'bg-gray-100'; // Extract background color
                    
                    return (
-                   <div key={action.id} className="flex justify-between items-center p-3 bg-white rounded border shadow-sm hover:shadow-md transition-shadow">
-                     <div className="flex-1">
-                       <div className="text-sm font-medium">
-                         <span className="text-red-600 font-bold">{action.time}'</span>
-                         <span className="mx-1">|</span>
-                         <span className={`${actionColorClass} px-2 py-1 rounded text-xs font-semibold`}>{action.action}</span>
-                         <span className="mx-1">|</span>
-                         <span className="text-green-600 font-semibold">{action.playerName}</span>
-                         <span className="mx-1">|</span>
-                         <span className="text-yellow-600 font-semibold">{action.half === 'first' ? t('command.first.half') : t('command.second.half')}</span>
-                         {action.goalZone && <><span className="mx-1">|</span><span className="text-gray-600"> Zona {action.goalZone}</span></>}
-                         {action.goalOrigin && <><span className="mx-1">|</span><span className="text-gray-600"> {action.goalOrigin}</span></>}
+                    <div key={action.id} className="flex justify-between items-center p-4 bg-white rounded-lg border-2 shadow-lg hover:shadow-xl transition-all duration-200 border-gray-200">
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">
+                          <span className="bg-red-200 text-red-700 px-3 py-1 rounded-md font-bold shadow-sm border border-red-300">{action.time}'</span>
+                          <span className="mx-2">|</span>
+                          <span className={`${actionColorClass} px-3 py-1 rounded-md text-xs font-semibold shadow-sm border opacity-80`}>{action.action}</span>
+                          <span className="mx-2">|</span>
+                          <span className="bg-green-200 text-green-700 px-3 py-1 rounded-md font-semibold shadow-sm border border-green-300">{action.playerName}</span>
+                          <span className="mx-2">|</span>
+                          <span className="bg-yellow-200 text-yellow-700 px-3 py-1 rounded-md font-semibold shadow-sm border border-yellow-300">{action.half === 'first' ? t('command.first.half') : t('command.second.half')}</span>
+                          {action.goalZone && <><span className="mx-2">|</span><span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md shadow-sm border border-gray-300"> Zona {action.goalZone}</span></>}
+                          {action.goalOrigin && <><span className="mx-2">|</span><span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md shadow-sm border border-gray-300"> {action.goalOrigin}</span></>}
                        </div>
                      </div>
                      <Button
