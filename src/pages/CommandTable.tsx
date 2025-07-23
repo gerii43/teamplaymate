@@ -188,22 +188,22 @@ const CommandTable = () => {
 
   // Default actions with translations
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-400 hover:bg-lime-500 text-gray-800' },
-    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-400 hover:bg-red-500 text-white' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-700 hover:bg-red-800 text-white' },
-    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-400 hover:bg-yellow-500 text-gray-800' },
-    { id: 'save', name: t('action.save'), color: 'bg-cyan-400 hover:bg-cyan-500 text-gray-800' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white' },
-    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-green-300 hover:bg-green-400 text-gray-800' },
-    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-blue-400 hover:bg-blue-500 text-white' },
-    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-red-600 hover:bg-red-700 text-white' },
+    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'assist', name: t('action.assist'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'save', name: t('action.save'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
+    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-blue-100 hover:bg-blue-200 text-blue-800 border-2 border-blue-300' },
   ];
 
   // Load saved configuration or use defaults
@@ -815,39 +815,6 @@ const CommandTable = () => {
                       </SortableContext>
                     </DndContext>
                   </div>
-                </div>
-
-                {/* Resto de jugadores (fuera del campo) */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">{t('command.players.bench')}</h3>
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handlePlayerDragEnd}>
-                    <SortableContext items={visiblePlayers.filter(p => p.position !== 'POR' && !playersOnField.includes(p.id)).map(p => p.id)} strategy={rectSortingStrategy}>
-                      <div className="grid grid-cols-2 gap-2">
-                        {visiblePlayers
-                          .filter(p => p.position !== 'POR' && !playersOnField.includes(p.id))
-                          .map((player) => (
-                          <div key={player.id} className="relative">
-                            <Button
-                              onClick={() => {
-                                setSelectedPlayer(player.id);
-                              }}
-                              onDoubleClick={() => togglePlayerOnField(player.id)}
-                              className={`h-12 text-xs font-semibold transition-all w-full opacity-70 ${
-                                selectedPlayer === player.id 
-                                  ? 'bg-gray-600 hover:bg-gray-700 text-white ring-2 ring-gray-300' 
-                                  : 'bg-gray-500 hover:bg-gray-600 text-white'
-                              }`}
-                            >
-                              <div className="w-5 h-5 bg-white text-gray-700 rounded-full flex items-center justify-center mr-2 font-bold text-xs">
-                                {player.number}
-                              </div>
-                              <div className="font-semibold text-xs">{player.name}</div>
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
                 </div>
               </div>
             )}
