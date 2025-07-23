@@ -684,17 +684,38 @@ const CommandTable = () => {
                 </DndContext>
               </div>
             ) : (
-              <div className="grid grid-cols-4 gap-2 shadow-lg rounded-lg bg-white p-4">
-                {visibleActions.map((action) => (
-                  <SortableActionButton
-                    key={action.id}
-                    action={action}
-                    onAction={registerQuickAction}
-                    selectedPlayer={selectedPlayer}
-                    disabled={!selectedPlayer}
-                    isEditMode={false}
-                  />
-                ))}
+              <div className="shadow-lg rounded-lg bg-white p-4">
+                {isEditMode ? (
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleActionDragEnd}>
+                    <SortableContext items={visibleActions.map(a => a.id)} strategy={rectSortingStrategy}>
+                      <div className="grid grid-cols-3 gap-2">
+                        {visibleActions.map((action) => (
+                          <SortableActionButton
+                            key={action.id}
+                            action={action}
+                            onAction={registerQuickAction}
+                            selectedPlayer={selectedPlayer}
+                            disabled={!selectedPlayer}
+                            isEditMode={true}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    {visibleActions.map((action) => (
+                      <SortableActionButton
+                        key={action.id}
+                        action={action}
+                        onAction={registerQuickAction}
+                        selectedPlayer={selectedPlayer}
+                        disabled={!selectedPlayer}
+                        isEditMode={false}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
