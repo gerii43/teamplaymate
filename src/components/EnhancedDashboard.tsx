@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSport } from '@/contexts/SportContext';
 import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Trophy, Target, TrendingUp, Users } from 'lucide-react';
@@ -6,6 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const EnhancedDashboard = () => {
   const { t } = useLanguage();
+  const { sport } = useSport();
+  
   // Mock data for performance charts
   const performanceData = [
     { name: 'Partido 1', puntos: 3, golesF: 2, golesC: 1, victorias: 100 },
@@ -139,9 +142,10 @@ const EnhancedDashboard = () => {
         <Card className="p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-orange-100">Equipo</p>
-              <p className="text-lg font-bold">FC Statsor</p>
-              <p className="text-sm text-orange-100">Primera División</p>
+              <p className="text-orange-100">{t('dashboard.current.season')} - Jaén</p>
+              <p className="text-sm text-orange-100">{t('dashboard.days.ago').replace('{days}', '3')}</p>
+              <p className="text-sm text-orange-100">{t('dashboard.matches.of').replace('{current}', '8').replace('{total}', '12')}</p>
+              <p className="text-sm text-orange-100">{t('dashboard.team.division').replace('{division}', 'Primera División')}</p>
             </div>
             <Users className="w-12 h-12 text-orange-200" />
           </div>

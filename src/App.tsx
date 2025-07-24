@@ -5,9 +5,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SportProvider, useSport } from "@/contexts/SportContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { DatabaseProvider } from "@/contexts/DatabaseContext";
 import { ChatbotProvider } from "@/components/ChatbotBackend";
 import { FootballChatbot } from "@/components/FootballChatbot";
+import { TacticalAIChatbot } from "@/components/TacticalAIChatbot";
+import { SportSelectionModal } from "@/components/SportSelectionModal";
 import { DatabaseStatus } from "@/components/DatabaseStatus";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
@@ -37,6 +41,8 @@ const queryClient = new QueryClient({
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const { sport, isFirstTime } = useSport();
+  const [showSportSelection, setShowSportSelection] = useState(false);
   
   if (loading) {
     return (
@@ -49,122 +55,132 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!user) {
     return <Navigate to="/signin" />;
   }
+
+  // Show sport selection for first-time users
+  if (isFirstTime && !sport) {
+    return <SportSelectionModal isOpen={true} onClose={() => {}} />;
+  }
   
   return <>{children}</>;
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <AuthProvider>
-        <DatabaseProvider>
-          <ChatbotProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/signin" element={<SignIn />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/valorant" element={<ValorantAnalysis />} />
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/training" 
-                    element={
-                      <ProtectedRoute>
-                        <Training />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/players" 
-                    element={
-                      <ProtectedRoute>
-                        <Players />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/matches" 
-                    element={
-                      <ProtectedRoute>
-                        <Matches />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/general-stats" 
-                    element={
-                      <ProtectedRoute>
-                        <GeneralStats />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/attendance" 
-                    element={
-                      <ProtectedRoute>
-                        <Attendance />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/manual-actions" 
-                    element={
-                      <ProtectedRoute>
-                        <ManualActions />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/command-table" 
-                    element={
-                      <ProtectedRoute>
-                        <CommandTable />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/tactical-chat" 
-                    element={
-                      <ProtectedRoute>
-                        <TacticalChat />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/advanced-analytics" 
-                    element={
-                      <ProtectedRoute>
-                        <AdvancedAnalytics />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/database-status" 
-                    element={
-                      <ProtectedRoute>
-                        <DatabaseStatusPage />
-                      </ProtectedRoute>
-                    } 
-                  />
-                </Routes>
-                <FootballChatbot />
-              </BrowserRouter>
-            </TooltipProvider>
-          </ChatbotProvider>
-        </DatabaseProvider>
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <SportProvider>
+            <DatabaseProvider>
+              <ChatbotProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/pricing" element={<Pricing />} />
+                      <Route path="/signin" element={<SignIn />} />
+                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/valorant" element={<ValorantAnalysis />} />
+                      <Route 
+                        path="/dashboard" 
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/training" 
+                        element={
+                          <ProtectedRoute>
+                            <Training />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/players" 
+                        element={
+                          <ProtectedRoute>
+                            <Players />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/matches" 
+                        element={
+                          <ProtectedRoute>
+                            <Matches />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/general-stats" 
+                        element={
+                          <ProtectedRoute>
+                            <GeneralStats />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/attendance" 
+                        element={
+                          <ProtectedRoute>
+                            <Attendance />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/manual-actions" 
+                        element={
+                          <ProtectedRoute>
+                            <ManualActions />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/command-table" 
+                        element={
+                          <ProtectedRoute>
+                            <CommandTable />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/tactical-chat" 
+                        element={
+                          <ProtectedRoute>
+                            <TacticalChat />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/advanced-analytics" 
+                        element={
+                          <ProtectedRoute>
+                            <AdvancedAnalytics />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/database-status" 
+                        element={
+                          <ProtectedRoute>
+                            <DatabaseStatusPage />
+                          </ProtectedRoute>
+                        } 
+                      />
+                    </Routes>
+                    <FootballChatbot />
+                    <TacticalAIChatbot />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </ChatbotProvider>
+            </DatabaseProvider>
+          </SportProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

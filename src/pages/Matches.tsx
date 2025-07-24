@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MatchNotesModal } from '@/components/MatchNotesModal';
 import { ArrowLeft, Calendar, MapPin, Download, Copy, Trophy, Target, Award } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -18,6 +19,7 @@ interface Match {
 
 interface MatchStats {
   firstHalf: {
+    goalLocations: { location: string; player: string; minute: number }[];
     goals: number;
     assists: number;
     shots: number;
@@ -32,6 +34,7 @@ interface MatchStats {
     possession: number;
   };
   secondHalf: {
+    goalLocations: { location: string; player: string; minute: number }[];
     goals: number;
     assists: number;
     shots: number;
@@ -61,6 +64,8 @@ const Matches = () => {
   const { t } = useLanguage();
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [showSummary, setShowSummary] = useState(false);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [matchNotes, setMatchNotes] = useState<any[]>([]);
   
   const matches: Match[] = [
     {
@@ -97,6 +102,10 @@ const Matches = () => {
 
   const mockMatchStats: MatchStats = {
     firstHalf: {
+      goalLocations: [
+        { location: 'top-right', player: 'Carlos López', minute: 23 },
+        { location: 'bottom-left', player: 'Miguel Torres', minute: 34 }
+      ],
       goals: 3,
       assists: 2,
       shots: 8,
@@ -111,6 +120,9 @@ const Matches = () => {
       possession: 58
     },
     secondHalf: {
+      goalLocations: [
+        { location: 'middle-center', player: 'Pablo Sánchez', minute: 67 }
+      ],
       goals: 2,
       assists: 1,
       shots: 6,
@@ -341,6 +353,35 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
 
         {/* Match Statistics */}
         <div className="grid md:grid-cols-2 gap-6">
+          {/* Goal Locations */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-purple-600">Goal Locations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <h4 className="font-semibold">{t('matches.first.half')}</h4>
+                {mockMatchStats.firstHalf.goalLocations.map((goal, index) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="text-sm">{goal.minute}' - {goal.player}</span>
+                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                      {goal.location}
+                    </span>
+                  </div>
+                ))}
+                
+                <h4 className="font-semibold mt-4">{t('matches.second.half')}</h4>
+                {mockMatchStats.secondHalf.goalLocations.map((goal, index) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="text-sm">{goal.minute}' - {goal.player}</span>
+                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                      {goal.location}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
           {/* Primera Parte */}
           <Card>
             <CardHeader>
@@ -451,6 +492,48 @@ El jugador más destacado fue ${mvpPlayer.name} con ${mvpPlayer.goals} ${mvpPlay
             </CardContent>
           </Card>
         </div>
+
+        {/* Match Notes */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Match Notes</CardTitle>
+              <Button
+                onClick={() => setShowNotesModal(true)}
+                variant="outline"
+                size="sm"
+              >
+                Add Notes
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {matchNotes.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No notes added for this match</p>
+            ) : (
+              <div className="space-y-2">
+                {matchNotes.map((note, index) => (
+                  <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium">{note.title}</span>
+                      <span className="text-sm text-gray-500">{note.minute}'</span>
+                    </div>
+                    <p className="text-sm text-gray-700">{note.content}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Match Notes Modal */}
+        <MatchNotesModal
+          isOpen={showNotesModal}
+          onClose={() => setShowNotesModal(false)}
+          matchId={selectedMatch.id}
+          notes={matchNotes}
+          onSaveNotes={setMatchNotes}
+        />
       </div>
     );
   };

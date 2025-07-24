@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowLeft, User, Trophy, Target, Clock, Award, Camera, Upload, X, Maximize2, Plus } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AddPlayerForm from '@/components/AddPlayerForm';
+import { PlayerPhotoUpload } from '@/components/PlayerPhotoUpload';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Player {
@@ -51,6 +52,7 @@ const Players = () => {
   const [modalCard, setModalCard] = useState<'player' | 'performance' | 'stats' | 'shotMap' | null>(null);
   const [performanceFilter, setPerformanceFilter] = useState<'all' | 'home' | 'away'>('all');
   const [showStatsOverlay, setShowStatsOverlay] = useState(false);
+  const [photoUploadPlayer, setPhotoUploadPlayer] = useState<Player | null>(null);
 
   const [players, setPlayers] = useState<Player[]>([
     {
@@ -209,6 +211,12 @@ const Players = () => {
     setPlayers(prev => [...prev, newPlayer]);
   };
 
+  const handlePhotoSave = (playerId: string, photoUrl: string) => {
+    setPlayers(prev => prev.map(player => 
+      player.id === playerId ? { ...player, photo: photoUrl } : player
+    ));
+    setPhotoUploadPlayer(null);
+  };
   const renderPlayerDetail = () => {
     if (!selectedPlayer) return null;
 
@@ -272,7 +280,13 @@ const Players = () => {
                   </div>
                 )}
                 <button className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-600 rounded-full border-2 border-white flex items-center justify-center hover:bg-green-700 shadow-lg transition-colors">
-                  <Camera className="w-4 h-4 text-white" />
+                  <Camera 
+                    className="w-4 h-4 text-white" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPhotoUploadPlayer(selectedPlayer);
+                    }}
+                  />
                 </button>
               </div>
 
@@ -758,6 +772,17 @@ const Players = () => {
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Photo Upload Modal */}
+        {photoUploadPlayer && (
+          <PlayerPhotoUpload
+            isOpen={true}
+            onClose={() => setPhotoUploadPlayer(null)}
+            onPhotoSave={(photoUrl) => handlePhotoSave(photoUploadPlayer.id, photoUrl)}
+            currentPhoto={photoUploadPlayer.photo}
+            playerName={photoUploadPlayer.name}
+          />
+        )}
       </div>
     );
   };
@@ -798,6 +823,17 @@ const Players = () => {
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-900">{player.name}</h3>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPhotoUploadPlayer(player);
+                  }}
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
                 <div className="flex items-center space-x-2 mt-1">
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
                     {player.position}
@@ -831,6 +867,15 @@ const Players = () => {
         onSave={handleAddPlayer}
       />
     </div>
+      {photoUploadPlayer && (
+        <PlayerPhotoUpload
+          isOpen={true}
+          onClose={() => setPhotoUploadPlayer(null)}
+          onPhotoSave={(photoUrl) => handlePhotoSave(photoUploadPlayer.id, photoUrl)}
+          currentPhoto={photoUploadPlayer.photo}
+          playerName={photoUploadPlayer.name}
+        />
+      )}
   );
 
   return (

@@ -55,6 +55,7 @@ const translations = {
     
     // Hero Section
     'hero.title': 'Digitaliza y analiza el rendimiento de tu equipo de fútbol en tiempo real',
+    'hero.title.digitize': 'Digitaliza y analiza el rendimiento de tu equipo de fútbol en tiempo real',
     'hero.subtitle': 'Sin necesidad de Wi-Fi. Statsor revoluciona la gestión táctica y el análisis estadístico, dando a los entrenadores el control total para optimizar cada jugada y entrenamiento.',
     'hero.cta': 'Solicita tu demo',
     
@@ -374,6 +375,35 @@ const translations = {
     
     // Stats page
     'stats.title': 'Estadísticas Generales',
+    
+    // Sport Selection
+    'sport.selection.title': 'Selecciona tu deporte',
+    'sport.selection.subtitle': 'Elige el deporte que practicas para personalizar tu experiencia',
+    'sport.selection.confirm': 'Confirmar selección',
+    'sport.selection.selected': 'Deporte seleccionado',
+    'sport.soccer': 'Fútbol',
+    'sport.futsal': 'Futsal',
+    'sport.soccer.description': 'Fútbol tradicional de 11 jugadores',
+    'sport.futsal.description': 'Fútbol sala de 5 jugadores',
+    'sport.soccer.feature1': 'Gestión de plantillas de hasta 25 jugadores',
+    'sport.soccer.feature2': 'Análisis táctico para formaciones 11vs11',
+    'sport.soccer.feature3': 'Estadísticas de partidos completos (90 min)',
+    'sport.soccer.feature4': 'Seguimiento de posiciones específicas',
+    'sport.futsal.feature1': 'Control de rotaciones intensivas',
+    'sport.futsal.feature2': 'Análisis de juego en espacio reducido',
+    'sport.futsal.feature3': 'Métricas de intensidad y ritmo',
+    'sport.futsal.feature4': 'Gestión de dobles penaltis',
+    
+    // Theme
+    'theme.light': 'Tema claro',
+    'theme.dark': 'Tema oscuro',
+    'theme.toggle': 'Cambiar tema',
+    
+    // Dashboard updates
+    'dashboard.current.season': 'Temporada actual',
+    'dashboard.days.ago': 'hace {days} días',
+    'dashboard.matches.of': '{current} de {total} partidos',
+    'dashboard.team.division': 'equipo {division}',
   },
   en: {
     // Navigation
@@ -724,6 +754,35 @@ const translations = {
     
     // Stats page
     'stats.title': 'General Statistics',
+    
+    // Sport Selection
+    'sport.selection.title': 'Select your sport',
+    'sport.selection.subtitle': 'Choose the sport you practice to customize your experience',
+    'sport.selection.confirm': 'Confirm selection',
+    'sport.selection.selected': 'Sport selected',
+    'sport.soccer': 'Soccer',
+    'sport.futsal': 'Futsal',
+    'sport.soccer.description': 'Traditional 11-player football',
+    'sport.futsal.description': '5-player indoor football',
+    'sport.soccer.feature1': 'Manage squads of up to 25 players',
+    'sport.soccer.feature2': 'Tactical analysis for 11vs11 formations',
+    'sport.soccer.feature3': 'Full match statistics (90 min)',
+    'sport.soccer.feature4': 'Position-specific tracking',
+    'sport.futsal.feature1': 'Intensive rotation control',
+    'sport.futsal.feature2': 'Small space game analysis',
+    'sport.futsal.feature3': 'Intensity and rhythm metrics',
+    'sport.futsal.feature4': 'Double penalty management',
+    
+    // Theme
+    'theme.light': 'Light theme',
+    'theme.dark': 'Dark theme',
+    'theme.toggle': 'Toggle theme',
+    
+    // Dashboard updates
+    'dashboard.current.season': 'Current season',
+    'dashboard.days.ago': '{days} days ago',
+    'dashboard.matches.of': '{current} of {total} matches',
+    'dashboard.team.division': '{division} team',
   }
 };
 

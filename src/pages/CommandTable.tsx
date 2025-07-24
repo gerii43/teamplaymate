@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import { useSport } from '@/contexts/SportContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { GoalLocationModal } from '@/components/GoalLocationModal';
 import {
   DndContext,
   closestCenter,
@@ -133,7 +135,9 @@ const CommandTable = () => {
   const [selectedHalf, setSelectedHalf] = useState<'first' | 'second'>('first');
   const [showGoalZoneModal, setShowGoalZoneModal] = useState(false);
   const [showGoalOriginModal, setShowGoalOriginModal] = useState(false);
+  const [showGoalLocationModal, setShowGoalLocationModal] = useState(false);
   const [pendingGoalAction, setPendingGoalAction] = useState<{actionId: string, actionName: string, zone?: number} | null>(null);
+  const { sport, getSportSpecificActions } = useSport();
   const [homeTeamFouls, setHomeTeamFouls] = useState(0);
   const [awayTeamFouls, setAwayTeamFouls] = useState(0);
   
@@ -188,22 +192,11 @@ const CommandTable = () => {
 
   // Default actions with translations - reorganized in 5x3 grid
   const getDefaultActions = () => [
-    { id: 'foul_against', name: t('action.foul.against'), color: 'bg-red-500 hover:bg-red-600 text-white' },
-    { id: 'foul_favor', name: t('action.foul.favor'), color: 'bg-green-500 hover:bg-green-600 text-white' },
-    { id: 'penalty_favor', name: t('action.penalty.favor'), color: 'bg-blue-500 hover:bg-blue-600 text-white' },
-    { id: 'ball_lost', name: t('action.ball.lost'), color: 'bg-lime-500 hover:bg-lime-600 text-white' },
-    { id: 'ball_recovered', name: t('action.ball.recovered'), color: 'bg-gray-500 hover:bg-gray-600 text-white' },
-    { id: 'duel_won', name: t('action.duel.won'), color: 'bg-pink-500 hover:bg-pink-600 text-white' },
-    { id: 'goal_favor', name: t('action.goal.favor'), color: 'bg-red-600 hover:bg-red-700 text-white' },
-    { id: 'goal_against', name: t('action.goal.against'), color: 'bg-red-800 hover:bg-red-900 text-white' },
-    { id: 'assist', name: t('action.assist'), color: 'bg-yellow-500 hover:bg-yellow-600 text-white' },
-    { id: 'shot_goal', name: t('action.shot.goal'), color: 'bg-purple-500 hover:bg-purple-600 text-white' },
-    { id: 'shot_out', name: t('action.shot.out'), color: 'bg-emerald-500 hover:bg-emerald-600 text-white' },
-    { id: 'corner_favor', name: t('action.corner.favor'), color: 'bg-indigo-500 hover:bg-indigo-600 text-white' },
-    { id: 'penalty_against', name: t('action.penalty.against'), color: 'bg-orange-500 hover:bg-orange-600 text-white' },
-    { id: 'duel_lost', name: t('action.duel.lost'), color: 'bg-black hover:bg-gray-800 text-white' },
-    { id: 'save', name: t('action.save'), color: 'bg-cyan-500 hover:bg-cyan-600 text-white' },
-    { id: 'corner_against', name: t('action.corner.against'), color: 'bg-amber-700 hover:bg-amber-800 text-white' },
+    ...getSportSpecificActions().map(action => ({
+      id: action.id,
+      name: t(`action.${action.id}`) || action.name,
+      color: action.color
+    }))
   ];
 
   // Load saved configuration or use defaults
@@ -422,7 +415,7 @@ const CommandTable = () => {
     // Special handling for goals - show zone modal first
     if (actionId === 'goal_favor' || actionId === 'goal_against') {
       setPendingGoalAction({ actionId, actionName });
-      setShowGoalZoneModal(true);
+      setShowGoalLocationModal(true);
       return;
     }
 
@@ -440,6 +433,28 @@ const CommandTable = () => {
     };
 
     setLiveActions(prev => [newAction, ...prev]);
+  };
+
+  const handleGoalLocationSelect = (location: string) => {
+    if (!pendingGoalAction || !selectedPlayer) return;
+
+    const player = customPlayers.find(p => p.id === selectedPlayer);
+    const halfText = selectedHalf === 'first' ? t('command.first.half') : t('command.second.half');
+    const newAction = {
+      id: Date.now(),
+      playerId: selectedPlayer,
+      playerName: player?.name,
+      playerNumber: player?.number,
+      action: pendingGoalAction.actionName,
+      time: formatTime(time),
+      half: selectedHalf,
+      goalLocation: location,
+      timestamp: Date.now(),
+    };
+
+    setLiveActions(prev => [newAction, ...prev]);
+    setShowGoalLocationModal(false);
+    setPendingGoalAction(null);
   };
 
   const handleGoalOriginSelect = (origin: string) => {
@@ -962,6 +977,16 @@ const CommandTable = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Goal Location Modal */}
+        <GoalLocationModal
+          isOpen={showGoalLocationModal}
+          onClose={() => {
+            setShowGoalLocationModal(false);
+            setPendingGoalAction(null);
+          }}
+          onLocationSelect={handleGoalLocationSelect}
+        />
 
         {/* Goal Zone Modal */}
         <Dialog open={showGoalZoneModal} onOpenChange={setShowGoalZoneModal}>

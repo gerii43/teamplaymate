@@ -69,7 +69,7 @@ export const Hero = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto text-secondary">
-            Digitize and analyze your football team's performance in real time
+            {t('hero.title.digitize')}
           </h1>
           <p className="text-lg md:text-xl mb-10 text-gray-600 max-w-3xl mx-auto">
             {t('hero.subtitle')}
