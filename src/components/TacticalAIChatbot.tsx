@@ -29,6 +29,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSport } from '@/contexts/SportContext';
+import { chatbotAPI } from '@/lib/api';
 import { toast } from 'sonner';
 
 interface TacticalMessage {
@@ -134,297 +135,36 @@ Ask me anything about tactics, formations, or strategic decisions!`,
   const processTacticalMessage = async (message: string) => {
     setIsTyping(true);
     
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    let response: TacticalMessage;
-    const lowerMessage = message.toLowerCase();
-
     try {
-      if (lowerMessage.includes('formation') || lowerMessage.includes('4-3-3') || lowerMessage.includes('4-4-2')) {
-        const formation = extractFormation(message) || '4-3-3';
-        response = {
-          id: `formation_${Date.now()}`,
+      const response = await chatbotAPI.sendMessage(message, {
+        type: 'tactical',
+        sport: sport,
+        userId: user?.id,
+        timestamp: new Date().toISOString()
+      });
+
+      if (response.data.success) {
+        const botResponse: TacticalMessage = {
+          id: `bot_${Date.now()}`,
           type: 'bot',
-          content: `🎯 **${formation} Formation Analysis**
-
-**Tactical Overview:**
-${getFormationAnalysis(formation, sport)}
-
-**Key Principles:**
-${getFormationPrinciples(formation)}
-
-**Player Roles:**
-${getPlayerRoles(formation)}
-
-**Strengths & Weaknesses:**
-✅ **Strengths:** ${getFormationStrengths(formation)}
-⚠️ **Weaknesses:** ${getFormationWeaknesses(formation)}
-
-**Recommended Against:**
-${getFormationCounters(formation)}`,
+          content: response.data.data.response,
           timestamp: new Date(),
-          category: 'formation',
-          actions: [
-            {
-              id: 'alternative_formation',
-              label: 'Alternative Formations',
-              type: 'button',
-              action: () => setInputValue('Show me alternative formations'),
-              icon: <Users className="w-4 h-4" />
-            },
-            {
-              id: 'training_formation',
-              label: 'Training Drills',
-              type: 'button',
-              action: () => setInputValue(`Training drills for ${formation}`),
-              icon: <Target className="w-4 h-4" />
-            }
-          ]
+          category: 'general'
         };
-      }
-      else if (lowerMessage.includes('counter') || lowerMessage.includes('against') || lowerMessage.includes('defend')) {
-        response = {
-          id: `counter_${Date.now()}`,
-          type: 'bot',
-          content: `🛡️ **Defensive Tactical Analysis**
 
-**Counter-Pressing Strategies:**
-${sport === 'soccer' 
-  ? '• Immediate pressure after ball loss\n• Compact defensive block\n• Quick transitions to attack\n• Coordinated pressing triggers'
-  : '• High-intensity pressing\n• Quick rotations\n• Aggressive man-marking\n• Fast counter-attacks'
-}
-
-**Defensive Positioning:**
-• Maintain defensive shape
-• Cover dangerous spaces
-• Communication is key
-• Anticipate opponent moves
-
-**Key Tactical Adjustments:**
-1. **Pressing Intensity** - Adjust based on game state
-2. **Defensive Line** - High vs low block decisions
-3. **Midfield Compactness** - Control central areas
-4. **Wing Defense** - Prevent crosses and overlaps
-
-**${sport === 'futsal' ? 'Futsal' : 'Football'}-Specific Tips:**
-${sport === 'soccer'
-  ? '• Use offside trap effectively\n• Coordinate defensive line\n• Protect set piece situations'
-  : '• Quick defensive rotations\n• Aggressive man-marking\n• Prevent pivot play\n• Control goalkeeper area'
-}`,
-          timestamp: new Date(),
-          category: 'strategy',
-          actions: [
-            {
-              id: 'pressing_drills',
-              label: 'Pressing Drills',
-              type: 'button',
-              action: () => setInputValue('Show me pressing training drills'),
-              icon: <Zap className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      else if (lowerMessage.includes('substitution') || lowerMessage.includes('change') || lowerMessage.includes('sub')) {
-        response = {
-          id: `substitution_${Date.now()}`,
-          type: 'bot',
-          content: `🔄 **Substitution Strategy Guide**
-
-**When to Make Substitutions:**
-• **Tactical Changes** - Formation or style adjustments
-• **Fresh Legs** - Combat fatigue in key positions
-• **Injury Prevention** - Protect tired players
-• **Game State** - Winning, losing, or drawing scenarios
-
-**Strategic Timing:**
-${sport === 'soccer'
-  ? '• **60-70 minutes** - Peak substitution window\n• **Half-time** - Major tactical changes\n• **75+ minutes** - Fresh energy injection\n• **Injury time** - Time management'
-  : '• **15-20 minutes** - First half adjustments\n• **25-30 minutes** - Second half changes\n• **35+ minutes** - Final push or defense\n• **Unlimited subs** - Use rotation advantage'
-}
-
-**Position-Specific Considerations:**
-• **Attackers** - Fresh pace and creativity
-• **Midfielders** - Energy and pressing intensity
-• **Defenders** - Stability and concentration
-• **Goalkeeper** - Rare, only for tactical reasons
-
-**Current Game Analysis:**
-Based on your team's performance, consider:
-1. Bringing fresh legs in midfield
-2. Tactical switch to more defensive setup
-3. Attacking substitution if chasing the game`,
-          timestamp: new Date(),
-          category: 'strategy',
-          actions: [
-            {
-              id: 'sub_timing',
-              label: 'Optimal Timing',
-              type: 'button',
-              action: () => setInputValue('When is the best time to substitute?'),
-              icon: <Play className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      else if (lowerMessage.includes('training') || lowerMessage.includes('drill') || lowerMessage.includes('practice')) {
-        const focus = extractTrainingFocus(message);
-        response = {
-          id: `training_${Date.now()}`,
-          type: 'bot',
-          content: `🎯 **Training Drill Recommendations**
-
-**Focus Area:** ${focus}
-
-**Recommended Drills:**
-
-**1. ${sport === 'soccer' ? 'Possession Squares' : 'Quick Passing Circuits'}**
-• Duration: 15-20 minutes
-• Players: ${sport === 'soccer' ? '8-12' : '6-10'}
-• Objective: Improve ball retention and quick passing
-
-**2. ${sport === 'soccer' ? 'Pressing Triggers' : 'High-Intensity Pressing'}**
-• Duration: 12-15 minutes
-• Players: Full team
-• Objective: Coordinated defensive pressure
-
-**3. ${sport === 'soccer' ? 'Transition Play' : 'Quick Transitions'}**
-• Duration: 18-25 minutes
-• Players: ${sport === 'soccer' ? '16-22' : '8-12'}
-• Objective: Fast switches between phases
-
-**4. Finishing Practice**
-• Duration: 20 minutes
-• Players: ${sport === 'soccer' ? '6-8' : '4-6'}
-• Objective: Clinical finishing in ${sport === 'soccer' ? 'box' : 'small area'}
-
-**Progressive Training Plan:**
-Week 1-2: Technical foundation
-Week 3-4: Tactical implementation
-Week 5-6: Game situation practice`,
-          timestamp: new Date(),
-          category: 'suggestion',
-          actions: [
-            {
-              id: 'detailed_drill',
-              label: 'Detailed Instructions',
-              type: 'button',
-              action: () => setInputValue('Give me detailed instructions for possession drill'),
-              icon: <Target className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      else if (lowerMessage.includes('analyze') || lowerMessage.includes('performance') || lowerMessage.includes('weakness')) {
-        response = {
-          id: `analysis_${Date.now()}`,
-          type: 'bot',
-          content: `📊 **Team Performance Analysis**
-
-**Current Tactical Assessment:**
-
-**Attacking Phase:**
-✅ Good ball circulation in midfield
-✅ Effective wing play
-⚠️ Limited creativity in final third
-⚠️ Poor conversion rate in box
-
-**Defensive Phase:**
-✅ Strong defensive organization
-✅ Good pressing coordination
-⚠️ Vulnerable to quick counters
-⚠️ Set piece defending needs work
-
-**Transition Phases:**
-✅ Quick defensive transitions
-⚠️ Slow attacking build-up
-⚠️ Poor counter-attack execution
-
-**${sport === 'futsal' ? 'Futsal' : 'Football'}-Specific Insights:**
-${sport === 'soccer'
-  ? '• Improve crossing accuracy\n• Better offside trap timing\n• Enhance set piece delivery\n• Strengthen aerial duels'
-  : '• Increase rotation speed\n• Improve pivot play\n• Better goalkeeper distribution\n• Enhance 1v1 situations'
-}
-
-**Priority Improvements:**
-1. **High Priority:** Final third creativity
-2. **Medium Priority:** Counter-attack speed
-3. **Low Priority:** Set piece variations`,
-          timestamp: new Date(),
-          category: 'analysis',
-          actions: [
-            {
-              id: 'improvement_plan',
-              label: 'Improvement Plan',
-              type: 'button',
-              action: () => setInputValue('Create improvement plan for final third'),
-              icon: <TrendingUp className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      else {
-        response = {
-          id: `general_${Date.now()}`,
-          type: 'bot',
-          content: `🧠 **Tactical AI Assistant**
-
-I understand you're asking about "${message}". As your tactical advisor, I can help with:
-
-**🎯 Formation & Strategy**
-• Formation analysis and recommendations
-• Tactical adjustments during matches
-• Counter-tactics against specific opponents
-
-**⚡ In-Game Decisions**
-• Substitution timing and strategy
-• Tactical changes based on game state
-• Real-time problem solving
-
-**📊 Performance Analysis**
-• Team strengths and weaknesses
-• Individual player tactical roles
-• Match preparation strategies
-
-**🎨 Training & Development**
-• Tactical training drills
-• Formation practice sessions
-• Strategic skill development
-
-**${sport === 'futsal' ? 'Futsal' : 'Football'} Expertise:**
-I'm specialized in ${sport === 'soccer' ? '11v11 football tactics' : '5v5 futsal strategies'} and can provide sport-specific advice.
-
-Try asking: "How should I set up against a high-pressing team?" or "What formation works best for possession play?"`,
-          timestamp: new Date(),
-          category: 'general',
-          actions: [
-            {
-              id: 'formation_help',
-              label: 'Formation Help',
-              type: 'button',
-              action: () => setInputValue('What formation should I use?'),
-              icon: <Users className="w-4 h-4" />
-            },
-            {
-              id: 'tactical_problem',
-              label: 'Solve Tactical Problem',
-              type: 'button',
-              action: () => setInputValue('We struggle against high press, help!'),
-              icon: <Brain className="w-4 h-4" />
-            }
-          ]
-        };
+        setMessages(prev => [...prev, botResponse]);
       }
     } catch (error) {
-      response = {
+      const errorResponse: TacticalMessage = {
         id: `error_${Date.now()}`,
         type: 'bot',
         content: 'I apologize, but I encountered an error processing your tactical request. Please try again or ask me about formations, strategies, or training methods.',
         timestamp: new Date(),
         category: 'general'
       };
+      setMessages(prev => [...prev, errorResponse]);
     }
 
-    setMessages(prev => [...prev, response]);
     setIsTyping(false);
     playNotificationSound();
   };

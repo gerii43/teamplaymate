@@ -38,6 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { chatbotAPI } from '@/lib/api';
 
 interface ChatMessage {
   id: string;
@@ -137,30 +138,8 @@ Just type naturally - I understand football language! What would you like to exp
 
   const sendSuggestionEmail = async (suggestion: string, userInfo: any) => {
     try {
-      // In production, this would call your email service
-      const emailData = {
-        to: 'suggestions@statsor.com',
-        subject: `New Platform Suggestion from ${userInfo.name}`,
-        body: `
-New suggestion received from authenticated user:
-
-User: ${userInfo.name} (${userInfo.email})
-Suggestion: ${suggestion}
-Timestamp: ${new Date().toISOString()}
-User ID: ${userInfo.id}
-User Role: ${userInfo.role || 'User'}
-
-This suggestion was submitted through the football analysis chatbot.
-        `
-      };
-
-      // Mock email sending - replace with actual email service
-      console.log('Sending suggestion email:', emailData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      return { success: true };
+      const response = await chatbotAPI.sendMessage(suggestion, { type: 'suggestion' });
+      return { success: response.data.success };
     } catch (error) {
       console.error('Failed to send suggestion email:', error);
       return { success: false, error };
@@ -199,367 +178,35 @@ This suggestion was submitted through the football analysis chatbot.
     setIsLoading(true);
     setIsTyping(true);
 
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    let response: ChatMessage;
-    const lowerMessage = message.toLowerCase();
-
     try {
-      // Handle suggestions
-      if (lowerMessage.includes('suggest') || lowerMessage.includes('recommendation') || lowerMessage.includes('improve') || lowerMessage.includes('add') || lowerMessage.includes('feature')) {
-        const emailResult = await sendSuggestionEmail(message, user);
-        
-        if (emailResult.success) {
-          response = {
-            id: `suggestion_${Date.now()}`,
-            type: 'bot',
-            content: `🌟 **Suggestion Received!**
+      const response = await chatbotAPI.sendMessage(message, {
+        sport: sport,
+        userId: user?.id,
+        timestamp: new Date().toISOString()
+      });
 
-Thank you for your valuable feedback! I've automatically forwarded your suggestion to our development team:
-
-"${message}"
-
-Our team reviews all suggestions weekly and prioritizes based on user impact. You'll receive updates if your suggestion is implemented.
-
-**What happens next:**
-✅ Development team review (within 48 hours)
-📊 Impact assessment and feasibility study  
-🚀 Implementation planning (if approved)
-📧 Email notification with updates
-
-Is there anything else about football analysis I can help you with?`,
-            timestamp: new Date(),
-            messageType: 'suggestion',
-            actions: [
-              {
-                id: 'more_suggestions',
-                label: 'Another Suggestion',
-                type: 'button',
-                action: () => setInputValue('I also suggest '),
-                icon: <Star className="w-4 h-4" />
-              },
-              {
-                id: 'analyze_something',
-                label: 'Analyze Match',
-                type: 'button',
-                action: () => setInputValue('Analyze latest match'),
-                icon: <BarChart3 className="w-4 h-4" />
-              }
-            ]
-          };
-        } else {
-          response = {
-            id: `suggestion_error_${Date.now()}`,
-            type: 'bot',
-            content: `I appreciate your suggestion, but I'm having trouble forwarding it right now. Please try again in a moment, or you can contact us directly at suggestions@statsor.com.`,
-            timestamp: new Date(),
-            messageType: 'text'
-          };
-        }
-      }
-      // Handle match analysis
-      else if (lowerMessage.includes('analyze') || lowerMessage.includes('match') || lowerMessage.includes('game')) {
-        const analysisData = generateMockAnalysis(message);
-        response = {
-          id: `analysis_${Date.now()}`,
+      if (response.data.success) {
+        const botResponse: ChatMessage = {
+          id: `bot_${Date.now()}`,
           type: 'bot',
-          content: `🔍 **Match Analysis Complete**
-
-**${analysisData.teams.home} ${analysisData.score.home} - ${analysisData.score.away} ${analysisData.teams.away}**
-*${analysisData.league} • ${analysisData.date}*
-
-**Key Statistics:**
-• Possession: ${analysisData.statistics.possession.home}% - ${analysisData.statistics.possession.away}%
-• Shots: ${analysisData.statistics.shots.home} - ${analysisData.statistics.shots.away}
-• Shots on Target: ${analysisData.statistics.shotsOnTarget.home} - ${analysisData.statistics.shotsOnTarget.away}
-
-**Key Moments:**
-${analysisData.keyMoments.map(moment => `⚽ ${moment.minute}' - ${moment.description}`).join('\n')}
-
-**Tactical Insights:**
-${analysisData.insights.map(insight => `• ${insight}`).join('\n')}`,
+          content: response.data.data.response,
           timestamp: new Date(),
-          messageType: 'analysis',
-          data: analysisData,
-          actions: [
-            {
-              id: 'export_analysis',
-              label: 'Export PDF',
-              type: 'download',
-              action: () => toast.success('Analysis exported as PDF'),
-              icon: <Download className="w-4 h-4" />
-            },
-            {
-              id: 'share_analysis',
-              label: 'Share',
-              type: 'button',
-              action: () => {
-                navigator.clipboard.writeText(`Match Analysis: ${analysisData.teams.home} vs ${analysisData.teams.away}`);
-                toast.success('Analysis link copied to clipboard');
-              },
-              icon: <Share2 className="w-4 h-4" />
-            }
-          ]
+          messageType: 'text'
         };
-      }
-      // Handle player statistics
-      else if (lowerMessage.includes('stats') || lowerMessage.includes('statistics') || lowerMessage.includes('player')) {
-        const playerName = extractPlayerName(message) || 'Lionel Messi';
-        response = {
-          id: `stats_${Date.now()}`,
-          type: 'bot',
-          content: `📊 **${playerName} - Current Season Stats**
 
-**Performance Metrics:**
-⚽ Goals: 15 (0.8 per game)
-🎯 Assists: 12 (0.6 per game)  
-📈 Rating: 8.7/10
-🏃 Minutes: 1,350 (90% of available)
-
-**Advanced Stats:**
-• Shot Accuracy: 78%
-• Pass Completion: 89%
-• Key Passes: 3.2 per game
-• Dribbles: 4.1 per game (68% success)
-
-**Form Analysis:**
-📈 Last 5 games: 4 goals, 3 assists
-🔥 Current form: Excellent
-📊 Consistency: 85%
-
-**Comparison:**
-Performing 15% above season average
-Top 3 in league for creativity metrics`,
-          timestamp: new Date(),
-          messageType: 'stats',
-          data: { playerName, stats: { goals: 15, assists: 12, rating: 8.7 } },
-          actions: [
-            {
-              id: 'compare_players',
-              label: 'Compare Players',
-              type: 'button',
-              action: () => setInputValue(`Compare ${playerName} with `),
-              icon: <Users className="w-4 h-4" />
-            },
-            {
-              id: 'player_analysis',
-              label: 'Deep Analysis',
-              type: 'button',
-              action: () => setInputValue(`Detailed analysis of ${playerName} performance`),
-              icon: <TrendingUp className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      // Handle predictions
-      else if (lowerMessage.includes('predict') || lowerMessage.includes('prediction') || lowerMessage.includes('forecast')) {
-        const teams = extractTeamNames(message);
-        response = {
-          id: `prediction_${Date.now()}`,
-          type: 'bot',
-          content: `🔮 **Match Prediction Analysis**
-
-**${teams.home || 'Team A'} vs ${teams.away || 'Team B'}**
-
-**Prediction Model Results:**
-🏆 **Most Likely Outcome:** ${teams.home || 'Team A'} Win (65%)
-📊 **Probability Breakdown:**
-• ${teams.home || 'Team A'} Win: 65%
-• Draw: 22%  
-• ${teams.away || 'Team B'} Win: 13%
-
-**Key Factors:**
-✅ Home advantage (+15%)
-✅ Recent form (+20%)
-✅ Head-to-head record (+10%)
-⚠️ Key player injuries (-5%)
-
-**Score Prediction:** 2-1
-**Confidence Level:** 78%
-
-**Betting Insights:**
-• Over 2.5 Goals: 72% probability
-• Both Teams to Score: 68%
-• First Goal: ${teams.home || 'Team A'} (58%)`,
-          timestamp: new Date(),
-          messageType: 'analysis',
-          actions: [
-            {
-              id: 'detailed_prediction',
-              label: 'Detailed Analysis',
-              type: 'button',
-              action: () => setInputValue('Detailed prediction analysis with player impact'),
-              icon: <Target className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      // Handle tactical questions
-      else if (lowerMessage.includes('tactical') || lowerMessage.includes('formation') || lowerMessage.includes('strategy')) {
-        response = {
-          id: `tactical_${Date.now()}`,
-          type: 'bot',
-          content: `🎯 **Tactical Analysis**
-
-**Formation Breakdown:**
-📐 **4-3-3 Formation Analysis**
-
-**Strengths:**
-✅ Width in attack through wingers
-✅ Midfield control with 3 players
-✅ High pressing capability
-✅ Flexible attacking patterns
-
-**Weaknesses:**
-⚠️ Vulnerable to counter-attacks
-⚠️ Requires high work rate from wingers
-⚠️ Can be outnumbered in midfield vs 4-4-2
-
-**Key Tactical Principles:**
-• Maintain possession through midfield triangle
-• Create overloads on flanks
-• Press high to win ball in final third
-• Quick transitions from defense to attack
-
-**Player Roles:**
-🥅 GK: Sweeper-keeper
-🛡️ CB: Ball-playing defenders
-⚡ FB: Attacking fullbacks
-🎯 CM: Box-to-box midfielder
-🎨 AM: Creative playmaker
-⚽ W: Inside forwards`,
-          timestamp: new Date(),
-          messageType: 'analysis',
-          actions: [
-            {
-              id: 'formation_comparison',
-              label: 'Compare Formations',
-              type: 'button',
-              action: () => setInputValue('Compare 4-3-3 vs 4-2-3-1 formations'),
-              icon: <Activity className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      // Handle help requests
-      else if (lowerMessage.includes('help') || lowerMessage.includes('tutorial') || lowerMessage.includes('how')) {
-        response = {
-          id: `help_${Date.now()}`,
-          type: 'bot',
-          content: `🤖 **Football Analysis Assistant Help**
-
-**What I can do for you:**
-
-🔍 **Match Analysis**
-• "Analyze Real Madrid vs Barcelona"
-• "Breakdown of yesterday's El Clasico"
-• "Tactical analysis of Liverpool vs City"
-
-📊 **Player Statistics**  
-• "Show me Messi's stats"
-• "Compare Ronaldo and Messi"
-• "Haaland performance this season"
-
-🎯 **Tactical Insights**
-• "Explain 4-3-3 formation"
-• "Best formation against high press"
-• "Tactical trends in modern football"
-
-🔮 **Predictions**
-• "Predict Arsenal vs Chelsea"
-• "Who will win the Champions League"
-• "Transfer predictions for summer"
-
-💡 **Suggestions**
-• "I suggest adding player heat maps"
-• "Improve the statistics dashboard"
-
-**Pro Tips:**
-✨ Be specific with team/player names
-🎯 Ask follow-up questions for deeper analysis
-📊 Request exports for detailed reports
-🔄 Rate my responses to improve accuracy`,
-          timestamp: new Date(),
-          messageType: 'tutorial',
-          actions: [
-            {
-              id: 'start_tutorial',
-              label: 'Interactive Tutorial',
-              type: 'button',
-              action: () => setShowTutorial(true),
-              icon: <HelpCircle className="w-4 h-4" />
-            },
-            {
-              id: 'example_analysis',
-              label: 'Try Example',
-              type: 'button',
-              action: () => setInputValue('Analyze Manchester City vs Liverpool'),
-              icon: <Zap className="w-4 h-4" />
-            }
-          ]
-        };
-      }
-      // Default intelligent response
-      else {
-        response = {
-          id: `response_${Date.now()}`,
-          type: 'bot',
-          content: `🤔 I understand you're asking about "${message}".
-
-As your football analysis assistant, I can help you with:
-
-⚽ **Match Analysis** - Detailed breakdowns of games
-📊 **Player Statistics** - Performance metrics and comparisons  
-🎯 **Tactical Insights** - Formation analysis and strategies
-🔮 **Predictions** - Match outcomes and trends
-💡 **Platform Suggestions** - Ideas to improve Statsor
-
-**Try asking:**
-• "Analyze the latest El Clasico"
-• "Show me Mbappé's stats"
-• "Predict Real Madrid vs PSG"
-• "I suggest adding player heat maps"
-
-What specific football topic interests you most?`,
-          timestamp: new Date(),
-          messageType: 'text',
-          actions: [
-            {
-              id: 'suggest_analysis',
-              label: 'Analyze Match',
-              type: 'button',
-              action: () => setInputValue('Analyze latest Champions League match'),
-              icon: <BarChart3 className="w-4 h-4" />
-            },
-            {
-              id: 'suggest_stats',
-              label: 'Player Stats',
-              type: 'button',
-              action: () => setInputValue('Show me top scorer statistics'),
-              icon: <Users className="w-4 h-4" />
-            },
-            {
-              id: 'make_suggestion',
-              label: 'Make Suggestion',
-              type: 'button',
-              action: () => setInputValue('I suggest '),
-              icon: <Star className="w-4 h-4" />
-            }
-          ]
-        };
+        setMessages(prev => [...prev, botResponse]);
       }
     } catch (error) {
-      response = {
+      const errorResponse: ChatMessage = {
         id: `error_${Date.now()}`,
         type: 'bot',
         content: 'I apologize, but I encountered an error processing your request. Please try again or ask me something else about football analysis.',
         timestamp: new Date(),
         messageType: 'text'
       };
+      setMessages(prev => [...prev, errorResponse]);
     }
 
-    setMessages(prev => [...prev, response]);
     setIsTyping(false);
     setIsLoading(false);
     playNotificationSound();

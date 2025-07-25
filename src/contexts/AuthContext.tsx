@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { mockAuth } from '@/lib/supabase'
+import { authAPI } from '@/lib/api'
 
 interface UserProfile {
   id: string
@@ -13,6 +13,8 @@ interface UserProfile {
   created_at?: string
   location?: string
   provider: 'google' | 'email'
+  sport?: 'soccer' | 'futsal'
+  sportSelected?: boolean
 }
 
 interface AuthContextType {
@@ -24,6 +26,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<any>
   signInWithGoogle: () => Promise<any>
   signOut: () => Promise<any>
+  updateSportPreference: (sport: 'soccer' | 'futsal') => Promise<any>
   completeOnboarding: () => void
   skipOnboarding: () => void
 }
@@ -36,28 +39,6 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
-}
-
-// Mock Google Sign-In response with comprehensive user data
-const mockGoogleSignIn = async (): Promise<UserProfile> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1500))
-  
-  const mockGoogleUser: UserProfile = {
-    id: 'google_' + Math.random().toString(36).substr(2, 9),
-    email: 'coach@example.com',
-    name: 'Carlos Rodriguez',
-    given_name: 'Carlos',
-    family_name: 'Rodriguez',
-    picture: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-    locale: 'es',
-    verified_email: true,
-    created_at: new Date().toISOString(),
-    location: 'Madrid, Spain',
-    provider: 'google'
-  }
-  
-  return mockGoogleUser
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -80,26 +61,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, additionalData?: any) => {
     setLoading(true)
     try {
-      const result = await mockAuth.signUp(email, password)
-      if (result.data?.user) {
-        const userProfile: UserProfile = {
-          id: result.data.user.id,
-          email: result.data.user.email,
-          name: additionalData?.name || email.split('@')[0],
-          provider: 'email',
-          created_at: new Date().toISOString(),
-          verified_email: true,
-          location: additionalData?.location,
-          ...additionalData
-        }
-        
-        setUser(userProfile)
+      const response = await authAPI.register({
+        email,
+        password,
+        name: additionalData?.name || email.split('@')[0]
+      })
+      
+      if (response.data.success) {
+        const { user, token } = response.data.data
+        setUser(user)
         setIsNewUser(true)
         setHasCompletedOnboarding(false)
-        localStorage.setItem('statsor_user', JSON.stringify(userProfile))
+        localStorage.setItem('auth_token', token)
+        localStorage.setItem('statsor_user', JSON.stringify(user))
         localStorage.removeItem('statsor_onboarding_completed')
+        return { data: { user }, error: null }
       }
-      return result
+      return { data: null, error: response.data.message }
     } finally {
       setLoading(false)
     }
@@ -108,24 +86,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     setLoading(true)
     try {
-      const result = await mockAuth.signIn(email, password)
-      if (result.data?.user) {
-        const userProfile: UserProfile = {
-          id: result.data.user.id,
-          email: result.data.user.email,
-          name: email.split('@')[0],
-          provider: 'email',
-          created_at: new Date().toISOString(),
-          verified_email: true
-        }
-        
-        setUser(userProfile)
+      const response = await authAPI.login({ email, password })
+      
+      if (response.data.success) {
+        const { user, token } = response.data.data
+        setUser(user)
         setIsNewUser(false)
         const onboardingStatus = localStorage.getItem('statsor_onboarding_completed')
         setHasCompletedOnboarding(onboardingStatus === 'true')
-        localStorage.setItem('statsor_user', JSON.stringify(userProfile))
+        localStorage.setItem('auth_token', token)
+        localStorage.setItem('statsor_user', JSON.stringify(user))
+        return { data: { user }, error: null }
       }
-      return result
+      return { data: null, error: response.data.message }
     } finally {
       setLoading(false)
     }
@@ -134,30 +107,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     setLoading(true)
     try {
-      const userProfile = await mockGoogleSignIn()
-      
-      // Check if this is a returning user
-      const existingUsers = JSON.parse(localStorage.getItem('statsor_google_users') || '[]')
-      const existingUser = existingUsers.find((u: UserProfile) => u.email === userProfile.email)
-      
-      if (!existingUser) {
-        // New Google user
-        existingUsers.push(userProfile)
-        localStorage.setItem('statsor_google_users', JSON.stringify(existingUsers))
-        setIsNewUser(true)
-        setHasCompletedOnboarding(false)
-        localStorage.removeItem('statsor_onboarding_completed')
-      } else {
-        // Returning Google user
-        setIsNewUser(false)
-        const onboardingStatus = localStorage.getItem('statsor_onboarding_completed')
-        setHasCompletedOnboarding(onboardingStatus === 'true')
-      }
-      
-      setUser(userProfile)
-      localStorage.setItem('statsor_user', JSON.stringify(userProfile))
-      
-      return { data: { user: userProfile }, error: null }
+      authAPI.googleAuth()
+      return { data: null, error: null }
     } catch (error) {
       return { data: null, error }
     } finally {
@@ -168,14 +119,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     setLoading(true)
     try {
-      await mockAuth.signOut()
+      await authAPI.logout()
       setUser(null)
       setIsNewUser(false)
       setHasCompletedOnboarding(false)
+      localStorage.removeItem('auth_token')
       localStorage.removeItem('statsor_user')
       return { error: null }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const updateSportPreference = async (sport: 'soccer' | 'futsal') => {
+    try {
+      const response = await authAPI.updateSportPreference(sport)
+      if (response.data.success) {
+        const updatedUser = { ...user, sport, sportSelected: true }
+        setUser(updatedUser)
+        localStorage.setItem('statsor_user', JSON.stringify(updatedUser))
+        return { data: { user: updatedUser }, error: null }
+      }
+      return { data: null, error: response.data.message }
+    } catch (error: any) {
+      return { data: null, error: error.message }
     }
   }
 
@@ -200,6 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signInWithGoogle,
     signOut,
+    updateSportPreference,
     completeOnboarding,
     skipOnboarding,
   }
