@@ -22,6 +22,7 @@ import {
   Sliders,
   MessageCircle,
   TrendingUp,
+  Users as UsersIcon
   Menu,
   ChevronLeft,
   ChevronRight
@@ -48,6 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: '/command-table', icon: Sliders, label: t('sidebar.command.table') },
     { path: '/tactical-chat', icon: MessageCircle, label: t('sidebar.tactical.chat') },
     { path: '/advanced-analytics', icon: TrendingUp, label: t('sidebar.advanced.analytics') },
+    { path: '/community', icon: UsersIcon, label: 'Community Hub' },
     { path: '/database-status', icon: Database, label: t('sidebar.database.status') },
   ];
 

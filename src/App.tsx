@@ -28,6 +28,7 @@ import ManualActions from "./pages/ManualActions";
 import CommandTable from "./pages/CommandTable";
 import TacticalChat from "./pages/TacticalChat";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
+import CommunityHub from "./pages/CommunityHub";
 import DatabaseStatusPage from "./pages/DatabaseStatusPage";
 
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ const queryClient = new QueryClient({
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const [showSportSelection, setShowSportSelection] = useState(false);
   const { sport, isFirstTime } = useSport();
   const [showSportSelection, setShowSportSelection] = useState(false);
   
@@ -159,6 +161,14 @@ const App = () => (
                         element={
                           <ProtectedRoute>
                             <AdvancedAnalytics />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/community" 
+                        element={
+                          <ProtectedRoute>
+                            <CommunityHub />
                           </ProtectedRoute>
                         } 
                       />

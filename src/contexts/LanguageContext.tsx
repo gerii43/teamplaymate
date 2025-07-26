@@ -457,6 +457,21 @@ const translations = {
     'action.time_out': 'Tiempo muerto',
     'action.flying_goalkeeper': 'Portero volante',
     'action.offside': 'Fuera de juego',
+    
+    // Community Hub
+    'community.hub': 'Centro de Comunidad',
+    'community.verification': 'Verificación de Jugadores',
+    'community.live.threads': 'Hilos en Vivo',
+    'community.skill.swap': 'Intercambio de Habilidades',
+    'community.reputation': 'Sistema de Reputación',
+    'community.verified.player': 'Jugador Verificado',
+    'community.pending.verification': 'Verificación Pendiente',
+    'community.reputation.score': 'Puntuación de Reputación',
+    'community.badges.earned': 'Insignias Obtenidas',
+    'community.contributions': 'Contribuciones',
+    'community.helpful.votes': 'Votos Útiles',
+    'community.skill.offering': 'Ofreciendo',
+    'community.skill.seeking': 'Buscando',
   },
   en: {
     // Navigation
@@ -889,6 +904,21 @@ const translations = {
     'action.time_out': 'Time out',
     'action.flying_goalkeeper': 'Flying goalkeeper',
     'action.offside': 'Offside',
+    
+    // Community Hub
+    'community.hub': 'Community Hub',
+    'community.verification': 'Player Verification',
+    'community.live.threads': 'Live Threads',
+    'community.skill.swap': 'Skill Swap',
+    'community.reputation': 'Reputation System',
+    'community.verified.player': 'Verified Player',
+    'community.pending.verification': 'Pending Verification',
+    'community.reputation.score': 'Reputation Score',
+    'community.badges.earned': 'Badges Earned',
+    'community.contributions': 'Contributions',
+    'community.helpful.votes': 'Helpful Votes',
+    'community.skill.offering': 'Offering',
+    'community.skill.seeking': 'Seeking',
   }
 };
 
