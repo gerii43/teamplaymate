@@ -5,22 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  MessageCircle, 
-  Send, 
-  Camera, 
-  MapPin, 
-  Users, 
-  Clock,
-  Heart,
-  Fire,
-  ThumbsUp,
-  Flag,
-  Image as ImageIcon,
-  Video,
-  Mic,
-  MoreHorizontal
-} from 'lucide-react';
+import { MessageCircle, Send, Camera, MapPin, Users, Clock, Heart, Siren as Fire, ThumbsUp, Flag, Image as ImageIcon, Video, Mic, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
