@@ -38,7 +38,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { chatbotAPI } from '@/lib/api';
+import { api } from '@/lib/api';
 
 interface ChatMessage {
   id: string;
@@ -138,7 +138,7 @@ Just type naturally - I understand football language! What would you like to exp
 
   const sendSuggestionEmail = async (suggestion: string, userInfo: any) => {
     try {
-      const response = await chatbotAPI.sendMessage(suggestion, { type: 'suggestion' });
+      const response = await api.chatbot.sendMessage(suggestion, { type: 'suggestion' });
       return { success: response.data.success };
     } catch (error) {
       console.error('Failed to send suggestion email:', error);
@@ -179,7 +179,7 @@ Just type naturally - I understand football language! What would you like to exp
     setIsTyping(true);
 
     try {
-      const response = await chatbotAPI.sendMessage(message, {
+      const response = await api.chatbot.sendMessage(message, {
         sport: sport || 'soccer',
         userId: user?.id,
         timestamp: new Date().toISOString()
