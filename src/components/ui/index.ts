@@ -1,6 +1,7 @@
 // UI Components index file
 
 // Export all UI components for easy importing
+export * from "./avatar";
 export * from "./badge";
 export * from "./button";
 export * from "./calendar";
