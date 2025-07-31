@@ -84,4 +84,51 @@ export const api = {
   health: `${API_BASE_URL}/api/health`,
 };
 
+// Auth API functions
+export const authAPI = {
+  register: async (data: any) => {
+    try {
+      const response = await axios.post(api.auth.register, data);
+      return response;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  },
+  
+  login: async (data: any) => {
+    try {
+      const response = await axios.post(api.auth.login, data);
+      return response;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  },
+  
+  verifyGoogleToken: async (token: string) => {
+    try {
+      const response = await axios.post(api.auth.google, { token });
+      return response;
+    } catch (error) {
+      console.error('Google auth error:', error);
+      throw error;
+    }
+  },
+  
+  updateSportPreference: async (sport: string) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await axios.post(`${api.baseURL}/api/auth/sport-preference`, 
+        { sport }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return response;
+    } catch (error) {
+      console.error('Sport preference update error:', error);
+      throw error;
+    }
+  }
+};
+
 export default api;
