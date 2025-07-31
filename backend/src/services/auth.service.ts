@@ -201,6 +201,27 @@ export class AuthService {
     }
   }
 
+  async refreshToken(refreshToken: string): Promise<{ user: User; token: string }> {
+    try {
+      // Verify the refresh token
+      const decoded = jwt.verify(refreshToken, config.jwt.secret) as any;
+      const user = await this.findUserById(decoded.userId);
+      
+      if (!user) {
+        throw new Error('Invalid refresh token');
+      }
+
+      // Generate new token
+      const newToken = this.generateToken(user);
+
+      logger.info(`Token refreshed for user: ${user.email}`);
+      return { user, token: newToken };
+    } catch (error) {
+      logger.error('Token refresh error:', error);
+      throw error;
+    }
+  }
+
   private async createUser(userData: CreateUserDto): Promise<User> {
     const user: User = {
       id: uuidv4(),
@@ -233,7 +254,7 @@ export class AuthService {
     return jwt.sign(
       { userId: user.id, email: user.email },
       config.jwt.secret,
-      { expiresIn: config.jwt.expiresIn }
+      { expiresIn: config.jwt.expiresIn as string }
     );
   }
 }

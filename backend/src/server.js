@@ -7,15 +7,25 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import passport from 'passport';
+import { supabase } from './config/supabase.js';
 
 // Import services and routes
 import { initEmailService } from './services/enhancedEmailService.js';
 import enhancedSocketService from './services/enhancedSocketService.js';
 import aiService from './services/enhancedAiService.js';
 
-// Import routes
-import enhancedAuthRoutes from './routes/enhancedAuth.js';
-import enhancedFeedbackRoutes from './routes/enhancedFeedback.js';
+// Import routes - temporarily commented out
+// import enhancedAuthRoutes from './routes/enhancedAuth.js';
+// import enhancedFeedbackRoutes from './routes/enhancedFeedback.js';
+// import chatbotRoutes from './routes/chatbot.routes.js';
+// import apiRoutes from './routes/api.routes.js';
+// import teamsRoutes from './routes/teams.routes.js';
+// import playersRoutes from './routes/players.routes.js';
+// import matchesRoutes from './routes/matches.routes.js';
+// import subscriptionRoutes from './routes/subscription.routes.js';
+// import uploadRoutes from './routes/upload.routes.js';
+// import analyticsRoutes from './routes/analytics.routes.js';
+// import userRoutes from './routes/user.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -65,7 +75,7 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+  origin: process.env.FRONTEND_URL || 'https://statsor.com',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -114,27 +124,41 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  const socketStats = enhancedSocketService.getStats();
-  
+// Simple test route
+app.get('/api/test', (req, res) => {
   res.json({
-    status: 'healthy',
+    success: true,
+    message: 'Server is running!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    version: process.env.npm_package_version || '1.0.0',
-    services: {
-      email: 'active',
-      socket: 'active',
-      ai: 'active'
-    },
-    connections: socketStats
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
 // API Routes
-app.use('/api/auth', enhancedAuthRoutes);
-app.use('/api/feedback', enhancedFeedbackRoutes);
+// app.use('/api/auth', enhancedAuthRoutes);
+// app.use('/api/feedback', enhancedFeedbackRoutes);
+// app.use('/api/chatbot', chatbotRoutes);
+
+// Main API routes
+// app.use('/api', apiRoutes);
+
+// Individual service routes
+// app.use('/api/teams', teamsRoutes);
+// app.use('/api/players', playersRoutes);
+// app.use('/api/matches', matchesRoutes);
+// app.use('/api/subscriptions', subscriptionRoutes);
+// app.use('/api/upload', uploadRoutes);
+// app.use('/api/analytics', analyticsRoutes);
+// app.use('/api/user', userRoutes);
 
 // Chatbot endpoint
 app.post('/api/chat', async (req, res) => {

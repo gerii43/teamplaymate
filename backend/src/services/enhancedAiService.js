@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { supabase } from '../config/supabase.js';
 
 class EnhancedAIService {
   constructor() {
@@ -11,72 +12,233 @@ class EnhancedAIService {
       openrouter: {
         url: 'https://openrouter.ai/api/v1/chat/completions',
         apiKey: process.env.OPENROUTER_API_KEY,
-        model: 'deepseek/deepseek-chat'
+        model: 'anthropic/claude-3.5-sonnet'
       },
       groq: {
         url: 'https://api.groq.com/openai/v1/chat/completions',
         apiKey: process.env.GROQ_API_KEY,
-        model: 'mixtral-8x7b-32768'
+        model: 'llama3-70b-8192'
       }
     };
     
     this.cache = new Map();
-    this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+    this.cacheTimeout = 10 * 60 * 1000; // 10 minutes
+    this.conversationHistory = new Map(); // Store conversation context per user
   }
 
   async chat(userId, message, context = {}) {
     try {
-      // Check cache first
-      const cacheKey = `${userId}:${message}`;
-      const cached = this.cache.get(cacheKey);
+      console.log(`🤖 Processing chat for user ${userId}: "${message}"`);
+
+      // Get comprehensive user context
+      const userContext = await this.getComprehensiveUserContext(userId);
       
-      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-        console.log('✅ Cache hit for AI response');
-        return cached.response;
+      // Check if user is asking for internet search
+      if (this.needsInternetSearch(message)) {
+        const searchResults = await this.performInternetSearch(message);
+        context.searchResults = searchResults;
       }
 
-      // Get user context from database
-      const userContext = await this.getUserContext(userId);
+      // Build enhanced, human-like prompt
+      const enhancedPrompt = this.buildHumanLikePrompt(message, userContext, context);
       
-      // Build enhanced prompt
-      const enhancedPrompt = this.buildPrompt(message, userContext, context);
+      // Get AI response with personality
+      const response = await this.getAIResponseWithPersonality(enhancedPrompt, userId);
       
-      // Try providers in order with fallback
-      let response = null;
-      const providers = ['deepseek', 'openrouter', 'groq'];
+      // Save conversation for context
+      await this.saveConversationContext(userId, message, response, context);
       
-      for (const provider of providers) {
-        try {
-          response = await this.callProvider(provider, enhancedPrompt);
-          console.log(`✅ AI response from ${provider}`);
-          break;
-        } catch (error) {
-          console.warn(`⚠️ ${provider} failed, trying next provider:`, error.message);
-          continue;
-        }
-      }
-
-      if (!response) {
-        throw new Error('All AI providers failed');
-      }
-
-      // Cache the response
-      this.cache.set(cacheKey, {
-        response: response,
-        timestamp: Date.now()
-      });
-
-      // Save conversation to database
+      // Save to database
       await this.saveConversation(userId, message, response, context);
 
       return response;
 
     } catch (error) {
       console.error('❌ AI chat error:', error);
-      
-      // Return fallback response
-      return this.getFallbackResponse(message, context);
+      return this.getHumanFallbackResponse(message, context);
     }
+  }
+
+  async getComprehensiveUserContext(userId) {
+    try {
+      // Get user profile
+      const { data: user } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      // Get user's teams
+      const { data: teams } = await supabase
+        .from('teams')
+        .select(`
+          *,
+          players(*)
+        `)
+        .eq('coach_id', userId);
+
+      // Get recent matches
+      const { data: recentMatches } = await supabase
+        .from('matches')
+        .select(`
+          *,
+          home_team:teams!matches_home_team_id_fkey(name),
+          away_team:teams!matches_away_team_id_fkey(name)
+        `)
+        .or(`home_team_id.in.(${teams?.map(t => t.id).join(',')}),away_team_id.in.(${teams?.map(t => t.id).join(',')})`)
+        .order('date', { ascending: false })
+        .limit(10);
+
+      // Get today's attendance
+      const today = new Date().toISOString().split('T')[0];
+      const { data: todayAttendance } = await supabase
+        .from('attendance')
+        .select('*')
+        .eq('date', today)
+        .in('player_id', teams?.flatMap(t => t.players?.map(p => p.id) || []) || []);
+
+      // Get upcoming events
+      const { data: upcomingEvents } = await supabase
+        .from('matches')
+        .select('*')
+        .gte('date', new Date().toISOString())
+        .or(`home_team_id.in.(${teams?.map(t => t.id).join(',')}),away_team_id.in.(${teams?.map(t => t.id).join(',')})`)
+        .order('date', { ascending: true })
+        .limit(5);
+
+      // Get user's chat history for context
+      const { data: chatHistory } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('user_id', userId)
+        .order('timestamp', { ascending: false })
+        .limit(5);
+
+      return {
+        user: user || {},
+        teams: teams || [],
+        recentMatches: recentMatches || [],
+        todayAttendance: todayAttendance || [],
+        upcomingEvents: upcomingEvents || [],
+        chatHistory: chatHistory || [],
+        currentDate: new Date().toISOString(),
+        userPreferences: user?.preferences || {}
+      };
+
+    } catch (error) {
+      console.error('Error getting user context:', error);
+      return { user: {}, teams: [], recentMatches: [], todayAttendance: [], upcomingEvents: [], chatHistory: [] };
+    }
+  }
+
+  needsInternetSearch(message) {
+    const searchKeywords = [
+      'latest', 'news', 'update', 'recent', 'today', 'current', 'live', 'score',
+      'transfer', 'injury', 'suspension', 'weather', 'forecast', 'statistics',
+      'rankings', 'league table', 'championship', 'cup', 'tournament'
+    ];
+    
+    const lowerMessage = message.toLowerCase();
+    return searchKeywords.some(keyword => lowerMessage.includes(keyword));
+  }
+
+  async performInternetSearch(query) {
+    try {
+      // Use a search API (you can integrate with Google Custom Search, Bing, or DuckDuckGo)
+      const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`;
+      
+      const response = await axios.get(searchUrl, {
+        timeout: 5000
+      });
+
+      return {
+        query: query,
+        results: response.data?.AbstractText || 'No search results found',
+        source: 'DuckDuckGo'
+      };
+
+    } catch (error) {
+      console.warn('Search failed, continuing without search results:', error);
+      return { query: query, results: 'Search temporarily unavailable', source: 'none' };
+    }
+  }
+
+  buildHumanLikePrompt(message, userContext, additionalContext) {
+    const userName = userContext.user?.name || 'Coach';
+    const userSport = userContext.user?.sport_preference || 'soccer';
+    const currentTime = new Date().toLocaleTimeString();
+    const currentDate = new Date().toLocaleDateString();
+
+    let prompt = `You are Alex, a friendly and knowledgeable football coach assistant. You're having a casual conversation with ${userName}, who coaches ${userSport}. 
+
+Current time: ${currentTime} on ${currentDate}
+
+Your personality:
+- Be warm, encouraging, and supportive like a trusted friend
+- Use casual, conversational language (avoid robotic responses)
+- Show genuine interest in their teams and players
+- Give practical, actionable advice
+- Use emojis occasionally to be more engaging
+- Reference their specific data when relevant
+- Be enthusiastic about football and coaching
+
+User's current situation:
+- Name: ${userName}
+- Sport: ${userSport}
+- Teams: ${userContext.teams.map(t => t.name).join(', ') || 'No teams yet'}
+- Recent matches: ${userContext.recentMatches.length} matches
+- Today's attendance: ${userContext.todayAttendance.length} players present
+- Upcoming events: ${userContext.upcomingEvents.length} scheduled
+
+User's question: "${message}"
+
+Please respond in a natural, conversational way. If they're asking about their data, provide specific insights. If they need advice, be encouraging and practical.`;
+
+    // Add specific context based on what they're asking about
+    if (message.toLowerCase().includes('attendance') || message.toLowerCase().includes('present')) {
+      prompt += `\n\nToday's attendance data: ${JSON.stringify(userContext.todayAttendance)}`;
+    }
+
+    if (message.toLowerCase().includes('match') || message.toLowerCase().includes('game')) {
+      prompt += `\n\nRecent matches: ${JSON.stringify(userContext.recentMatches.slice(0, 3))}`;
+    }
+
+    if (message.toLowerCase().includes('team') || message.toLowerCase().includes('player')) {
+      prompt += `\n\nTeams and players: ${JSON.stringify(userContext.teams)}`;
+    }
+
+    if (message.toLowerCase().includes('upcoming') || message.toLowerCase().includes('next')) {
+      prompt += `\n\nUpcoming events: ${JSON.stringify(userContext.upcomingEvents)}`;
+    }
+
+    if (additionalContext.searchResults) {
+      prompt += `\n\nInternet search results: ${JSON.stringify(additionalContext.searchResults)}`;
+    }
+
+    // Add conversation history for context
+    if (userContext.chatHistory.length > 0) {
+      prompt += `\n\nRecent conversation context: ${JSON.stringify(userContext.chatHistory.slice(0, 3))}`;
+    }
+
+    return prompt;
+  }
+
+  async getAIResponseWithPersonality(prompt, userId) {
+    // Try providers in order with fallback
+    const providers = ['deepseek', 'openrouter', 'groq'];
+    
+    for (const provider of providers) {
+      try {
+        const response = await this.callProvider(provider, prompt);
+        console.log(`✅ AI response from ${provider}`);
+        return this.addPersonalityTouches(response, userId);
+      } catch (error) {
+        console.warn(`⚠️ ${provider} failed, trying next provider:`, error.message);
+        continue;
+      }
+    }
+
+    throw new Error('All AI providers failed');
   }
 
   async callProvider(providerName, prompt) {
@@ -91,82 +253,81 @@ class EnhancedAIService {
       messages: [
         {
           role: 'system',
-          content: 'You are a professional football/soccer coach assistant. Provide tactical advice, training suggestions, and match analysis. Keep responses concise and actionable.'
+          content: 'You are Alex, a friendly football coach assistant. Be conversational, encouraging, and practical. Use emojis occasionally and reference specific user data when relevant.'
         },
         {
           role: 'user',
           content: prompt
         }
       ],
-      temperature: 0.7,
-      max_tokens: 500
+      temperature: 0.8, // Higher temperature for more creative responses
+      max_tokens: 800,
+      presence_penalty: 0.1, // Encourage more diverse responses
+      frequency_penalty: 0.1
     }, {
       headers: {
         'Authorization': `Bearer ${provider.apiKey}`,
         'Content-Type': 'application/json'
       },
-      timeout: 10000 // 10 second timeout
+      timeout: 15000 // 15 second timeout
     });
 
     return response.data.choices[0].message.content;
   }
 
-  buildPrompt(message, userContext, additionalContext) {
-    let prompt = `User Question: ${message}\n\n`;
+  addPersonalityTouches(response, userId) {
+    // Add occasional emojis and make it more human
+    let enhancedResponse = response;
     
-    if (userContext.sport) {
-      prompt += `Sport: ${userContext.sport}\n`;
+    // Add greeting variations
+    const greetings = ['Hey!', 'Hi there!', 'Hello!', 'Hey coach!'];
+    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+    
+    // Add encouraging phrases
+    const encouragements = [
+      'You\'re doing great!', 
+      'Keep up the excellent work!', 
+      'You\'ve got this!', 
+      'That\'s the spirit!'
+    ];
+    
+    // Add some personality based on time of day
+    const hour = new Date().getHours();
+    let timeGreeting = '';
+    if (hour < 12) timeGreeting = 'Good morning! ';
+    else if (hour < 17) timeGreeting = 'Good afternoon! ';
+    else timeGreeting = 'Good evening! ';
+    
+    // Randomly add personality touches
+    if (Math.random() < 0.3) {
+      enhancedResponse = `${timeGreeting}${enhancedResponse}`;
     }
     
-    if (userContext.teams && userContext.teams.length > 0) {
-      prompt += `Teams: ${userContext.teams.map(t => t.name).join(', ')}\n`;
+    if (Math.random() < 0.2) {
+      enhancedResponse += ` ${encouragements[Math.floor(Math.random() * encouragements.length)]}`;
     }
     
-    if (userContext.recentMatches && userContext.recentMatches.length > 0) {
-      prompt += `Recent Matches: ${userContext.recentMatches.length} matches\n`;
-    }
-    
-    if (additionalContext.matchData) {
-      prompt += `Current Match Context: ${JSON.stringify(additionalContext.matchData)}\n`;
-    }
-    
-    prompt += '\nPlease provide a helpful, tactical response based on this context.';
-    
-    return prompt;
+    return enhancedResponse;
   }
 
-  async getUserContext(userId) {
+  async saveConversationContext(userId, message, response, context) {
     try {
-      // Get user data from Supabase
-      const { data: user } = await supabase
-        .from('users')
-        .select('sport, name')
-        .eq('id', userId)
-        .single();
-
-      // Get user's teams
-      const { data: teams } = await supabase
-        .from('teams')
-        .select('id, name, sport')
-        .eq('coach_id', userId);
-
-      // Get recent matches
-      const { data: matches } = await supabase
-        .from('matches')
-        .select('*')
-        .or(`home_team_id.in.(${teams?.map(t => t.id).join(',')}),away_team_id.in.(${teams?.map(t => t.id).join(',')})`)
-        .order('date', { ascending: false })
-        .limit(5);
-
-      return {
-        sport: user?.sport || 'soccer',
-        teams: teams || [],
-        recentMatches: matches || []
-      };
-
+      const conversation = this.conversationHistory.get(userId) || [];
+      conversation.push({
+        message,
+        response,
+        timestamp: new Date().toISOString(),
+        context: context
+      });
+      
+      // Keep only last 10 messages for context
+      if (conversation.length > 10) {
+        conversation.splice(0, conversation.length - 10);
+      }
+      
+      this.conversationHistory.set(userId, conversation);
     } catch (error) {
-      console.error('Error getting user context:', error);
-      return { sport: 'soccer', teams: [], recentMatches: [] };
+      console.error('Error saving conversation context:', error);
     }
   }
 
@@ -186,30 +347,38 @@ class EnhancedAIService {
     }
   }
 
-  getFallbackResponse(message, context) {
+  getHumanFallbackResponse(message, context) {
     const lowerMessage = message.toLowerCase();
     
-    if (lowerMessage.includes('formation')) {
-      return "For soccer, I recommend a 4-3-3 formation for balanced play. It provides good width in attack and stability in defense. For futsal, try a 2-2 formation with constant rotation.";
+    // Check for specific user data queries
+    if (lowerMessage.includes('attendance') || lowerMessage.includes('present')) {
+      return "Hey! I'd love to check your attendance data, but I'm having a moment. Can you try asking again in a few seconds? I'll make sure to pull up today's attendance info for you! 😊";
+    }
+    
+    if (lowerMessage.includes('match') || lowerMessage.includes('game')) {
+      return "I'd be happy to chat about your matches! Just give me a moment to access your match data. What specifically would you like to know about your recent games?";
+    }
+    
+    if (lowerMessage.includes('team') || lowerMessage.includes('player')) {
+      return "Your teams and players are important! Let me get that info for you. What would you like to know about your squad?";
+    }
+    
+    if (lowerMessage.includes('formation') || lowerMessage.includes('tactic')) {
+      return "Great question about tactics! For soccer, I'd recommend starting with a 4-3-3 for balanced play. It gives you good width in attack and stability in defense. Want to dive deeper into specific formations?";
     }
     
     if (lowerMessage.includes('training')) {
-      return "Focus on possession-based drills with quick passing. Set up small-sided games (7v7 for soccer, 3v3 for futsal) to improve decision-making under pressure.";
+      return "Training is key to success! I'd suggest focusing on possession-based drills with quick passing. Small-sided games (7v7 for soccer, 3v3 for futsal) are fantastic for improving decision-making under pressure. What's your current training focus?";
     }
     
-    if (lowerMessage.includes('tactic')) {
-      return "Key tactical principles: maintain team shape, press as a unit, and transition quickly between attack and defense. Adapt your approach based on the opponent's weaknesses.";
-    }
-    
-    return "I'm here to help with football tactics and strategy! Ask me about formations, training drills, match analysis, or tactical advice.";
+    return "Hey there! I'm here to help with all things football coaching! Ask me about your teams, matches, training, tactics, or anything else. I'm having a quick moment, but I'll be back to full speed in no time! ⚽";
   }
 
   // Analyze sentiment for feedback processing
   async analyzeSentiment(text) {
     try {
-      // Simple keyword-based sentiment analysis
-      const positiveWords = ['good', 'great', 'excellent', 'amazing', 'love', 'perfect', 'awesome'];
-      const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'worst', 'broken', 'useless'];
+      const positiveWords = ['good', 'great', 'excellent', 'amazing', 'love', 'perfect', 'awesome', 'fantastic', 'brilliant'];
+      const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'worst', 'broken', 'useless', 'disappointing', 'frustrated'];
       
       const words = text.toLowerCase().split(/\s+/);
       const positiveCount = words.filter(word => positiveWords.includes(word)).length;
@@ -226,6 +395,46 @@ class EnhancedAIService {
     } catch (error) {
       console.error('Sentiment analysis error:', error);
       return { score: 0, label: 'neutral', confidence: 0 };
+    }
+  }
+
+  // Get user-specific suggestions
+  async getUserSuggestions(userId) {
+    try {
+      const userContext = await this.getComprehensiveUserContext(userId);
+      
+      const suggestions = [];
+      
+      // Check attendance patterns
+      if (userContext.todayAttendance.length < userContext.teams.flatMap(t => t.players || []).length * 0.8) {
+        suggestions.push("📊 Attendance is a bit low today. Consider sending a motivational message to your players!");
+      }
+      
+      // Check upcoming matches
+      if (userContext.upcomingEvents.length > 0) {
+        const nextMatch = userContext.upcomingEvents[0];
+        suggestions.push(`⚽ You have a match coming up: ${nextMatch.home_team?.name || 'Home'} vs ${nextMatch.away_team?.name || 'Away'} on ${new Date(nextMatch.date).toLocaleDateString()}`);
+      }
+      
+      // Check recent performance
+      if (userContext.recentMatches.length > 0) {
+        const recentWins = userContext.recentMatches.filter(m => 
+          (m.home_team_id && userContext.teams.some(t => t.id === m.home_team_id) && m.home_score > m.away_score) ||
+          (m.away_team_id && userContext.teams.some(t => t.id === m.away_team_id) && m.away_score > m.home_score)
+        ).length;
+        
+        if (recentWins > userContext.recentMatches.length * 0.6) {
+          suggestions.push("🎉 Great recent form! Your team is performing well. Keep up the momentum!");
+        } else if (recentWins < userContext.recentMatches.length * 0.3) {
+          suggestions.push("💪 Tough recent results. Consider reviewing your tactics or having a team meeting to boost morale.");
+        }
+      }
+      
+      return suggestions;
+      
+    } catch (error) {
+      console.error('Error getting user suggestions:', error);
+      return [];
     }
   }
 

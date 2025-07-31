@@ -1,15 +1,19 @@
 import nodemailer from 'nodemailer';
 import handlebars from 'handlebars';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { config } from '../config/config';
-import { logger } from '../utils/logger';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter | null = null;
+  private templates: Map<string, HandlebarsTemplateDelegate> = new Map();
 
   constructor() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: config.email.smtp.host,
       port: config.email.smtp.port,
       secure: config.email.smtp.secure,
@@ -20,126 +24,121 @@ export class EmailService {
     });
   }
 
-  async sendWelcomeEmail(email: string, name: string): Promise<void> {
+  async initialize() {
     try {
-      const template = await this.loadTemplate('welcome');
-      const html = template({
-        name,
-        platformName: 'Statsor',
-        loginUrl: `${config.cors.origin}/signin`,
-        supportEmail: config.email.adminEmail
+      this.transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
       });
 
-      await this.transporter.sendMail({
-        from: config.email.from,
-        to: email,
-        subject: '¡Bienvenido a Statsor! / Welcome to Statsor!',
-        html
-      });
-
-      logger.info(`Welcome email sent to: ${email}`);
+      await this.loadTemplates();
+      console.log('✅ Email service initialized');
+      
     } catch (error) {
-      logger.error('Failed to send welcome email:', error);
-    }
-  }
-
-  async sendVerificationEmail(email: string, name: string, token: string): Promise<void> {
-    try {
-      const verificationUrl = `${config.cors.origin}/verify-email?token=${token}`;
-      const template = await this.loadTemplate('verification');
-      const html = template({
-        name,
-        verificationUrl,
-        platformName: 'Statsor'
-      });
-
-      await this.transporter.sendMail({
-        from: config.email.from,
-        to: email,
-        subject: 'Verifica tu email / Verify your email - Statsor',
-        html
-      });
-
-      logger.info(`Verification email sent to: ${email}`);
-    } catch (error) {
-      logger.error('Failed to send verification email:', error);
-    }
-  }
-
-  async sendFeedbackEmail(feedback: {
-    name: string;
-    email: string;
-    message: string;
-    rating?: number;
-    category: string;
-  }): Promise<void> {
-    try {
-      const template = await this.loadTemplate('feedback');
-      const html = template({
-        ...feedback,
-        timestamp: new Date().toISOString(),
-        platformName: 'Statsor'
-      });
-
-      await this.transporter.sendMail({
-        from: config.email.from,
-        to: config.email.adminEmail,
-        subject: `New Feedback from ${feedback.name} - Statsor`,
-        html,
-        replyTo: feedback.email
-      });
-
-      // Send confirmation to user
-      const confirmationTemplate = await this.loadTemplate('feedback-confirmation');
-      const confirmationHtml = confirmationTemplate({
-        name: feedback.name,
-        platformName: 'Statsor'
-      });
-
-      await this.transporter.sendMail({
-        from: config.email.from,
-        to: feedback.email,
-        subject: 'Gracias por tu feedback / Thank you for your feedback - Statsor',
-        html: confirmationHtml
-      });
-
-      logger.info(`Feedback email sent from: ${feedback.email}`);
-    } catch (error) {
-      logger.error('Failed to send feedback email:', error);
-    }
-  }
-
-  async sendPasswordResetEmail(email: string, name: string, resetToken: string): Promise<void> {
-    try {
-      const resetUrl = `${config.cors.origin}/reset-password?token=${resetToken}`;
-      const template = await this.loadTemplate('password-reset');
-      const html = template({
-        name,
-        resetUrl,
-        platformName: 'Statsor'
-      });
-
-      await this.transporter.sendMail({
-        from: config.email.from,
-        to: email,
-        subject: 'Restablece tu contraseña / Reset your password - Statsor',
-        html
-      });
-
-      logger.info(`Password reset email sent to: ${email}`);
-    } catch (error) {
-      logger.error('Failed to send password reset email:', error);
-    }
-  }
-
-  private async loadTemplate(templateName: string): Promise<HandlebarsTemplateDelegate> {
-    try {
-      const templatePath = path.join(__dirname, '../templates', `${templateName}.hbs`);
-      const templateSource = fs.readFileSync(templatePath, 'utf8');
-      return handlebars.compile(templateSource);
-    } catch (error) {
-      logger.error(`Failed to load template ${templateName}:`, error);
+      console.error('❌ Email service initialization failed:', error);
       throw error;
     }
   }
+
+  private async loadTemplates() {
+    try {
+      const templatesDir = path.join(__dirname, '../templates');
+      const templateFiles = await fs.readdir(templatesDir);
+      
+      for (const file of templateFiles) {
+        if (file.endsWith('.hbs')) {
+          const templateName = path.basename(file, '.hbs');
+          const templatePath = path.join(templatesDir, file);
+          const templateContent = await fs.readFile(templatePath, 'utf-8');
+          
+          this.templates.set(templateName, handlebars.compile(templateContent));
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Template loading failed, using fallbacks');
+      this.createFallbackTemplates();
+    }
+  }
+
+  private createFallbackTemplates() {
+    this.templates.set('welcome', handlebars.compile(`
+      <h1>Welcome to Statsor, {{name}}!</h1>
+      <p>Thank you for joining our football management platform.</p>
+      <p>Your sport preference: {{sport}}</p>
+    `));
+
+    this.templates.set('verification', handlebars.compile(`
+      <h1>Verify Your Email</h1>
+      <p>Click the link below to verify your email address:</p>
+      <a href="{{verificationUrl}}">Verify Email</a>
+    `));
+  }
+
+  async sendEmail(to: string, subject: string, templateName: string, data: any = {}) {
+    try {
+      if (!this.transporter) {
+        throw new Error('Email service not initialized');
+      }
+
+      const template = this.templates.get(templateName);
+      if (!template) {
+        throw new Error(`Template '${templateName}' not found`);
+      }
+
+      const html = template(data);
+      
+      const mailOptions = {
+        from: process.env.EMAIL_FROM || 'noreply@statsor.com',
+        to: to,
+        subject: subject,
+        html: html
+      };
+
+      const result = await this.transporter.sendMail(mailOptions);
+      console.log(`✅ Email sent to ${to}: ${subject}`);
+      return result;
+      
+    } catch (error) {
+      console.error('❌ Email sending failed:', error);
+      throw error;
+    }
+  }
+
+  async sendWelcomeEmail(email: string, sport: string, data: any = {}) {
+    return this.sendEmail(
+      email,
+      'Welcome to Statsor!',
+      'welcome',
+      { ...data, sport }
+    );
+  }
+
+  async sendVerificationEmail(email: string, verificationUrl: string, data: any = {}) {
+    return this.sendEmail(
+      email,
+      'Verify Your Email - Statsor',
+      'verification',
+      { ...data, verificationUrl }
+    );
+  }
+
+  async testConnection() {
+    try {
+      if (!this.transporter) {
+        throw new Error('Email service not initialized');
+      }
+      await this.transporter.verify();
+      return true;
+    } catch (error) {
+      console.error('❌ Email connection test failed:', error);
+      return false;
+    }
+  }
 }
+
+export default new EmailService();

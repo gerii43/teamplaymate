@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
-import { logger } from '../utils/logger';
 import { config } from '../config/config';
+import { logger } from '../utils/logger';
+
+// Extend Request interface to include user property
+interface AuthenticatedRequest extends Request {
+  user?: any;
+  logout?: (callback: (err: any) => void) => void;
+}
 
 export class AuthController {
   private authService: AuthService;
@@ -13,8 +19,8 @@ export class AuthController {
   register = async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password, name } = req.body;
-      
-      const result = await this.authService.register({
+
+      const user = await this.authService.register({
         email,
         password,
         name,
@@ -23,11 +29,8 @@ export class AuthController {
 
       res.status(201).json({
         success: true,
-        message: 'User registered successfully. Please check your email for verification.',
-        data: {
-          user: result.user,
-          token: result.token
-        }
+        message: 'User registered successfully',
+        data: { user }
       });
     } catch (error: any) {
       logger.error('Registration error:', error);
@@ -41,16 +44,13 @@ export class AuthController {
   login = async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
-      
-      const result = await this.authService.login(email, password);
+
+      const { user, token } = await this.authService.login(email, password);
 
       res.json({
         success: true,
         message: 'Login successful',
-        data: {
-          user: result.user,
-          token: result.token
-        }
+        data: { user, token }
       });
     } catch (error: any) {
       logger.error('Login error:', error);
@@ -61,12 +61,13 @@ export class AuthController {
     }
   };
 
-  googleCallback = async (req: Request, res: Response): Promise<void> => {
+  googleCallback = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
       const user = req.user as any;
       
       if (!user) {
-        return res.redirect(`${config.cors.origin}/signin?error=oauth_failed`);
+        res.redirect(`${config.cors.origin}/signin?error=oauth_failed`);
+        return;
       }
 
       // Generate token
@@ -93,10 +94,11 @@ export class AuthController {
       const { token } = req.query;
       
       if (!token) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message: 'Verification token is required'
         });
+        return;
       }
 
       const user = await this.authService.verifyEmail(token as string);
@@ -160,44 +162,53 @@ export class AuthController {
       const userId = (req as any).user?.id;
 
       if (!userId) {
-        return res.status(401).json({
+        res.status(401).json({
           success: false,
-          message: 'Authentication required'
+          message: 'User not authenticated'
         });
+        return;
       }
 
       const user = await this.authService.updateSportPreference(userId, sport);
 
       res.json({
         success: true,
-        message: 'Sport preference updated successfully',
+        message: 'Sport preference updated',
         data: { user }
       });
     } catch (error: any) {
-      logger.error('Sport preference update error:', error);
+      logger.error('Update sport preference error:', error);
       res.status(400).json({
         success: false,
-        message: error.message || 'Sport preference update failed'
+        message: error.message || 'Failed to update sport preference'
       });
     }
   };
 
-  logout = async (req: Request, res: Response): Promise<void> => {
+  logout = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
-      req.logout((err) => {
-        if (err) {
-          logger.error('Logout error:', err);
-          return res.status(500).json({
-            success: false,
-            message: 'Logout failed'
+      if (req.logout) {
+        req.logout((err) => {
+          if (err) {
+            logger.error('Logout error:', err);
+            res.status(500).json({
+              success: false,
+              message: 'Logout failed'
+            });
+            return;
+          }
+          
+          res.json({
+            success: true,
+            message: 'Logout successful'
           });
-        }
-
+        });
+      } else {
         res.json({
           success: true,
           message: 'Logout successful'
         });
-      });
+      }
     } catch (error: any) {
       logger.error('Logout error:', error);
       res.status(500).json({
@@ -209,16 +220,20 @@ export class AuthController {
 
   refreshToken = async (req: Request, res: Response): Promise<void> => {
     try {
-      // Implementation for token refresh
+      const { refreshToken } = req.body;
+
+      const { user, token } = await this.authService.refreshToken(refreshToken);
+
       res.json({
         success: true,
-        message: 'Token refreshed successfully'
+        message: 'Token refreshed successfully',
+        data: { user, token }
       });
     } catch (error: any) {
       logger.error('Token refresh error:', error);
       res.status(401).json({
         success: false,
-        message: 'Token refresh failed'
+        message: error.message || 'Token refresh failed'
       });
     }
   };

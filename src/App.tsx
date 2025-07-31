@@ -4,13 +4,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import React, { useState } from 'react';
-import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SportProvider, useSport } from "@/contexts/SportContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { DatabaseProvider } from "@/contexts/DatabaseContext";
 import { ChatbotProvider } from "@/components/ChatbotBackend";
 import { SportSelectionModal } from "@/components/SportSelectionModal";
+import ResponsiveLayout from "@/components/ResponsiveLayout";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
 import SelectSport from "./pages/SelectSport";
@@ -76,6 +78,7 @@ const App = () => (
                   <Toaster />
                   <Sonner />
                   <ThemeProvider>
+                    <SubscriptionProvider>
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/pricing" element={<Pricing />} />
@@ -89,7 +92,9 @@ const App = () => (
                         path="/dashboard" 
                         element={
                           <ProtectedRoute>
-                            <Dashboard />
+                            <ResponsiveLayout>
+                              <Dashboard />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -97,7 +102,9 @@ const App = () => (
                         path="/training" 
                         element={
                           <ProtectedRoute>
-                            <Training />
+                            <ResponsiveLayout>
+                              <Training />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -105,7 +112,9 @@ const App = () => (
                         path="/players" 
                         element={
                           <ProtectedRoute>
-                            <Players />
+                            <ResponsiveLayout>
+                              <Players />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -113,7 +122,9 @@ const App = () => (
                         path="/matches" 
                         element={
                           <ProtectedRoute>
-                            <Matches />
+                            <ResponsiveLayout>
+                              <Matches />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -121,7 +132,9 @@ const App = () => (
                         path="/general-stats" 
                         element={
                           <ProtectedRoute>
-                            <GeneralStats />
+                            <ResponsiveLayout>
+                              <GeneralStats />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -129,7 +142,9 @@ const App = () => (
                         path="/attendance" 
                         element={
                           <ProtectedRoute>
-                            <Attendance />
+                            <ResponsiveLayout>
+                              <Attendance />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -137,7 +152,9 @@ const App = () => (
                         path="/manual-actions" 
                         element={
                           <ProtectedRoute>
-                            <ManualActions />
+                            <ResponsiveLayout>
+                              <ManualActions />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -145,7 +162,9 @@ const App = () => (
                         path="/command-table" 
                         element={
                           <ProtectedRoute>
-                            <CommandTable />
+                            <ResponsiveLayout>
+                              <CommandTable />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -153,7 +172,9 @@ const App = () => (
                         path="/tactical-chat" 
                         element={
                           <ProtectedRoute>
-                            <TacticalChat />
+                            <ResponsiveLayout>
+                              <TacticalChat />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -161,7 +182,9 @@ const App = () => (
                         path="/advanced-analytics" 
                         element={
                           <ProtectedRoute>
-                            <AdvancedAnalytics />
+                            <ResponsiveLayout>
+                              <AdvancedAnalytics />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -169,7 +192,9 @@ const App = () => (
                         path="/community" 
                         element={
                           <ProtectedRoute>
-                            <CommunityHub />
+                            <ResponsiveLayout>
+                              <CommunityHub />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
@@ -177,11 +202,14 @@ const App = () => (
                         path="/database-status" 
                         element={
                           <ProtectedRoute>
-                            <DatabaseStatusPage />
+                            <ResponsiveLayout>
+                              <DatabaseStatusPage />
+                            </ResponsiveLayout>
                           </ProtectedRoute>
                         } 
                       />
                     </Routes>
+                    </SubscriptionProvider>
                   </ThemeProvider>
                 </TooltipProvider>
               </ChatbotProvider>

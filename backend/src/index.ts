@@ -1,191 +1,125 @@
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import passport from 'passport';
 import session from 'express-session';
-import RedisStore from 'connect-redis';
-import Redis from 'redis';
+import passport from 'passport';
+import { supabase } from './config/supabase.js';
 
-// Import configurations and middleware
-import { config } from './config/config';
-import { logger } from './utils/logger';
-import { errorHandler, notFoundHandler } from './middleware/error.middleware';
-import { rateLimitMiddleware } from './middleware/rateLimit.middleware';
-import { authMiddleware } from './middleware/auth.middleware';
-
-// Import routes
-import authRoutes from './routes/auth.routes';
-import userRoutes from './routes/user.routes';
-import teamRoutes from './routes/team.routes';
-import playerRoutes from './routes/player.routes';
-import matchRoutes from './routes/match.routes';
-import analyticsRoutes from './routes/analytics.routes';
-import chatbotRoutes from './routes/chatbot.routes';
-import paymentRoutes from './routes/payment.routes';
-import emailRoutes from './routes/email.routes';
-
-// Import services
-import { DatabaseService } from './services/database.service';
-import { EmailService } from './services/email.service';
-import { ChatbotService } from './services/chatbot.service';
-import { SocketService } from './services/socket.service';
+// Import services and routes
+import { initEmailService } from './services/enhancedEmailService.js';
+import enhancedSocketService from './services/enhancedSocketService.js';
+import aiService from './services/enhancedAiService.js';
 
 // Load environment variables
 dotenv.config();
 
-class App {
-  public app: express.Application;
-  public server: any;
-  public io: Server;
-  private databaseService: DatabaseService;
-  private emailService: EmailService;
-  private chatbotService: ChatbotService;
-  private socketService: SocketService;
+const app = express();
 
-  constructor() {
-    this.app = express();
-    this.server = createServer(this.app);
-    this.io = new Server(this.server, {
-      cors: {
-        origin: config.cors.origin,
-        methods: ['GET', 'POST']
-      }
-    });
-
-    this.initializeServices();
-    this.initializeMiddleware();
-    this.initializeRoutes();
-    this.initializeErrorHandling();
-  }
-
-  private async initializeServices(): Promise<void> {
-    try {
-      // Initialize database
-      this.databaseService = new DatabaseService();
-      await this.databaseService.initialize();
-
-      // Initialize email service
-      this.emailService = new EmailService();
-
-      // Initialize chatbot service with Puter.js and DeepSeek
-      this.chatbotService = new ChatbotService();
-      await this.chatbotService.initialize();
-
-      // Initialize socket service
-      this.socketService = new SocketService(this.io);
-
-      logger.info('All services initialized successfully');
-    } catch (error) {
-      logger.error('Failed to initialize services:', error);
-      process.exit(1);
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      scriptSrc: ["'self'", "https://js.stripe.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "https://api.stripe.com", "wss:", "ws:"]
     }
   }
+}));
 
-  private initializeMiddleware(): void {
-    // Security middleware
-    this.app.use(helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-          scriptSrc: ["'self'", "https://js.stripe.com"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          imgSrc: ["'self'", "data:", "https:", "blob:"],
-          connectSrc: ["'self'", "https://api.stripe.com", "wss:"]
-        }
-      }
-    }));
+// CORS configuration
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'https://statsor.com',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
-    // CORS
-    this.app.use(cors({
-      origin: config.cors.origin,
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
-    }));
+// General middleware
+app.use(compression());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(morgan('combined'));
 
-    // General middleware
-    this.app.use(compression());
-    this.app.use(express.json({ limit: '50mb' }));
-    this.app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-    this.app.use(morgan('combined'));
-
-    // Session configuration for OAuth
-    const redisClient = Redis.createClient({
-      url: config.redis.url
-    });
-
-    this.app.use(session({
-      store: new RedisStore({ client: redisClient }),
-      secret: config.session.secret,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: config.env === 'production',
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      }
-    }));
-
-    // Passport middleware
-    this.app.use(passport.initialize());
-    this.app.use(passport.session());
-
-    // Rate limiting
-    this.app.use(rateLimitMiddleware);
-
-    // File upload middleware
-    this.app.use('/uploads', express.static('uploads'));
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'statsor-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
+}));
 
-  private initializeRoutes(): void {
-    // Health check
-    this.app.get('/health', (req, res) => {
-      res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        version: process.env.npm_package_version || '2.0.0'
-      });
-    });
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
-    // API routes
-    this.app.use('/api/auth', authRoutes);
-    this.app.use('/api/users', authMiddleware, userRoutes);
-    this.app.use('/api/teams', authMiddleware, teamRoutes);
-    this.app.use('/api/players', authMiddleware, playerRoutes);
-    this.app.use('/api/matches', authMiddleware, matchRoutes);
-    this.app.use('/api/analytics', authMiddleware, analyticsRoutes);
-    this.app.use('/api/chatbot', authMiddleware, chatbotRoutes);
-    this.app.use('/api/payments', authMiddleware, paymentRoutes);
-    this.app.use('/api/email', emailRoutes);
+// Simple test route
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Statsor API is running!',
+    timestamp: new Date().toISOString()
+  });
+});
 
-    // Serve uploaded files
-    this.app.use('/uploads', express.static('uploads'));
-  }
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
-  private initializeErrorHandling(): void {
-    this.app.use(notFoundHandler);
-    this.app.use(errorHandler);
-  }
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: false,
+    error: 'Route / not found',
+    message: 'Use /api/health for health check'
+  });
+});
 
-  public listen(): void {
-    const port = config.port || 3000;
-    this.server.listen(port, () => {
-      logger.info(`🚀 Server running on port ${port}`);
-      logger.info(`📊 Environment: ${config.env}`);
-      logger.info(`🔗 Health check: http://localhost:${port}/health`);
-    });
-  }
-}
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error',
+    message: err.message
+  });
+});
 
-// Start the application
-const app = new App();
-app.listen();
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: `Route ${req.originalUrl} not found`
+  });
+});
 
+// For Vercel serverless functions
 export default app;
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const server = http.createServer(app);
+  const PORT = process.env.PORT || 3001;
+  
+  server.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+  });
+}
