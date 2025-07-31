@@ -37,8 +37,8 @@ class FootballAnalysisService {
   private baseUrl: string;
 
   constructor() {
-    this.apiKey = process.env.VITE_FOOTBALL_API_KEY || 'demo-key';
-    this.baseUrl = process.env.VITE_FOOTBALL_API_URL || 'https://api.football-data.org/v4';
+    this.apiKey = import.meta.env.VITE_FOOTBALL_API_KEY || 'demo-key';
+    this.baseUrl = import.meta.env.VITE_FOOTBALL_API_URL || 'https://api.football-data.org/v4';
   }
 
   async analyzeMatch(request: MatchAnalysisRequest) {

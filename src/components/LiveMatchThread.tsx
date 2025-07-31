@@ -57,7 +57,7 @@ export const LiveMatchThread: React.FC<LiveMatchThreadProps> = ({ matchId }) => 
     if (!user) return;
 
     try {
-      socketRef.current = io(process.env.VITE_BACKEND_URL || 'http://localhost:3000', {
+      socketRef.current = io(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000', {
         auth: {
           token: localStorage.getItem('auth_token')
         },
