@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 3006,
     host: true,
   },
   build: {
@@ -20,7 +20,7 @@ export default defineConfig({
     minify: 'terser',
   },
   define: {
-    'process.env.VITE_API_URL': JSON.stringify('https://api.statsor.com'),
-    'process.env.VITE_APP_URL': JSON.stringify('https://statsor.com')
+    'process.env.VITE_API_URL': JSON.stringify('http://localhost:3006'),
+    'process.env.VITE_APP_URL': JSON.stringify('http://localhost:3006')
   }
 })

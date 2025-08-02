@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SportProvider, useSport } from "@/contexts/SportContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+
 import { DatabaseProvider } from "@/contexts/DatabaseContext";
 import { ChatbotProvider } from "@/components/ChatbotBackend";
 import { SportSelectionModal } from "@/components/SportSelectionModal";
@@ -33,6 +33,9 @@ import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import CommunityHub from "./pages/CommunityHub";
 import DatabaseStatusPage from "./pages/DatabaseStatusPage";
 import GoogleCallback from "./pages/GoogleCallback";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
+import TestPage from "./pages/TestPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -78,7 +81,6 @@ const App = () => (
                   <Toaster />
                   <Sonner />
                   <ThemeProvider>
-                    <SubscriptionProvider>
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/pricing" element={<Pricing />} />
@@ -86,8 +88,11 @@ const App = () => (
                       <Route path="/blog" element={<Blog />} />
                       <Route path="/signin" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/test" element={<TestPage />} />
                       <Route path="/valorant" element={<ValorantAnalysis />} />
                       <Route path="/auth/google/callback" element={<GoogleCallback />} />
+                      <Route path="/payment/success" element={<PaymentSuccess />} />
+                      <Route path="/payment/cancel" element={<PaymentCancel />} />
                       <Route 
                         path="/dashboard" 
                         element={
@@ -209,7 +214,6 @@ const App = () => (
                         } 
                       />
                     </Routes>
-                    </SubscriptionProvider>
                   </ThemeProvider>
                 </TooltipProvider>
               </ChatbotProvider>

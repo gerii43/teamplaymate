@@ -1,374 +1,285 @@
 
-import { useState, useEffect } from "react";
-import { BarChart, Users, Calendar, Home, Trophy, TrendingUp, Activity } from "lucide-react";
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-
-const performanceData = [
-  { name: 'Ene', value: 65 },
-  { name: 'Feb', value: 59 },
-  { name: 'Mar', value: 80 },
-  { name: 'Abr', value: 71 },
-  { name: 'May', value: 56 },
-  { name: 'Jun', value: 78 },
-  { name: 'Jul', value: 85 }
-];
-
-const playerStatsData = [
-  { name: 'Goles', value: 12 },
-  { name: 'Asistencias', value: 8 },
-  { name: 'Tarjetas', value: 3 },
-  { name: 'Minutos', value: 1240 }
-];
-
-const matchData = [
-  { date: '15 Jul', opponent: 'FC Barcelona B', result: '2-1', location: 'Casa' },
-  { date: '22 Jul', opponent: 'Real Madrid C', result: '1-3', location: 'Fuera' },
-  { date: '29 Jul', opponent: 'Valencia CF B', result: '0-0', location: 'Casa' },
-  { date: '05 Ago', opponent: 'Atlético B', result: '3-0', location: 'Casa' }
-];
-
-const COLORS = ['#4ADE80', '#60A5FA', '#F59E0B', '#EF4444'];
-
-const menuItems = [
-  { id: 'inicio', title: 'Inicio', icon: Home },
-  { id: 'jugadores', title: 'Jugadores', icon: Users },
-  { id: 'estadisticas', title: 'Estadísticas', icon: BarChart },
-  { id: 'partidos', title: 'Partidos', icon: Calendar }
-];
+import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { 
+  Users, 
+  BarChart3, 
+  Calendar, 
+  Target, 
+  Trophy, 
+  TrendingUp,
+  Play,
+  Pause,
+  RotateCcw,
+  Settings,
+  Eye,
+  Download
+} from "lucide-react";
 
 export const InteractiveDemo = () => {
-  const [activeSection, setActiveSection] = useState('inicio');
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
-  // Auto-rotation functionality
-  useEffect(() => {
-    if (!isAutoRotating) return;
-    
-    const interval = setInterval(() => {
-      setActiveSection(current => {
-        const currentIndex = menuItems.findIndex(item => item.id === current);
-        const nextIndex = (currentIndex + 1) % menuItems.length;
-        return menuItems[nextIndex].id;
-      });
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isAutoRotating]);
-
-  const handleMenuClick = (sectionId: string) => {
-    setIsAutoRotating(false);
-    setActiveSection(sectionId);
-    // Resume auto-rotation after 10 seconds of no interaction
-    setTimeout(() => setIsAutoRotating(true), 10000);
-  };
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case 'inicio':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Vista general del equipo</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-gray-800">Rendimiento del equipo</h3>
-                  <span className="text-sm text-primary">Último mes</span>
-                </div>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsBarChart data={performanceData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="value" fill="#4ADE80" barSize={20} />
-                    </RechartsBarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              
-              <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-gray-800">Jugador destacado</h3>
-                  <span className="text-xs py-1 px-2 bg-green-100 text-green-800 rounded-full">En forma</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-primary font-bold text-xl">JL</span>
-                  </div>
-                  <h4 className="font-bold">Javier López</h4>
-                  <p className="text-sm text-gray-500 mb-4">Centrocampista</p>
-                  
-                  <div className="w-full grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-gray-50 p-2 rounded">
-                      <div className="text-xl font-bold text-primary">89%</div>
-                      <div className="text-xs text-gray-500">Pases</div>
-                    </div>
-                    <div className="bg-gray-50 p-2 rounded">
-                      <div className="text-xl font-bold text-primary">92%</div>
-                      <div className="text-xs text-gray-500">Físico</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <h3 className="font-semibold text-gray-800 mb-4">Próximos entrenamientos</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <div>
-                    <span className="font-medium">Entrenamiento táctico</span>
-                    <p className="text-sm text-gray-500">Enfoque en presión alta</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-medium">Hoy</span>
-                    <p className="text-sm text-gray-500">17:00 - 19:00</p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                  <div>
-                    <span className="font-medium">Físico + Recuperación</span>
-                    <p className="text-sm text-gray-500">Grupo completo</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-medium">Mañana</span>
-                    <p className="text-sm text-gray-500">10:00 - 12:00</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'jugadores':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Gestión de Jugadores</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                <h3 className="font-semibold text-gray-800 mb-4">Plantilla Actual</h3>
-                <div className="space-y-4">
-                  {[
-                    { name: 'Carlos Mendez', position: 'Portero', status: 'Disponible' },
-                    { name: 'Javier López', position: 'Centrocampista', status: 'Titular' },
-                    { name: 'Miguel Torres', position: 'Delantero', status: 'Lesionado' },
-                    { name: 'David Silva', position: 'Defensa', status: 'Disponible' }
-                  ].map((player, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                          <span className="text-primary font-medium text-sm">
-                            {player.name.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium">{player.name}</div>
-                          <div className="text-sm text-gray-500">{player.position}</div>
-                        </div>
-                      </div>
-                      <span className={`text-xs py-1 px-2 rounded-full ${
-                        player.status === 'Titular' ? 'bg-green-100 text-green-800' :
-                        player.status === 'Lesionado' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {player.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                <h3 className="font-semibold text-gray-800 mb-4">Estadísticas por Posición</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: 'Delanteros', value: 6 },
-                          { name: 'Centrocampistas', value: 8 },
-                          { name: 'Defensas', value: 7 },
-                          { name: 'Porteros', value: 2 }
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label
-                      >
-                        {playerStatsData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'estadisticas':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Análisis Estadístico</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              {[
-                { label: 'Partidos Jugados', value: '12', icon: Trophy },
-                { label: 'Goles a Favor', value: '28', icon: TrendingUp },
-                { label: 'Goles en Contra', value: '15', icon: Activity },
-                { label: 'Posesión Media', value: '67%', icon: BarChart }
-              ].map((stat, index) => (
-                <div key={index} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                      <p className="text-sm text-gray-500">{stat.label}</p>
-                    </div>
-                    <stat.icon className="w-8 h-8 text-primary" />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h3 className="font-semibold text-gray-800 mb-4">Evolución del Rendimiento</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#4ADE80" strokeWidth={3} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'partidos':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Calendario y Resultados</h2>
-            
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <h3 className="font-semibold text-gray-800 mb-4">Últimos Partidos</h3>
-              <div className="space-y-3">
-                {matchData.map((match, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-sm text-gray-500">{match.date}</div>
-                      <div className="font-medium">{match.opponent}</div>
-                      <span className={`text-xs py-1 px-2 rounded-full ${
-                        match.location === 'Casa' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {match.location}
-                      </span>
-                    </div>
-                    <div className={`font-bold text-lg ${
-                      match.result.split('-')[0] > match.result.split('-')[1] ? 'text-green-600' :
-                      match.result.split('-')[0] < match.result.split('-')[1] ? 'text-red-600' :
-                      'text-yellow-600'
-                    }`}>
-                      {match.result}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                <h3 className="font-semibold text-gray-800 mb-4">Próximo Partido</h3>
-                <div className="text-center p-6 bg-primary/5 rounded-lg">
-                  <div className="text-lg font-bold text-gray-800 mb-2">Real Sociedad B</div>
-                  <div className="text-sm text-gray-500 mb-1">Domingo 12 Agosto</div>
-                  <div className="text-sm text-gray-500">20:00 - Estadio Municipal</div>
-                  <div className="mt-4">
-                    <span className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium">
-                      Partido en Casa
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                <h3 className="font-semibold text-gray-800 mb-4">Estadísticas de Liga</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Posición:</span>
-                    <span className="font-medium">3º de 20</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Puntos:</span>
-                    <span className="font-medium">28</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Diferencia goles:</span>
-                    <span className="font-medium text-green-600">+13</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Racha actual:</span>
-                    <span className="font-medium text-green-600">3 victorias</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
+  const demoData = {
+    players: [
+      { name: "Carlos Mendez", position: "Portero", status: "Disponible", avatar: "CM" },
+      { name: "Luis Torres", position: "Defensa", status: "Disponible", avatar: "LT" },
+      { name: "Miguel Silva", position: "Centrocampista", status: "Lesionado", avatar: "MS" },
+      { name: "Javier Ruiz", position: "Delantero", status: "Disponible", avatar: "JR" }
+    ],
+    stats: {
+      matches: 15,
+      wins: 12,
+      draws: 2,
+      losses: 1,
+      goalsFor: 45,
+      goalsAgainst: 18
     }
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden">
-      <div className="flex bg-gray-900 text-white p-3 items-center">
-        <span className="font-medium mr-2">Statsor</span>
-        <span className="text-gray-400 text-sm">Panel de Control - Demo Interactiva</span>
-        <div className="ml-auto flex space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-        </div>
-      </div>
-      
-      <div className="flex h-[500px]">
-        {/* Sidebar */}
-        <div className="w-[240px] bg-gray-850 border-r border-gray-700 text-white p-4">
-          <div className="flex flex-col space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  className={`flex items-center space-x-3 p-3 rounded cursor-pointer transition-colors ${
-                    activeSection === item.id
-                      ? 'bg-primary text-white'
-                      : 'hover:bg-gray-700'
-                  }`}
-                  onClick={() => handleMenuClick(item.id)}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.title}</span>
-                </div>
-              );
-            })}
+    <div className={`relative overflow-hidden rounded-xl ${
+      isDark ? 'bg-gray-800' : 'bg-white'
+    }`}>
+      {/* Demo Header */}
+      <div className={`p-4 border-b ${
+        isDark ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'
+      }`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className={`w-3 h-3 rounded-full ${
+              isDark ? 'bg-red-500' : 'bg-red-400'
+            }`} />
+            <div className={`w-3 h-3 rounded-full ${
+              isDark ? 'bg-yellow-500' : 'bg-yellow-400'
+            }`} />
+            <div className={`w-3 h-3 rounded-full ${
+              isDark ? 'bg-green-500' : 'bg-green-400'
+            }`} />
+            <span className={`text-sm font-medium ${
+              isDark ? 'text-gray-300' : 'text-gray-600'
+            }`}>
+              Statsor Panel de Control - Demo Interactiva
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`p-2 rounded-lg ${
+                isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'
+              }`}
+            >
+              <Settings className={`h-4 w-4 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`} />
+            </motion.button>
           </div>
         </div>
-        
-        {/* Main content */}
-        <div className="flex-1 bg-white p-6 overflow-y-auto">
-          {renderContent()}
+      </div>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className={`w-64 border-r ${
+          isDark ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'
+        }`}>
+          <nav className="p-4 space-y-2">
+            {[
+              { icon: Users, label: language === 'en' ? 'Players' : 'Jugadores', active: true },
+              { icon: BarChart3, label: language === 'en' ? 'Statistics' : 'Estadísticas', active: false },
+              { icon: Calendar, label: language === 'en' ? 'Matches' : 'Partidos', active: false },
+              { icon: Target, label: language === 'en' ? 'Training' : 'Entrenamiento', active: false },
+              { icon: Trophy, label: language === 'en' ? 'Competitions' : 'Competiciones', active: false }
+            ].map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all ${
+                  item.active
+                    ? isDark 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-green-100 text-green-700'
+                    : isDark
+                    ? 'text-gray-300 hover:bg-gray-800'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="font-medium">{item.label}</span>
+              </motion.div>
+            ))}
+          </nav>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Player Management */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className={`p-6 rounded-xl border ${
+                isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+              }`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
+                {language === 'en' ? 'Player Management' : 'Gestión de Jugadores'}
+              </h3>
+              
+              <div className="space-y-4">
+                {demoData.players.map((player, index) => (
+                  <motion.div
+                    key={player.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className={`flex items-center justify-between p-3 rounded-lg ${
+                      isDark ? 'bg-gray-700' : 'bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${
+                        player.status === 'Lesionado' ? 'bg-red-500' : 'bg-green-500'
+                      }`}>
+                        {player.avatar}
+                      </div>
+                      <div>
+                        <p className={`font-medium ${
+                          isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                          {player.name}
+                        </p>
+                        <p className={`text-sm ${
+                          isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          {player.position}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`text-sm px-2 py-1 rounded-full ${
+                      player.status === 'Disponible'
+                        ? isDark ? 'bg-green-600 text-white' : 'bg-green-100 text-green-700'
+                        : isDark ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
+                    }`}>
+                      {player.status}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Statistics Overview */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className={`p-6 rounded-xl border ${
+                isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+              }`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
+                {language === 'en' ? 'Statistics Overview' : 'Resumen de Estadísticas'}
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: language === 'en' ? 'Matches' : 'Partidos', value: demoData.stats.matches, icon: Calendar },
+                  { label: language === 'en' ? 'Wins' : 'Victorias', value: demoData.stats.wins, icon: Trophy },
+                  { label: language === 'en' ? 'Goals For' : 'Goles a Favor', value: demoData.stats.goalsFor, icon: Target },
+                  { label: language === 'en' ? 'Win Rate' : 'Porcentaje', value: `${Math.round((demoData.stats.wins / demoData.stats.matches) * 100)}%`, icon: TrendingUp }
+                ].map((stat, index) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className={`p-4 rounded-lg text-center ${
+                      isDark ? 'bg-gray-700' : 'bg-gray-50'
+                    }`}
+                  >
+                    <stat.icon className={`h-6 w-6 mx-auto mb-2 ${
+                      isDark ? 'text-green-400' : 'text-green-600'
+                    }`} />
+                    <p className={`text-2xl font-bold ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}>
+                      {stat.value}
+                    </p>
+                    <p className={`text-sm ${
+                      isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
+                      {stat.label}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Live Match Controls */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className={`mt-6 p-6 rounded-xl border ${
+              isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}
+          >
+            <h3 className={`text-xl font-bold mb-4 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
+              {language === 'en' ? 'Live Match Control' : 'Control de Partido en Vivo'}
+            </h3>
+            
+            <div className="flex items-center justify-center space-x-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`p-3 rounded-full ${
+                  isDark ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
+                } text-white`}
+              >
+                <Play className="h-6 w-6" />
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`p-3 rounded-full ${
+                  isDark ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-yellow-500 hover:bg-yellow-600'
+                } text-white`}
+              >
+                <Pause className="h-6 w-6" />
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`p-3 rounded-full ${
+                  isDark ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-500 hover:bg-gray-600'
+                } text-white`}
+              >
+                <RotateCcw className="h-6 w-6" />
+              </motion.button>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className={`text-sm ${
+                isDark ? 'text-gray-400' : 'text-gray-600'
+              }`}>
+                {language === 'en' ? 'Click to start recording match events' : 'Haz clic para comenzar a registrar eventos del partido'}
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>

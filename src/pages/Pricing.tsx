@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown, Star, CreditCard, Shield, Zap, Users, BarChart3 } from 'lucide-react';
+import { Check, Crown, Star, CreditCard, Shield, Zap, Users, BarChart3, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
+import { paypalService } from '@/services/paypalService';
 
 const Pricing: React.FC = () => {
   const { language } = useLanguage();
@@ -31,6 +32,8 @@ const Pricing: React.FC = () => {
   const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>('yearly');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paypalLoading, setPaypalLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'failed'>('idle');
 
   const handleSubscribe = async (planId: string) => {
     if (!user) {
@@ -41,6 +44,70 @@ const Pricing: React.FC = () => {
 
     setSelectedPlan(planId);
     setShowPaymentModal(true);
+  };
+
+  const handlePayPalPayment = async (planId: string) => {
+    if (!user) {
+      toast.error(language === 'en' ? 'Please sign in to make a payment' : 'Por favor inicia sesión para hacer un pago');
+      navigate('/signin');
+      return;
+    }
+
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) {
+      toast.error(language === 'en' ? 'Plan not found' : 'Plan no encontrado');
+      return;
+    }
+
+    setPaypalLoading(true);
+    setPaymentStatus('processing');
+
+    try {
+      // Check if user already has this plan
+      const hasActive = paypalService.hasActiveSubscription(user.email, planId);
+      if (hasActive) {
+        toast.error(language === 'en' ? 'You already have an active subscription for this plan' : 'Ya tienes una suscripción activa para este plan');
+        setPaymentStatus('failed');
+        return;
+      }
+
+      // Check payment attempts
+      const attempts = paypalService.getPaymentAttempts(user.email, planId);
+      if (attempts > 3) {
+        toast.error(language === 'en' ? 'Too many payment attempts. Please try again later.' : 'Demasiados intentos de pago. Por favor, inténtalo más tarde.');
+        setPaymentStatus('failed');
+        return;
+      }
+
+      const amount = billingInterval === 'yearly' ? plan.price : Math.round(plan.price / 12);
+      
+      const paymentData = {
+        planId,
+        planName: plan.name,
+        amount,
+        currency: 'EUR',
+        billingInterval,
+        userEmail: user.email,
+        userId: user.id
+      };
+
+      const response = await paypalService.createPayment(paymentData);
+
+      if (response.success && response.redirectUrl) {
+        // Redirect to PayPal
+        window.location.href = response.redirectUrl;
+      } else {
+        toast.error(response.error || (language === 'en' ? 'Payment failed' : 'Pago fallido'));
+        setPaymentStatus('failed');
+      }
+
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+      toast.error(language === 'en' ? 'Payment service error' : 'Error en el servicio de pago');
+      setPaymentStatus('failed');
+    } finally {
+      setPaypalLoading(false);
+    }
   };
 
   const handlePaymentSubmit = async (paymentData: any) => {
@@ -197,7 +264,7 @@ const Pricing: React.FC = () => {
                     <span className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       /{billingInterval === 'yearly' ? 'año' : 'mes'}
                     </span>
-                  </div>
+              </div>
                   {getSavings(plan) > 0 && (
                     <Badge className="bg-green-100 text-green-800 border-green-200 mb-2">
                       {language === 'en' ? `Save €${getSavings(plan)}` : `Ahorras €${getSavings(plan)}`}
@@ -218,7 +285,7 @@ const Pricing: React.FC = () => {
                         <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                         <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                           {feature}
-                        </span>
+                </span>
                       </motion.li>
                     ))}
                   </ul>
@@ -245,31 +312,71 @@ const Pricing: React.FC = () => {
                         )}
                       </div>
                     ) : (
-                      <Button
-                        onClick={() => handleSubscribe(plan.id)}
-                        disabled={loading}
-                        className={`w-full ${
-                          plan.popular 
-                            ? 'bg-green-600 hover:bg-green-700 text-white' 
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
-                      >
-                        {loading && selectedPlan === plan.id ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                            {language === 'en' ? 'Processing...' : 'Procesando...'}
-                          </>
-                        ) : (
-                          <>
-                            {plan.price === 0 
-                              ? (language === 'en' ? 'Start Free Trial' : 'Comenzar Prueba Gratuita')
-                              : (language === 'en' ? 'Subscribe Now' : 'Suscribirse Ahora')
-                            }
-                          </>
+                      <div className="space-y-3">
+                        {/* PayPal Payment Button */}
+                        {plan.price > 0 && (
+                          <Button
+                            onClick={() => handlePayPalPayment(plan.id)}
+                            disabled={paypalLoading}
+                            className={`w-full ${
+                              plan.popular 
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                                : 'bg-green-600 hover:bg-green-700 text-white'
+                            }`}
+                          >
+                            {paypalLoading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                {language === 'en' ? 'Processing...' : 'Procesando...'}
+                              </>
+                            ) : (
+                              <>
+                                <CreditCard className="w-4 h-4 mr-2" />
+                                {language === 'en' ? 'Pay with PayPal' : 'Pagar con PayPal'}
+                              </>
+                            )}
+                          </Button>
                         )}
-                      </Button>
+                        
+                        {/* Alternative Subscribe Button */}
+                        <Button
+                          onClick={() => handleSubscribe(plan.id)}
+                          disabled={loading}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          {loading && selectedPlan === plan.id ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              {language === 'en' ? 'Processing...' : 'Procesando...'}
+                            </>
+                          ) : (
+                            <>
+                              {plan.price === 0 
+                                ? (language === 'en' ? 'Start Free Trial' : 'Comenzar Prueba Gratuita')
+                                : (language === 'en' ? 'Other Payment Methods' : 'Otros Métodos de Pago')
+                              }
+                            </>
+                          )}
+                        </Button>
+                        
+                        {/* Payment Status Indicator */}
+                        {paymentStatus === 'processing' && (
+                          <div className="flex items-center justify-center text-sm text-blue-600">
+                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            {language === 'en' ? 'Redirecting to PayPal...' : 'Redirigiendo a PayPal...'}
+                          </div>
+                        )}
+                        
+                        {paymentStatus === 'failed' && (
+                          <div className="flex items-center justify-center text-sm text-red-600">
+                            <AlertCircle className="w-4 h-4 mr-2" />
+                            {language === 'en' ? 'Payment failed. Please try again.' : 'Pago fallido. Por favor, inténtalo de nuevo.'}
+                          </div>
+                        )}
+                      </div>
                     )}
-                  </div>
+              </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -313,8 +420,8 @@ const Pricing: React.FC = () => {
               </motion.div>
             ))}
           </div>
-        </motion.div>
-
+              </motion.div>
+              
         {/* FAQ Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -366,10 +473,10 @@ const Pricing: React.FC = () => {
               </motion.div>
             ))}
           </div>
-        </motion.div>
-
+              </motion.div>
+              
         {/* CTA Section */}
-        <motion.div
+              <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.8 }}
@@ -400,10 +507,10 @@ const Pricing: React.FC = () => {
             >
               {language === 'en' ? 'Learn More' : 'Saber Más'}
             </Button>
-          </div>
+                  </div>
         </motion.div>
-      </div>
-
+                </div>
+                
       {/* Payment Modal */}
       {showPaymentModal && (
         <PaymentModal
@@ -488,7 +595,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               required
             />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={`block text-sm font-medium mb-2 ${
@@ -530,7 +637,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
           </div>
           
-          <div>
+            <div>
             <label className={`block text-sm font-medium mb-2 ${
               theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
             }`}>
@@ -548,7 +655,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               }`}
               required
             />
-          </div>
+            </div>
           
           <div className="flex gap-3 pt-4">
             <Button

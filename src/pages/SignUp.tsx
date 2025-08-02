@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { subscriptionService } from '@/services/subscriptionService';
+
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Loader2, Mail, Lock, Eye, EyeOff, User, MapPin } from 'lucide-react';
@@ -23,7 +24,7 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -75,6 +76,8 @@ const SignUp = () => {
       if (error) {
         toast.error(typeof error === 'string' ? error : 'Registration failed. Please try again.');
       } else {
+        // Initialize subscription for new user
+        subscriptionService.initializeUserSubscription(formData.email);
         toast.success('¡Cuenta creada exitosamente! Bienvenido a Statsor.');
         navigate('/dashboard');
       }
@@ -97,6 +100,8 @@ const SignUp = () => {
       if (error) {
         toast.error(typeof error === 'string' ? error : 'Google registration failed');
       } else {
+        // Initialize subscription for new user
+        subscriptionService.initializeUserSubscription(user?.email || '');
         toast.success('¡Cuenta creada exitosamente con Google!');
         // Let the auth context handle navigation
       }
@@ -110,9 +115,7 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
+
       
       <motion.div
         initial={{ opacity: 0, y: -20 }}

@@ -82,9 +82,6 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       
       <motion.div
         initial={{ opacity: 0, y: -20 }}

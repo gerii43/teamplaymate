@@ -152,7 +152,7 @@ export const PersonalizedDemoForm: React.FC = () => {
             }
           </motion.p>
         </motion.div>
-
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Form Section */}
           <motion.div
@@ -178,7 +178,7 @@ export const PersonalizedDemoForm: React.FC = () => {
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                       {language === 'en' ? 'Full Name *' : 'Nombre completo *'}
-                    </label>
+                </label>
                     <Input
                       type="text"
                       value={formData.fullName}
@@ -203,7 +203,7 @@ export const PersonalizedDemoForm: React.FC = () => {
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                       {language === 'en' ? 'Email *' : 'Email *'}
-                    </label>
+                </label>
                     <Input
                       type="email"
                       value={formData.email}
@@ -228,7 +228,7 @@ export const PersonalizedDemoForm: React.FC = () => {
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                       {language === 'en' ? 'Club or Team *' : 'Club o equipo *'}
-                    </label>
+                </label>
                     <Input
                       type="text"
                       value={formData.club}
@@ -253,7 +253,7 @@ export const PersonalizedDemoForm: React.FC = () => {
                       theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                     }`}>
                       {language === 'en' ? 'Modality *' : 'Modalidad *'}
-                    </label>
+                </label>
                     <Select value={formData.modality} onValueChange={(value) => handleInputChange('modality', value)}>
                       <SelectTrigger className={`${
                         theme === 'dark' 
@@ -294,13 +294,13 @@ export const PersonalizedDemoForm: React.FC = () => {
                       ) : (
                         language === 'en' ? 'Request Demo' : 'Solicitar demo'
                       )}
-                    </Button>
+              </Button>
                   </motion.div>
                 </form>
               </CardContent>
             </Card>
-          </motion.div>
-
+            </motion.div>
+            
           {/* Features Section */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
@@ -309,13 +309,13 @@ export const PersonalizedDemoForm: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div>
+              <div>
               <h3 className={`text-2xl font-bold mb-6 ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
                 {language === 'en' ? 'What your demo includes' : 'Lo que incluye tu demo'}
               </h3>
-              <div className="space-y-4">
+                <div className="space-y-4">
                 {features.map((feature, index) => (
                   <motion.div
                     key={index}
@@ -347,8 +347,8 @@ export const PersonalizedDemoForm: React.FC = () => {
                   </motion.div>
                 ))}
               </div>
-            </div>
-
+              </div>
+              
             {/* Questions Box */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

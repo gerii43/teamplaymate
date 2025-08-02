@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Clock, Share2, Heart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 const Blog = () => {
   return (
@@ -20,7 +19,6 @@ const Blog = () => {
             />
           </Link>
           <div className="flex items-center space-x-4">
-            <LanguageSwitcher />
             <Link to="/">
               <Button variant="outline" size="sm" className="flex items-center space-x-2">
                 <ArrowLeft className="w-4 h-4" />

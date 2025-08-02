@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { toast } from 'sonner';
 
-// API Configuration for production
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.statsor.com';
+// API Configuration for development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3006';
 
 export const api = {
   baseURL: API_BASE_URL,
@@ -84,50 +84,140 @@ export const api = {
   health: `${API_BASE_URL}/api/health`,
 };
 
-// Auth API functions
+// Mock Auth API functions for local development
 export const authAPI = {
   register: async (data: any) => {
-    try {
-      const response = await axios.post(api.auth.register, data);
-      return response;
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    }
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Create mock user
+    const mockUser = {
+      id: `user_${Date.now()}`,
+      email: data.email,
+      name: data.name || data.email.split('@')[0],
+      picture: null,
+      provider: 'email' as const,
+      created_at: new Date().toISOString(),
+      location: data.location || '',
+      sport: undefined,
+      sportSelected: false
+    };
+    
+    const mockToken = `mock_token_${Date.now()}`;
+    
+    return {
+      data: {
+        success: true,
+        data: {
+          user: mockUser,
+          token: mockToken
+        },
+        message: 'Registration successful'
+      }
+    };
   },
   
   login: async (data: any) => {
-    try {
-      const response = await axios.post(api.auth.login, data);
-      return response;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check if user exists in localStorage
+    const savedUser = localStorage.getItem('statsor_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      if (user.email === data.email) {
+        const mockToken = `mock_token_${Date.now()}`;
+        return {
+          data: {
+            success: true,
+            data: {
+              user: user,
+              token: mockToken
+            },
+            message: 'Login successful'
+          }
+        };
+      }
     }
+    
+    // Create new user if not found
+    const mockUser = {
+      id: `user_${Date.now()}`,
+      email: data.email,
+      name: data.email.split('@')[0],
+      picture: null,
+      provider: 'email' as const,
+      created_at: new Date().toISOString(),
+      location: '',
+      sport: undefined,
+      sportSelected: false
+    };
+    
+    const mockToken = `mock_token_${Date.now()}`;
+    
+    return {
+      data: {
+        success: true,
+        data: {
+          user: mockUser,
+          token: mockToken
+        },
+        message: 'Login successful'
+      }
+    };
   },
   
   verifyGoogleToken: async (token: string) => {
-    try {
-      const response = await axios.post(api.auth.google, { token });
-      return response;
-    } catch (error) {
-      console.error('Google auth error:', error);
-      throw error;
-    }
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Create mock Google user
+    const mockUser = {
+      id: `google_user_${Date.now()}`,
+      email: 'user@gmail.com',
+      name: 'Google User',
+      picture: 'https://via.placeholder.com/150',
+      provider: 'google' as const,
+      created_at: new Date().toISOString(),
+      location: '',
+      sport: undefined,
+      sportSelected: false
+    };
+    
+    const mockToken = `mock_google_token_${Date.now()}`;
+    
+    return {
+      data: {
+        success: true,
+        data: {
+          user: mockUser,
+          token: mockToken
+        },
+        message: 'Google authentication successful'
+      }
+    };
   },
   
   updateSportPreference: async (sport: string) => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      const response = await axios.post(`${api.baseURL}/api/auth/sport-preference`, 
-        { sport }, 
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return response;
-    } catch (error) {
-      console.error('Sport preference update error:', error);
-      throw error;
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Update user in localStorage
+    const savedUser = localStorage.getItem('statsor_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      user.sport = sport;
+      user.sportSelected = true;
+      localStorage.setItem('statsor_user', JSON.stringify(user));
     }
+    
+    return {
+      data: {
+        success: true,
+        data: { sport },
+        message: 'Sport preference updated successfully'
+      }
+    };
   }
 };
 

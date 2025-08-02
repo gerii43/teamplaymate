@@ -93,7 +93,7 @@ const SelectSport = () => {
           />
           <span className="text-xl font-bold text-gray-900">Statsor</span>
         </div>
-        <LanguageSwitcher />
+
       </div>
 
       {/* Main Content */}

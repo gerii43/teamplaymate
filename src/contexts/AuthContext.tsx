@@ -105,24 +105,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsSigningIn(true)
     setLoading(true)
     try {
-      // Mock successful login for demo
-      const mockResponse = {
-        success: true,
-        data: {
-          user: {
-            id: '1',
-            email: email,
-            name: email.split('@')[0],
-            provider: 'email',
-            sportSelected: false,
-            created_at: new Date().toISOString()
-          },
-          token: 'demo-jwt-token-' + Date.now()
-        }
-      };
+      const response = await authAPI.login({ email, password })
       
-      if (mockResponse.success) {
-        const { user, token } = mockResponse.data
+      if (response.data.success) {
+        const { user, token } = response.data.data
         setUser(user)
         setIsNewUser(false)
         const onboardingStatus = localStorage.getItem('statsor_onboarding_completed')
@@ -131,6 +117,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('statsor_user', JSON.stringify(user))
         return { data: { user }, error: null }
       }
+      return { data: null, error: response.data.message || 'Login failed' }
+    } catch (error) {
+      console.error('Login error:', error)
       return { data: null, error: 'Login failed' }
     } finally {
       setLoading(false)

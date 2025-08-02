@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { 
   Home, 
@@ -118,7 +117,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {t('dashboard.welcome')} {user?.name ? `, ${user.name}` : ''}
             </h1>
             <div className="flex items-center space-x-4">
-              <LanguageSwitcher />
               <ThemeToggle />
               <span className="text-sm text-gray-700">{user?.email}</span>
               <Button 
